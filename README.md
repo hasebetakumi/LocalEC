@@ -11,3 +11,5 @@
 | similar_services.md | 類似サービス調査（TABETE、Too Good To Go、タベスケ、産直ECなど）と提案への示唆 |
 | market_gap_summary.pdf | 「空いている領域」のA4一枚サマリー（元ファイルは同名の .html） |
 | why_the_gap_exists.md | なぜその領域が空いているのか。過去の失敗事例と、本案件が成立する条件 |
+| 技術選定.md | 技術構成（Expo + TypeScript + Supabase）と選定理由 |
+| 要件定義_フェーズ1.md | フェーズ1の要件定義書（スコープ、機能、未決事項） |
