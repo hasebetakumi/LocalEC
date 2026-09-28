@@ -11,3 +11,7 @@
 | similar_services.md | 類似サービス調査（TABETE、Too Good To Go、タベスケ、産直ECなど）と提案への示唆 |
 | market_gap_summary.pdf | 「空いている領域」のA4一枚サマリー（元ファイルは同名の .html） |
 | why_the_gap_exists.md | なぜその領域が空いているのか。過去の失敗事例と、本案件が成立する条件 |
+| 技術選定.md | 技術構成（Expo + TypeScript + Supabase）と選定理由 |
+| 要件定義_フェーズ1.md | フェーズ1の要件定義書（スコープ、機能、未決事項） |
+| 見積もり根拠_フェーズ1.md | フェーズ1の作業工程と工数、開発費・ランニング費用の算出（MeiN 内部用） |
+| 見積もり根拠_フェーズ1_アケボノ様向け.md | アケボノ様に渡す開発費の根拠資料（PDF版は同名の .pdf。`scripts/md2pdf.py` で生成） |
