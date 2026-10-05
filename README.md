@@ -10,10 +10,12 @@ Expo（React Native）+ TypeScript + Supabase。1コードで iOS・Android・We
 
 ## 開発環境
 
-- Node.js 22（`.nvmrc` 参照）、npm
+- Node.js 22（`app/.nvmrc` 参照）、npm
 - スマホでの確認は [Expo Go](https://expo.dev/go)。PC と同じ Wi-Fi に接続する
+- npm コマンドはすべて `app/` の中で実行する
 
 ```bash
+cd app
 npm install
 npm start          # 開発サーバー起動。w で Web、QR コードで Expo Go
 npm run web        # Web のみ
@@ -36,13 +38,14 @@ Windows のファイアウォールで 8081 番ポートを許可するか、`np
 
 ## ディレクトリ
 
-| パス     | 内容                                                         |
-| -------- | ------------------------------------------------------------ |
-| src/app/ | 画面（Expo Router。ファイル＝ルート）                        |
-| src/     | 画面以外のコード（コンポーネント、hooks など。これから追加） |
-| assets/  | アイコン・画像                                               |
-| docs/    | 提案書、要件定義、見積もり根拠、技術選定                     |
-| scripts/ | 補助スクリプト（Markdown→PDF 変換）                          |
+| パス | 内容 |
+| --- | --- |
+| app/ | Expo アプリ本体（package.json はここ。npm コマンドはこの中で実行） |
+| app/src/app/ | 画面（Expo Router。ファイル＝ルート） |
+| app/src/ | 画面以外のコード（コンポーネント、hooks など。これから追加） |
+| app/assets/ | アイコン・画像 |
+| docs/ | 提案書、要件定義、見積もり根拠、技術選定 |
+| scripts/ | 補助スクリプト（Markdown→PDF 変換） |
 
 ## ドキュメント
 
