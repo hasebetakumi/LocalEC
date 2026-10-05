@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+defaults:
+  run:
+    working-directory: app
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: app/.nvmrc
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+      - name: 型チェック
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint -- --max-warnings 0
+      - name: 整形チェック
+        run: npm run format:check
+      - name: テスト
+        run: npm test -- --ci
