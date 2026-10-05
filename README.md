@@ -17,19 +17,22 @@ Expo（React Native）+ TypeScript + Supabase。1コードで iOS・Android・We
 ```bash
 cd app
 npm install
-npm start          # 開発サーバー起動。w で Web、QR コードで Expo Go
-npm run web        # Web のみ
+npm start          # Supabase（Docker）と Expo をまとめて起動。w で Web、QR コードで Expo Go
+npm stop           # Supabase を停止（データは保持）
+```
+
+Supabase だけ、Expo だけを動かしたいときは次を使う。
+
+```bash
+npx supabase start     # Supabase のみ。初回はイメージ取得で数分かかる
+npm run start:app      # Expo のみ（Supabase を使わない作業向け）
+npm run web            # Expo の Web のみ
+npm run supabase:status  # URL と publishable key を表示
 ```
 
 ### Supabase（ローカル）
 
-Docker を起動した状態で `app/` の中から実行する。他案件と重ならないよう、ポートは 58320 番台にしている（`app/supabase/config.toml`）。
-
-```bash
-npx supabase start     # 初回はイメージ取得で数分かかる
-npx supabase status    # URL と publishable key を表示
-npx supabase stop      # 停止（データは保持）
-```
+Docker を起動しておく。他案件と重ならないよう、ポートは 58320 番台にしている（`app/supabase/config.toml`）。
 
 | サービス | URL |
 | --- | --- |
@@ -38,7 +41,7 @@ npx supabase stop      # 停止（データは保持）
 | Studio（管理画面） | http://localhost:58323 |
 | メール確認（Mailpit） | http://localhost:58324 |
 
-接続先は `app/.env` で指定する。`app/.env.example` をコピーし、`npx supabase status` の publishable key を入れる。スマホの Expo Go から接続するときは URL を `localhost` ではなく PC の IP アドレスにする。
+接続先は `app/.env` で指定する。`app/.env.example` をコピーし、`npm run supabase:status` の publishable key を入れる。スマホの Expo Go から接続するときは URL を `localhost` ではなく PC の IP アドレスにする。
 
 ### 品質チェック
 
