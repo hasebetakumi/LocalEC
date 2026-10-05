@@ -21,6 +21,25 @@ npm start          # 開発サーバー起動。w で Web、QR コードで Expo
 npm run web        # Web のみ
 ```
 
+### Supabase（ローカル）
+
+Docker を起動した状態で `app/` の中から実行する。他案件と重ならないよう、ポートは 58320 番台にしている（`app/supabase/config.toml`）。
+
+```bash
+npx supabase start     # 初回はイメージ取得で数分かかる
+npx supabase status    # URL と publishable key を表示
+npx supabase stop      # 停止（データは保持）
+```
+
+| サービス | URL |
+| --- | --- |
+| API | http://localhost:58321 |
+| DB | postgresql://postgres:postgres@localhost:58322/postgres |
+| Studio（管理画面） | http://localhost:58323 |
+| メール確認（Mailpit） | http://localhost:58324 |
+
+接続先は `app/.env` で指定する。`app/.env.example` をコピーし、`npx supabase status` の publishable key を入れる。スマホの Expo Go から接続するときは URL を `localhost` ではなく PC の IP アドレスにする。
+
 ### 品質チェック
 
 CI（GitHub Actions）でも同じものを実行する。
