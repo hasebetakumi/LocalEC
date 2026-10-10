@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react-native';
+import { act, render } from '@testing-library/react-native';
 import { router } from 'expo-router';
 
 import { useAuth } from '@/features/auth/AuthProvider';
@@ -18,7 +18,7 @@ jest.mock('./push', () => ({
 
 const ID = '00000000-0000-4000-8000-000000000101';
 
-function auth(o: { signedIn: boolean; enabled?: boolean }) {
+function auth(o: { signedIn: boolean; enabled?: boolean; loading?: boolean }) {
   jest.mocked(useAuth).mockReturnValue({
     session: o.signedIn ? ({ user: { id: 'u-1' } } as never) : null,
     profile: o.signedIn
@@ -33,7 +33,7 @@ function auth(o: { signedIn: boolean; enabled?: boolean }) {
         }
       : null,
     isRegistered: o.signedIn,
-    loading: false,
+    loading: o.loading ?? false,
     refreshProfile: jest.fn(),
     signOut: jest.fn(),
   });
@@ -63,8 +63,10 @@ describe('NotificationsBridge', () => {
   it('タップで該当画面を開く。同じ通知は二度開かない', async () => {
     auth({ signedIn: true });
     await render(<NotificationsBridge />);
-    tapHandler()({ url: `/bookings/${ID}` }, 'n-1');
-    tapHandler()({ url: `/bookings/${ID}` }, 'n-1');
+    await act(async () => {
+      tapHandler()({ url: `/bookings/${ID}` }, 'n-1');
+      tapHandler()({ url: `/bookings/${ID}` }, 'n-1');
+    });
     expect(router.push).toHaveBeenCalledTimes(1);
     expect(router.push).toHaveBeenCalledWith(`/bookings/${ID}`);
   });
@@ -72,15 +74,33 @@ describe('NotificationsBridge', () => {
   it('未ログインなら戻り先を保存してログインへ', async () => {
     auth({ signedIn: false });
     await render(<NotificationsBridge />);
-    tapHandler()({ url: `/bookings/${ID}` }, 'n-2');
-    await Promise.resolve();
+    await act(async () => {
+      tapHandler()({ url: `/bookings/${ID}` }, 'n-2');
+    });
     expect(saveNextPath).toHaveBeenCalledWith(`/bookings/${ID}`);
+    expect(router.push).toHaveBeenCalledWith('/auth/login');
+  });
+
+  it('起動直後のタップは、セッションの復元を待ってから開く（ログイン画面に送らない）', async () => {
+    auth({ signedIn: false, loading: true });
+    const { rerender } = await render(<NotificationsBridge />);
+    await act(async () => {
+      tapHandler()({ url: `/bookings/${ID}` }, 'n-4');
+    });
+    expect(router.push).not.toHaveBeenCalled();
+    expect(saveNextPath).not.toHaveBeenCalled();
+    auth({ signedIn: true });
+    await rerender(<NotificationsBridge />);
+    expect(router.push).toHaveBeenCalledWith(`/bookings/${ID}`);
+    expect(saveNextPath).not.toHaveBeenCalled();
   });
 
   it('想定外の URL は開かない', async () => {
     auth({ signedIn: true });
     await render(<NotificationsBridge />);
-    tapHandler()({ url: 'https://example.com' }, 'n-3');
+    await act(async () => {
+      tapHandler()({ url: 'https://example.com' }, 'n-3');
+    });
     expect(router.push).not.toHaveBeenCalled();
   });
 });
