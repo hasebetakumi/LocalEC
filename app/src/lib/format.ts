@@ -120,3 +120,41 @@ export function formatLongDateJa(date: Date): string {
   const p = jst(date);
   return `${p.year}年${p.month}月${p.day}日（${WEEKDAYS[p.weekday]}）`;
 }
+
+/** 日本時間で今日の 0:00 */
+export function startOfJstDay(date: Date): Date {
+  const p = jst(date);
+  return new Date(Date.UTC(p.year, p.month - 1, p.day) - JST_OFFSET_MS);
+}
+
+/** 2026/10/05　11:30（運営の日時入力欄） */
+export function formatDateTimeSlash(date: Date): string {
+  const p = jst(date);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${p.year}/${pad(p.month)}/${pad(p.day)}　${pad(p.hour)}:${pad(p.minute)}`;
+}
+
+/** 10/5 11:30（運営の一覧） */
+export function formatMonthDayTime(date: Date): string {
+  return `${formatMonthDay(date)} ${formatTime(date)}`;
+}
+
+/** Web の datetime-local 用の値（日本時間の 2026-10-05T11:30） */
+export function toJstInputValue(date: Date): string {
+  const p = jst(date);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${p.year}-${pad(p.month)}-${pad(p.day)}T${pad(p.hour)}:${pad(p.minute)}`;
+}
+
+/** datetime-local の値を日本時間として Date にする。形式が違えば null */
+export function fromJstInputValue(value: string): Date | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(value);
+  if (!m) return null;
+  const [, y, mo, d, h, mi] = m.map(Number);
+  return new Date(Date.UTC(y, mo - 1, d, h, mi) - JST_OFFSET_MS);
+}
+
+/** 分未満を切り捨てる */
+export function floorToMinute(date: Date): Date {
+  return new Date(Math.floor(date.getTime() / 60000) * 60000);
+}

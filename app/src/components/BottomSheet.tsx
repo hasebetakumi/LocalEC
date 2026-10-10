@@ -24,6 +24,8 @@ type Props = {
   title?: string;
   children: ReactNode | ((close: Close) => ReactNode);
   testID?: string;
+  /** 広い画面（運営の PC 枠）では中央のダイアログとして出す */
+  centered?: boolean;
 };
 
 const SHEET_OFFSET = 600;
@@ -32,7 +34,14 @@ const SHEET_OFFSET = 600;
  * 下から出るシート。背景 50% 暗転、外側タップ・下スワイプ・× で閉じる。
  * 閉じるときは先にアニメーションし、終わってから onClose を呼ぶ
  */
-export function BottomSheet({ visible, onClose, title, children, testID }: Props) {
+export function BottomSheet({
+  visible,
+  onClose,
+  title,
+  children,
+  testID,
+  centered = false,
+}: Props) {
   const insets = useSafeAreaInsets();
   const [progress] = useState(() => new Animated.Value(0));
   const [drag] = useState(() => new Animated.Value(0));
@@ -81,7 +90,7 @@ export function BottomSheet({ visible, onClose, title, children, testID }: Props
   );
 
   const translateY = Animated.add(
-    progress.interpolate({ inputRange: [0, 1], outputRange: [SHEET_OFFSET, 0] }),
+    progress.interpolate({ inputRange: [0, 1], outputRange: [centered ? 24 : SHEET_OFFSET, 0] }),
     drag,
   );
 
@@ -93,7 +102,7 @@ export function BottomSheet({ visible, onClose, title, children, testID }: Props
       onRequestClose={() => close()}
       statusBarTranslucent
     >
-      <View style={styles.root} testID={testID}>
+      <View style={[styles.root, centered && styles.rootCentered]} testID={testID}>
         <Animated.View style={[StyleSheet.absoluteFill, styles.overlay, { opacity: progress }]}>
           <Pressable
             style={StyleSheet.absoluteFill}
@@ -104,7 +113,9 @@ export function BottomSheet({ visible, onClose, title, children, testID }: Props
         <Animated.View
           style={[
             styles.sheet,
-            { paddingBottom: Math.max(insets.bottom, 24) + 10, transform: [{ translateY }] },
+            centered
+              ? [styles.dialog, { opacity: progress, transform: [{ translateY }] }]
+              : { paddingBottom: Math.max(insets.bottom, 24) + 10, transform: [{ translateY }] },
           ]}
         >
           <View {...pan.panHandlers}>
@@ -135,6 +146,8 @@ export function BottomSheet({ visible, onClose, title, children, testID }: Props
 
 const styles = StyleSheet.create({
   root: { flex: 1, justifyContent: 'flex-end' },
+  rootCentered: { justifyContent: 'center', alignItems: 'center', padding: 24 },
+  dialog: { width: '100%', maxWidth: 520, borderRadius: 16, paddingBottom: 24 },
   overlay: { backgroundColor: colors.overlay },
   sheet: {
     backgroundColor: colors.white,

@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 
 import { AuthProvider } from '@/features/auth/AuthProvider';
+import { NotificationsBridge } from '@/features/notifications/NotificationsBridge';
 import { colors } from '@/theme/tokens';
 
 export default function RootLayout() {
@@ -17,6 +18,7 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <NotificationsBridge />
         <Stack
           screenOptions={{
             headerShown: false,

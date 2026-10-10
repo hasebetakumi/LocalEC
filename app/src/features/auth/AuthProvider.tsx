@@ -3,6 +3,8 @@ import { createContext, type ReactNode, useCallback, useContext, useEffect, useS
 
 import { supabase } from '@/lib/supabase';
 
+import { unregisterPush } from '@/features/notifications/push';
+
 import { fetchProfile, type Profile } from './api';
 
 type AuthState = {
@@ -69,6 +71,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [userId]);
 
   const signOut = useCallback(async () => {
+    // この端末に別の人の通知が届かないよう、先に端末トークンを外す
+    await unregisterPush().catch(() => {});
     await supabase.auth.signOut();
   }, []);
 

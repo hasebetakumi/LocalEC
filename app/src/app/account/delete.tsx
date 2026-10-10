@@ -21,6 +21,7 @@ import {
   titleWithQuantity,
 } from '@/features/bookings/derive';
 import { useMyBookings } from '@/features/bookings/hooks';
+import { unregisterPush } from '@/features/notifications/push';
 import { useNow } from '@/hooks/useNow';
 import { supabase } from '@/lib/supabase';
 import { colors } from '@/theme/tokens';
@@ -61,6 +62,8 @@ export default function AccountDeleteScreen() {
     setBusy(true);
     setError(null);
     try {
+      // ログインしているうちに、この端末のトークンを外す
+      await unregisterPush().catch(() => {});
       await deleteMyAccount();
       // サーバー側でユーザーは消えているので、端末のセッションだけ消す
       await supabase.auth.signOut({ scope: 'local' });

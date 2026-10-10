@@ -10,6 +10,7 @@ import { Screen } from '@/components/Screen';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { setNotificationsEnabled } from '@/features/auth/api';
 import { LEGAL_DOCS } from '@/features/legal/docs';
+import { registerForPush } from '@/features/notifications/push';
 import { formatPhone } from '@/lib/format';
 import { colors, shadow, space } from '@/theme/tokens';
 
@@ -29,6 +30,10 @@ export default function MyPageScreen() {
     try {
       await setNotificationsEnabled(session.user.id, next);
       await refreshProfile();
+      // オンにしたら端末を登録する。端末の設定で拒否されていれば案内する
+      if (next && (await registerForPush()) === 'denied') {
+        setNotifyError('端末の設定で、このアプリの通知を許可してください。');
+      }
     } catch {
       setNotifyError('通知の設定を保存できませんでした。');
     } finally {

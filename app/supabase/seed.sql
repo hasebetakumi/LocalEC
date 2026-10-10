@@ -141,3 +141,55 @@ values ('0001', '00000000-0000-4000-8000-000000000107', '00000000-0000-4000-8000
 update public.booking_number_counter set last = 1 where id = 1;
 
 drop table seed_base;
+
+-- 運営画面の確認用スタッフ（3 店舗すべてに所属）。ログインは Mailpit のリンク
+insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_user_meta_data, created_at, updated_at)
+values ('00000000-0000-0000-0000-000000000000', '00000000-0000-4000-8000-0000000000cc', 'authenticated', 'authenticated',
+        'staff@example.com', 'x', now(),
+        '{"name":"山田 太郎","phone":"09011112222","agreed_terms_at":"2026-10-10T00:00:00Z"}', now(), now());
+
+update public.profiles set is_staff = true where id = '00000000-0000-4000-8000-0000000000cc';
+
+insert into public.store_staff (store_id, user_id) values
+  ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-0000000000cc'),
+  ('00000000-0000-4000-8000-000000000002', '00000000-0000-4000-8000-0000000000cc'),
+  ('00000000-0000-4000-8000-000000000003', '00000000-0000-4000-8000-0000000000cc');
+
+-- 下書きと公開予定の掲載（運営画面の絞り込み確認用）
+insert into public.listings (id, store_id, kind, title, status, publish_start, publish_end)
+values ('00000000-0000-4000-8000-000000000501', '00000000-0000-4000-8000-000000000001', 'product',
+        '日替わり弁当（下書き）', 'draft', now(), now() + interval '7 days');
+insert into public.listings (
+  id, store_id, kind, title, body, status, publish_start, publish_end,
+  category, price, original_price, quantity_total, unit, pickup_start, pickup_end, booking_deadline, cancel_deadline
+)
+select '00000000-0000-4000-8000-000000000502', '00000000-0000-4000-8000-000000000001', 'product',
+       '日替わり弁当（明日）', '明日のメインは鮭の塩焼きです。', 'published',
+       b.today + interval '18 hours', b.today + interval '1 day 13 hours 30 minutes',
+       'bento', 600, 800, 20, '食',
+       b.today + interval '1 day 11 hours 30 minutes', b.today + interval '1 day 13 hours 30 minutes',
+       b.today + interval '1 day 10 hours', b.today + interval '1 day 10 hours'
+from (select date_trunc('day', now()) as today) b;
+
+-- SQL で直接入れたユーザーは、認証サーバーが読むトークン列が NULL だとログインできない（Database error finding user）。
+-- 空文字にし、メールの ID 連携の行も入れる
+update auth.users
+set confirmation_token = '', recovery_token = '', email_change_token_new = '', email_change_token_current = '',
+    email_change = '', phone_change = '', phone_change_token = '', reauthentication_token = ''
+where id in ('00000000-0000-4000-8000-0000000000aa', '00000000-0000-4000-8000-0000000000cc');
+
+insert into auth.identities (id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
+select gen_random_uuid(), u.id, u.id::text,
+       jsonb_build_object('sub', u.id::text, 'email', u.email, 'email_verified', true),
+       'email', now(), now(), now()
+from auth.users u
+where u.id in ('00000000-0000-4000-8000-0000000000aa', '00000000-0000-4000-8000-0000000000cc');
+
+-- 通知の配信（ローカル）：定期実行とトリガーが Edge Function を呼ぶための設定。
+-- anon の JWT はローカル共通の固定値。本番は Studio で同じ名前の秘密を登録する（docs/設計_通知の配信.md 7 章）
+select vault.create_secret('http://supabase_kong_localec:8000/functions/v1', 'functions_url');
+select vault.create_secret('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0', 'publishable_key');
+select vault.create_secret('local-cron-secret', 'cron_secret');
+
+-- シードの公開済み掲載は「新着」として送らない（公開予定の掲載は、公開時刻に通知される）
+update public.listings set publish_notified_at = now() where publish_start <= now();
