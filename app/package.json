@@ -59,7 +59,7 @@
     "format:check": "prettier --check .",
     "gen:types": "supabase gen types typescript --local > src/lib/database.types.ts && prettier --write src/lib/database.types.ts",
     "db:reset": "supabase db reset",
-    "functions": "supabase functions serve --env-file supabase/.env"
+    "functions": "supabase functions serve"
   },
   "private": true,
   "engines": {

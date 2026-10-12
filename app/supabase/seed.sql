@@ -159,16 +159,12 @@ values ('0001', '00000000-0000-4000-8000-000000000107', '00000000-0000-4000-8000
 
 update public.booking_number_counter set last = 1 where id = 1;
 
--- ダミー利用者のアドレスは実在しないので、予約の確定通知は送らない（Resend で 403 になり再送を繰り返す）
-delete from public.notifications where user_id = '00000000-0000-4000-8000-0000000000aa';
-
 drop table seed_base;
 
--- 運営画面の確認用スタッフ（3 店舗すべてに所属）。ログインのメールは Resend で届く。
--- ドメインを認証するまで Resend は登録したアドレスにしか送れないため、そのアドレスにする
+-- 運営画面の確認用スタッフ（3 店舗すべてに所属）。ログインは Mailpit のリンク
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_user_meta_data, created_at, updated_at)
 values ('00000000-0000-0000-0000-000000000000', '00000000-0000-4000-8000-0000000000cc', 'authenticated', 'authenticated',
-        't-hasebe@meincoltd.com', 'x', now(),
+        'staff@example.com', 'x', now(),
         '{"name":"山田 太郎","phone":"09011112222","agreed_terms_at":"2026-10-10T00:00:00Z"}', now(), now());
 
 update public.profiles set is_staff = true where id = '00000000-0000-4000-8000-0000000000cc';
