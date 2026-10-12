@@ -1,4 +1,5 @@
 import type { Database } from '@/lib/database.types';
+import { resolvePhotoUrl } from '@/lib/photos';
 import { supabase } from '@/lib/supabase';
 
 import { isProductCategory } from './master';
@@ -60,7 +61,7 @@ function base(row: Row) {
     id,
     title: row.title ?? '',
     body: row.body,
-    photoUrl: row.photo_url,
+    photoUrl: resolvePhotoUrl(row.photo_url),
     publishStart: date(row.publish_start, 'publish_start', id),
     publishEnd: date(row.publish_end, 'publish_end', id),
     displayStatus: DISPLAY_STATUSES.includes(status) ? status : 'ended',

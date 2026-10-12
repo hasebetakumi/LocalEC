@@ -4,9 +4,8 @@
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 
+import { PHOTO_BUCKET as BUCKET } from '@/lib/photos';
 import { supabase } from '@/lib/supabase';
-
-const BUCKET = 'listing-photos';
 const MAX_EDGE = 1600;
 
 function randomName(): string {

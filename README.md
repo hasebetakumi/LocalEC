@@ -42,10 +42,15 @@ Docker を起動しておく。他案件と重ならないよう、ポートは 
 | API                                   | http://localhost:58321                                  |
 | DB                                    | postgresql://postgres:postgres@localhost:58322/postgres |
 | Studio（管理画面）                    | http://localhost:58323                                  |
-| メール確認（Mailpit）                 | http://localhost:58324                                  |
-| Mailpit の SMTP（通知メールの送信先） | localhost:58325                                         |
 
-接続先は `app/.env` で指定する。`app/.env.example` をコピーし、`npm run supabase:status` の publishable key を入れる。スマホの Expo Go から接続するときは URL を `localhost` ではなく PC の IP アドレスにする。
+接続先は `app/.env` で指定する。`app/.env.example` をコピーし、`npm run supabase:status` の publishable key を入れる。
+
+### メール（Resend）
+
+ログインのメールも通知のメールも、ローカルから Resend で本物の受信箱に送る。設定は `app/supabase/.env` の 1 か所（`app/supabase/.env.example` をコピー）で、`SMTP_PASS` に Resend の API キーを入れる。
+
+- 送信元のドメインを認証するまでは、`onboarding@resend.dev` から Resend に登録したアドレス（`t-hasebe@meincoltd.com`）にしか送れない。ほかのアドレスでログインしようとするとメールの送信に失敗する
+- 無料プランは 1 日 100 通・月 3,000 通。ログインを何度も試すとすぐ使い切るので注意スマホの Expo Go から接続するときは URL を `localhost` ではなく PC の IP アドレスにする。
 
 ### 品質チェック
 
@@ -72,18 +77,20 @@ Windows のファイアウォールで 8081 番ポートを許可するか、`np
 cd app
 npm install
 cp .env.example .env                                     # アプリの接続先
-cp supabase/functions/.env.example supabase/functions/.env  # 通知を送る関数の設定（そのままで動く）
+cp supabase/.env.example supabase/.env                   # メール（Resend）と通知を送る関数の設定。SMTP_PASS に API キーを入れる
 npx supabase start                                       # 初回はイメージ取得で数分かかる
 npm run supabase:status                                  # 表示された publishable key を .env に入れる
 npm run db:reset                                         # テーブルとシード（店舗・掲載・確認用アカウント）を入れる
 ```
+
+シードの掲載には写真が付く。写真は `app/supabase/seed-photos/` にあり、`db:reset` のたびにストレージへ入る。実在の店舗の写真ではないイメージ画像で、出典は `app/supabase/seed-photos-credits.md`。
 
 ### 毎回の起動
 
 Docker を先に起動しておく。
 
 ```bash
-npx supabase start     # DB・認証・Studio・Mailpit。バックグラウンドで動き続ける（起動済みなら不要）
+npx supabase start     # DB・認証・Studio。バックグラウンドで動き続ける（起動済みなら不要）
 npm run functions      # 端末 A：通知を送る Edge Function（動かしたままにする）
 npm run web            # 端末 B：アプリ（http://localhost:8081）。スマホで見るなら npm run start:app
 ```
@@ -94,18 +101,18 @@ npm run web            # 端末 B：アプリ（http://localhost:8081）。ス�
 
 ### ログイン
 
-パスワードはない。ログイン画面でメールアドレスを入れ、Mailpit（http://localhost:58324 ）に届いたメールのリンクを押す。リンクは 15 分有効。
-シードに確認用のアカウントがある。新しいアドレスで新規登録してもよい。
+パスワードはない。ログイン画面でメールアドレスを入れ、受信箱に届いたメールのリンクを押す。リンクは 15 分有効。
+メールが届くのは Resend に登録したアドレスだけなので、シードの運営アカウントをそのアドレスにしてある。
 
 | アカウント              | 用途                                                                                                       |
 | ----------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `staff@example.com`     | 運営（3 店舗すべてに所属）。ログイン後、マイページの「スタッフメニュー」または http://localhost:8081/staff |
-| `seed-user@example.com` | 利用者（売り切れの表示確認用に予約を 1 件持つ）                                                            |
+| `t-hasebe@meincoltd.com` | 運営（3 店舗すべてに所属）。ログイン後、マイページの「スタッフメニュー」または http://localhost:8081/staff。利用者として予約を試すときもこのアカウントを使う |
+| `seed-user@example.com`  | 利用者（売り切れの表示確認用に予約を 1 件持つ）。アドレスが実在しないのでログインはできない                                                                     |
 
 ### 確認の流れ（例）
 
-1. **利用者**：ホーム → 詳細 → 予約。数秒で Mailpit に「【LocalEC】予約が完了しました」が届く
-2. **運営**：`staff@example.com` でログイン → 店舗を選ぶ → 予約タブに今の予約が出る → 受け取り済みにする／キャンセルにする（キャンセルは利用者にメールが届く）
+1. **利用者**：ホーム → 詳細 → 予約。数秒で受信箱に「【LocalEC】予約が完了しました」が届く
+2. **運営**：`t-hasebe@meincoltd.com` でログイン → 店舗を選ぶ → 予約タブに今の予約が出る → 受け取り済みにする／キャンセルにする（キャンセルは予約した人にメールが届く）
 3. **掲載**：運営の掲載タブ → 右上の「＋ 掲載」で掲載を作って公開 → 利用者のホームに出る
 4. **PC 幅の運営画面**：ブラウザの幅を 960px 以上にすると、黒いヘッダーと左メニューの表示になる
 
@@ -116,7 +123,7 @@ Web とシミュレータではプッシュ通知は届かない。メールで�
 Studio（http://localhost:58323 ）の SQL Editor で実行する。
 
 ```sql
-select public.emit_reminders('same_day');          -- 今日の受け取りのリマインドを作る（Mailpit に届く）
+select public.emit_reminders('same_day');          -- 今日の受け取りのリマインドを作る（メールが届く）
 select public.emit_publish_notifications();        -- 公開になった掲載の新着通知を作る（プッシュのみ）
 select public.invoke_send_notifications();         -- 定期実行（毎分）を待たずに送る
 select kind, title, push_error, email_sent_at, attempts
@@ -130,7 +137,7 @@ select * from net._http_response order by id desc limit 5;      -- 関数の応�
 
 - PC とスマホを同じ Wi-Fi につなぎ、`app/.env` の `EXPO_PUBLIC_SUPABASE_URL` を PC の IP アドレス（`http://192.168.x.x:58321`）にしてアプリ（端末 B）を起動し直す
 - Windows（WSL2）では、ファイアウォールで 8081（Expo）と 58321（Supabase）を許可する。Wi-Fi が「パブリック」扱いだと許可ルールが効かないことがある
-- ログインのメールは PC の Mailpit に届く。スマホのブラウザで Mailpit（`http://<PC の IP>:58324`）を開いてリンクを押す（58324 の許可も要る）。リンクからアプリに戻る動きは、実機ではまだ確かめていない
+- ログインのメールはスマホのメールアプリで開いてリンクを押す。リンクからアプリに戻る動きは、実機ではまだ確かめていない
 - プッシュ通知は iOS の Expo Go なら許可ダイアログと端末の登録まで確かめられる。Android の Expo Go ではプッシュが使えない（SDK 53 以降）。実際の受信は開発ビルド（`eas build --profile development`）で確かめる
 
 ### 止める・やり直す
@@ -141,7 +148,8 @@ npm run db:reset     # データを初期状態に戻す（予約・通知・追
 ```
 
 - `supabase/config.toml` を変えたら `npx supabase stop && npx supabase start` で反映する
-- 通知メールが届かないときは、`npm run functions` が動いているか、`supabase/functions/.env` があるかを確かめる
+- メールが届かないときは、`supabase/.env` の `SMTP_PASS` が入っているか、宛先が Resend に登録したアドレスか、`npm run functions` が動いているか（通知のメール）を確かめる。`select email_error from public.notifications order by created_at desc limit 5;` に送信の失敗理由が残る
+- `supabase/.env` を変えたら `npx supabase stop && npx supabase start` と `npm run functions` の起動し直しで反映する
 
 ## ディレクトリ
 

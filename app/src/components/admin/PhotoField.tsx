@@ -4,6 +4,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-nati
 
 import { Icon } from '@/components/Icon';
 import { pickAndUploadPhoto } from '@/features/staff/photo';
+import { resolvePhotoUrl } from '@/lib/photos';
 import { adminColors } from '@/theme/adminTokens';
 
 import { Field } from './Fields';
@@ -39,7 +40,11 @@ export function PhotoField({
     <Field label="写真">
       {value ? (
         <View style={styles.previewWrap}>
-          <Image source={{ uri: value }} style={styles.preview} contentFit="cover" />
+          <Image
+            source={{ uri: resolvePhotoUrl(value) ?? undefined }}
+            style={styles.preview}
+            contentFit="cover"
+          />
           <View style={styles.actions}>
             <Pressable
               accessibilityRole="button"

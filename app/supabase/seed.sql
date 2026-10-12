@@ -134,18 +134,41 @@ values ('00000000-0000-0000-0000-000000000000', '00000000-0000-4000-8000-0000000
         'seed-user@example.com', 'x', now(),
         '{"name":"シード 太郎","phone":"09000000000","agreed_terms_at":"2026-10-10T00:00:00Z"}', now(), now());
 
+-- 掲載の写真（バケット内のパス。ファイルは supabase/seed-photos/ にあり、db reset でアップロードされる）。
+-- 予約が入ると写真は変えられないので、予約より先に入れる
+update public.listings as l set photo_url = 'seed/' || v.file
+from (values
+  ('00000000-0000-4000-8000-000000000101', 'bento.jpg'),
+  ('00000000-0000-4000-8000-000000000102', 'chiffon.jpg'),
+  ('00000000-0000-4000-8000-000000000103', 'bread.jpg'),
+  ('00000000-0000-4000-8000-000000000104', 'rice.jpg'),
+  ('00000000-0000-4000-8000-000000000105', 'dressing.jpg'),
+  ('00000000-0000-4000-8000-000000000106', 'laundry.jpg'),
+  ('00000000-0000-4000-8000-000000000107', 'vegetables.jpg'),
+  ('00000000-0000-4000-8000-000000000108', 'melonpan.jpg'),
+  ('00000000-0000-4000-8000-000000000201', 'sweet-potato.jpg'),
+  ('00000000-0000-4000-8000-000000000202', 'playground.jpg'),
+  ('00000000-0000-4000-8000-000000000301', 'rice-harvest.jpg'),
+  ('00000000-0000-4000-8000-000000000302', 'cafe.jpg')
+) as v(id, file)
+where l.id = v.id::uuid;
+
 insert into public.bookings (number, listing_id, store_id, user_id, kind, quantity, amount)
 values ('0001', '00000000-0000-4000-8000-000000000107', '00000000-0000-4000-8000-000000000002',
         '00000000-0000-4000-8000-0000000000aa', 'product', 3, 1500);
 
 update public.booking_number_counter set last = 1 where id = 1;
 
+-- ダミー利用者のアドレスは実在しないので、予約の確定通知は送らない（Resend で 403 になり再送を繰り返す）
+delete from public.notifications where user_id = '00000000-0000-4000-8000-0000000000aa';
+
 drop table seed_base;
 
--- 運営画面の確認用スタッフ（3 店舗すべてに所属）。ログインは Mailpit のリンク
+-- 運営画面の確認用スタッフ（3 店舗すべてに所属）。ログインのメールは Resend で届く。
+-- ドメインを認証するまで Resend は登録したアドレスにしか送れないため、そのアドレスにする
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_user_meta_data, created_at, updated_at)
 values ('00000000-0000-0000-0000-000000000000', '00000000-0000-4000-8000-0000000000cc', 'authenticated', 'authenticated',
-        'staff@example.com', 'x', now(),
+        't-hasebe@meincoltd.com', 'x', now(),
         '{"name":"山田 太郎","phone":"09011112222","agreed_terms_at":"2026-10-10T00:00:00Z"}', now(), now());
 
 update public.profiles set is_staff = true where id = '00000000-0000-4000-8000-0000000000cc';
@@ -170,6 +193,9 @@ select '00000000-0000-4000-8000-000000000502', '00000000-0000-4000-8000-00000000
        b.today + interval '1 day 11 hours 30 minutes', b.today + interval '1 day 13 hours 30 minutes',
        b.today + interval '1 day 10 hours', b.today + interval '1 day 10 hours'
 from (select date_trunc('day', now()) as today) b;
+
+update public.listings set photo_url = 'seed/bento.jpg' where id = '00000000-0000-4000-8000-000000000501';
+update public.listings set photo_url = 'seed/bento-salmon.jpg' where id = '00000000-0000-4000-8000-000000000502';
 
 -- SQL で直接入れたユーザーは、認証サーバーが読むトークン列が NULL だとログインできない（Database error finding user）。
 -- 空文字にし、メールの ID 連携の行も入れる
