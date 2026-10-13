@@ -3,7 +3,7 @@ import * as Notifications from 'expo-notifications';
 
 import { supabase } from '@/lib/supabase';
 
-import { registerForPush, unregisterPush } from './push';
+import { getPushPermission, registerForPush, unregisterPush } from './push';
 
 const mockIsDevice = jest.fn(() => true);
 jest.mock('expo-device', () => ({
@@ -34,6 +34,24 @@ beforeEach(async () => {
   jest.clearAllMocks();
   await AsyncStorage.clear();
   mockIsDevice.mockReturnValue(true);
+});
+
+describe('getPushPermission', () => {
+  it('端末の許可状態をダイアログなしで返す', async () => {
+    N.getPermissionsAsync.mockResolvedValue({ status: 'denied' } as never);
+    await expect(getPushPermission()).resolves.toBe('denied');
+    N.getPermissionsAsync.mockResolvedValue({ status: 'granted' } as never);
+    await expect(getPushPermission()).resolves.toBe('granted');
+    N.getPermissionsAsync.mockResolvedValue({ status: 'undetermined' } as never);
+    await expect(getPushPermission()).resolves.toBe('undetermined');
+    expect(N.requestPermissionsAsync).not.toHaveBeenCalled();
+  });
+
+  it('シミュレータでは unavailable', async () => {
+    mockIsDevice.mockReturnValue(false);
+    await expect(getPushPermission()).resolves.toBe('unavailable');
+    expect(N.getPermissionsAsync).not.toHaveBeenCalled();
+  });
 });
 
 describe('registerForPush', () => {

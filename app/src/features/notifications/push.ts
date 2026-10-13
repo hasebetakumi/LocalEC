@@ -13,6 +13,8 @@ import { supabase } from '@/lib/supabase';
 const TOKEN_KEY = 'push.token';
 
 export type RegisterResult = 'registered' | 'denied' | 'unavailable';
+/** 端末（OS）側の通知の許可。unavailable＝シミュレータや Web など、そもそも使えない */
+export type PushPermission = 'granted' | 'denied' | 'undetermined' | 'unavailable';
 
 /** 前面で受けた通知もバナーとリストに出す */
 export function configureNotificationHandler() {
@@ -24,6 +26,22 @@ export function configureNotificationHandler() {
       shouldShowList: true,
     }),
   });
+}
+
+/**
+ * 端末側の許可状態を読むだけ（ダイアログは出さない）。
+ * 拒否されていたらアプリからは変えられないので、画面で「設定を開く」を案内する
+ */
+export async function getPushPermission(): Promise<PushPermission> {
+  if (!Device.isDevice) return 'unavailable';
+  try {
+    const { status } = await Notifications.getPermissionsAsync();
+    if (status === 'granted') return 'granted';
+    if (status === 'denied') return 'denied';
+    return 'undetermined';
+  } catch {
+    return 'unavailable';
+  }
 }
 
 /**

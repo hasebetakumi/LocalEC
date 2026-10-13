@@ -1,6 +1,8 @@
-import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useCallback, useState } from 'react';
 import {
+  AppState,
+  Linking,
   Platform,
   Pressable,
   RefreshControl,
@@ -19,9 +21,13 @@ import { PageHeader, Screen } from '@/components/Screen';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { setNotificationsEnabled } from '@/features/auth/api';
 import { LEGAL_DOCS } from '@/features/legal/docs';
-import { registerForPush } from '@/features/notifications/push';
+import {
+  getPushPermission,
+  registerForPush,
+  type PushPermission,
+} from '@/features/notifications/push';
 import { formatPhone } from '@/lib/format';
-import { colors, shadow, space } from '@/theme/tokens';
+import { colors, radius, shadow, space } from '@/theme/tokens';
 
 /** マイページ（U-30 通知設定を含む） */
 export default function MyPageScreen() {
@@ -31,6 +37,23 @@ export default function MyPageScreen() {
   // スイッチは押した瞬間に切り替え、失敗したら戻す
   const [optimistic, setOptimistic] = useState<boolean | null>(null);
   const notificationsOn = optimistic ?? profile?.notifications_enabled ?? true;
+  // 端末（OS）側の許可。アプリからは変えられないので、拒否なら「設定を開く」を案内する
+  const [permission, setPermission] = useState<PushPermission | null>(null);
+  const showNotify = !!session && isRegistered && Platform.OS !== 'web';
+  const readPermission = useCallback(() => {
+    if (!showNotify) return;
+    void getPushPermission().then(setPermission);
+  }, [showNotify]);
+  useFocusEffect(
+    useCallback(() => {
+      readPermission();
+      // 設定アプリで許可を変えて戻ってきたときにも読み直す
+      const sub = AppState.addEventListener('change', (state) => {
+        if (state === 'active') readPermission();
+      });
+      return () => sub.remove();
+    }, [readPermission]),
+  );
   // 引っ張って更新：登録情報を読み直す（未ログインでは何もしない）
   const [refreshing, setRefreshing] = useState(false);
   const refresh = async () => {
@@ -52,9 +75,10 @@ export default function MyPageScreen() {
     try {
       await setNotificationsEnabled(session.user.id, next);
       await refreshProfile();
-      // オンにしたら端末を登録する。端末の設定で拒否されていれば案内する
-      if (next && (await registerForPush()) === 'denied') {
-        setNotifyError('端末の設定で、このアプリの通知を許可してください。');
+      // オンにしたら端末を登録する。端末の設定で拒否されていれば、下の案内が出る
+      if (next) {
+        await registerForPush();
+        readPermission();
       }
     } catch {
       setNotifyError('通知の設定を保存できませんでした。');
@@ -127,20 +151,36 @@ export default function MyPageScreen() {
         ) : null}
 
         {/* U-30：通知は 1 つだけ。Web 版では出さない */}
-        {session && isRegistered && Platform.OS !== 'web' ? (
-          <Card style={styles.notifyCard}>
-            <View style={styles.notifyText}>
-              <Text style={styles.notifyLabel}>お知らせ通知</Text>
-              <Text style={styles.notifySub}>新着・予約確定・リマインドなど</Text>
+        {showNotify ? (
+          <Card>
+            <View style={styles.notifyRow}>
+              <View style={styles.notifyText}>
+                <Text style={styles.notifyLabel}>お知らせ通知</Text>
+                <Text style={styles.notifySub}>新着・予約確定・リマインドなど</Text>
+              </View>
+              <Switch
+                accessibilityLabel="お知らせ通知"
+                value={notificationsOn}
+                onValueChange={(v) => void toggleNotifications(v)}
+                trackColor={{ true: colors.event, false: colors.lineStrong }}
+                thumbColor={colors.white}
+                // RN の Switch は alignSelf: 'flex-start' を持つので、行の中央に寄せ直す
+                style={styles.switch}
+              />
             </View>
-            <Switch
-              accessibilityLabel="お知らせ通知"
-              value={notificationsOn}
-              onValueChange={(v) => void toggleNotifications(v)}
-              trackColor={{ true: colors.event, false: colors.lineStrong }}
-              thumbColor={colors.white}
-              ios_backgroundColor={colors.lineStrong}
-            />
+            {notificationsOn && permission === 'denied' ? (
+              <View style={styles.denied}>
+                <Text style={styles.deniedText}>端末の設定で通知が許可されていません。</Text>
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={() => void Linking.openSettings()}
+                  hitSlop={8}
+                  style={({ pressed }) => pressed && { opacity: 0.7 }}
+                >
+                  <Text style={styles.deniedLink}>設定を開く</Text>
+                </Pressable>
+              </View>
+            ) : null}
           </Card>
         ) : null}
         {notifyError ? <MessageBand message={notifyError} /> : null}
@@ -218,10 +258,25 @@ const styles = StyleSheet.create({
   },
   staffLabel: { fontSize: 15.5, fontWeight: '800', color: colors.white },
   staffArrow: { fontSize: 18, color: colors.white, opacity: 0.8 },
-  notifyCard: { paddingHorizontal: 16, height: 62, flexDirection: 'row', alignItems: 'center' },
+  notifyRow: { paddingHorizontal: 16, height: 62, flexDirection: 'row', alignItems: 'center' },
   notifyText: { flex: 1 },
+  switch: { alignSelf: 'center' },
   notifyLabel: { fontSize: 15.5, fontWeight: '700', color: colors.text },
   notifySub: { fontSize: 12, color: colors.textWeak },
+  denied: {
+    marginHorizontal: 16,
+    marginBottom: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: radius.input,
+    backgroundColor: colors.jobLight,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  deniedText: { flex: 1, fontSize: 13, lineHeight: 19, color: colors.infoText },
+  deniedLink: { fontSize: 13, fontWeight: '800', color: colors.infoText },
   links: { paddingHorizontal: 16 },
   link: { height: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   linkLabel: { fontSize: 15, color: colors.text },
