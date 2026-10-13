@@ -36,6 +36,9 @@ const STATUS_OPTIONS = [
   { value: 'draft', label: '下書き' },
 ] as const;
 
+/** 店舗を開いたときは公開中だけを出す */
+const DEFAULT_STATUS: StatusValue = 'published';
+
 /** ＋掲載メニューの種類 */
 export const ADD_MENU = [
   { kind: 'product', label: '商品', icon: 'menuProduct' },
@@ -50,7 +53,7 @@ export default function ListingsScreen() {
   const listings = useStoreListings(store.id);
   const { refetch } = listings;
   const [kind, setKind] = useState<KindValue>('all');
-  const [status, setStatus] = useState<StatusValue>('all');
+  const [status, setStatus] = useState<StatusValue>(DEFAULT_STATUS);
   const [sheet, setSheet] = useState<'kind' | 'status' | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const addRef = useRef<View>(null);
@@ -69,7 +72,7 @@ export default function ListingsScreen() {
       ),
     [listings.data, kind, status],
   );
-  const filtered = kind !== 'all' || status !== 'all';
+  const hasAny = (listings.data ?? []).length > 0;
 
   const addButton = (
     <View ref={addRef} collapsable={false}>
@@ -129,7 +132,7 @@ export default function ListingsScreen() {
                 ))}
               </GroupList>
             </>
-          ) : filtered ? (
+          ) : hasAny ? (
             <EmptyState
               icon="list"
               title="条件に合う掲載はありません"

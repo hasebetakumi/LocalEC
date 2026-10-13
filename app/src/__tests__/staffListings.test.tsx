@@ -26,11 +26,43 @@ describe('A-11 掲載一覧', () => {
       }),
     ]);
     await renderStaff(<ListingsScreen />);
-    expect(await screen.findByText('公開中の弁当')).toBeTruthy();
+    await fireEvent.press(await screen.findByTestId('filter-status'));
+    await fireEvent.press(await screen.findByTestId('option-all'));
+    expect(await screen.findByText('2件')).toBeTruthy();
     expect(screen.getAllByText('8 / 20食')).toHaveLength(2);
     expect(screen.getByText('下書き')).toBeTruthy();
     expect(screen.queryByText('公開')).toBeNull();
-    expect(screen.getByText('2件')).toBeTruthy();
+  });
+
+  it('開いたときは公開中だけを出す', async () => {
+    jest.mocked(fetchStoreListings).mockResolvedValue([
+      makeStaffListing({ id: 'a', title: '公開中の弁当' }),
+      makeStaffListing({
+        id: 'b',
+        title: '下書きの弁当',
+        status: 'draft',
+        displayStatus: 'draft',
+      }),
+    ]);
+    await renderStaff(<ListingsScreen />);
+    expect(await screen.findByText('公開中の弁当')).toBeTruthy();
+    expect(screen.queryByText('下書きの弁当')).toBeNull();
+    expect(screen.getByText('1件')).toBeTruthy();
+  });
+
+  it('公開中が 0 件なら絞り込みをクリアできる', async () => {
+    jest.mocked(fetchStoreListings).mockResolvedValue([
+      makeStaffListing({
+        id: 'b',
+        title: '下書きの弁当',
+        status: 'draft',
+        displayStatus: 'draft',
+      }),
+    ]);
+    await renderStaff(<ListingsScreen />);
+    expect(await screen.findByText('条件に合う掲載はありません')).toBeTruthy();
+    await fireEvent.press(screen.getByText('絞り込みをクリア'));
+    expect(await screen.findByText('下書きの弁当')).toBeTruthy();
   });
 
   it('状態で絞り込む', async () => {
@@ -46,7 +78,8 @@ describe('A-11 掲載一覧', () => {
     await renderStaff(<ListingsScreen />);
     await fireEvent.press(await screen.findByTestId('filter-status'));
     await fireEvent.press(await screen.findByTestId('option-draft'));
-    expect(await screen.findByText('1件')).toBeTruthy();
+    expect(await screen.findByText('下書きの弁当')).toBeTruthy();
+    expect(screen.getByText('1件')).toBeTruthy();
     expect(screen.queryByText('公開中の弁当')).toBeNull();
   });
 });
