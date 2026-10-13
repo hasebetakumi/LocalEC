@@ -6,7 +6,7 @@ import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from 'rea
 import { EmptyState } from '@/components/EmptyState';
 import { KindPill } from '@/components/KindPills';
 import { LoadError, Loading } from '@/components/LoadState';
-import { Screen } from '@/components/Screen';
+import { PageHeader, Screen } from '@/components/Screen';
 import { SegmentedControl } from '@/components/SegmentedControl';
 import {
   eventAvailability,
@@ -39,12 +39,9 @@ export default function EventsScreen() {
 
   return (
     <Screen>
-      <View style={styles.header}>
-        <Text style={styles.title} accessibilityRole="header">
-          イベント・求人
-        </Text>
+      <PageHeader title="イベント・求人">
         <SegmentedControl options={FILTERS} value={filter} onChange={setFilter} />
-      </View>
+      </PageHeader>
       {list.isPending ? (
         <Loading />
       ) : list.isError ? (
@@ -137,8 +134,6 @@ function EventJobCard({ listing: l, now }: { listing: EventOrJob; now: Date }) {
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: space.screenX, paddingTop: 8, paddingBottom: 14, gap: 14 },
-  title: { fontSize: 30, fontWeight: '900', letterSpacing: -0.3, color: colors.text },
   list: { paddingHorizontal: space.screenX, paddingBottom: 24, gap: 12 },
   card: {
     backgroundColor: colors.card,

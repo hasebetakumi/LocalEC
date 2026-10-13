@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/EmptyState';
 import { LoadError, Loading } from '@/components/LoadState';
-import { BackButton, Screen } from '@/components/Screen';
+import { BackButton, PageHeader, Screen } from '@/components/Screen';
 import { useNotices } from '@/features/listings/hooks';
 import { useReadNoticeIds } from '@/features/notices/hooks';
 import { isUnread } from '@/features/notices/readState';
@@ -21,14 +21,14 @@ export default function NoticesScreen() {
 
   return (
     <Screen>
-      <View style={styles.header}>
-        <View style={{ marginLeft: -10 }}>
-          <BackButton />
-        </View>
-        <Text style={styles.title} accessibilityRole="header">
-          お知らせ
-        </Text>
-      </View>
+      <PageHeader
+        title="お知らせ"
+        left={
+          <View style={{ marginLeft: -10 }}>
+            <BackButton />
+          </View>
+        }
+      />
       {notices.isPending ? (
         <Loading />
       ) : notices.isError ? (
@@ -91,15 +91,6 @@ export default function NoticesScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    paddingHorizontal: space.screenX,
-    paddingTop: 8,
-    paddingBottom: 14,
-  },
-  title: { fontSize: 30, fontWeight: '900', letterSpacing: -0.3, color: colors.text },
   list: { paddingHorizontal: space.screenX, gap: 10 },
   card: {
     backgroundColor: colors.card,

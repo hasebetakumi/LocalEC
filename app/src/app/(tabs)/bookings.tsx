@@ -5,7 +5,7 @@ import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'r
 import { EmptyState } from '@/components/EmptyState';
 import { StatusPill } from '@/components/KindPills';
 import { LoadError, Loading } from '@/components/LoadState';
-import { Screen } from '@/components/Screen';
+import { PageHeader, Screen } from '@/components/Screen';
 import { SegmentedControl } from '@/components/SegmentedControl';
 import { useAuth } from '@/features/auth/AuthProvider';
 import {
@@ -48,12 +48,9 @@ export default function BookingsScreen() {
   );
 
   const header = (
-    <View style={styles.header}>
-      <Text style={styles.title} accessibilityRole="header">
-        予約・申込
-      </Text>
+    <PageHeader title="予約・申込">
       {session ? <SegmentedControl options={TABS} value={tab} onChange={setTab} /> : null}
-    </View>
+    </PageHeader>
   );
 
   if (loading) {
@@ -217,8 +214,6 @@ function HistoryList({ bookings, now, refreshing, onRefresh }: ListProps) {
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: space.screenX, paddingTop: 8, paddingBottom: 14, gap: 14 },
-  title: { fontSize: 30, fontWeight: '900', letterSpacing: -0.3, color: colors.text },
   content: { paddingHorizontal: space.screenX, paddingBottom: 24, gap: 16 },
   group: { gap: 8 },
   groupHead: { flexDirection: 'row', alignItems: 'baseline', gap: 8, paddingLeft: 4 },

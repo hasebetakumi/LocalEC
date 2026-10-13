@@ -15,7 +15,7 @@ import { MessageBand } from '@/components/Bands';
 import { PrimaryButton, TextButton } from '@/components/Buttons';
 import { Card, Divider } from '@/components/Card';
 import { Icon } from '@/components/Icon';
-import { Screen } from '@/components/Screen';
+import { PageHeader, Screen } from '@/components/Screen';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { setNotificationsEnabled } from '@/features/auth/api';
 import { LEGAL_DOCS } from '@/features/legal/docs';
@@ -65,16 +65,13 @@ export default function MyPageScreen() {
 
   return (
     <Screen>
+      <PageHeader title="マイページ" />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.accent} />
         }
       >
-        <Text style={styles.title} accessibilityRole="header">
-          マイページ
-        </Text>
-
         {emailChanged ? <MessageBand message="メールアドレスを変更しました。" tone="info" /> : null}
 
         {!session ? (
@@ -186,8 +183,7 @@ export default function MyPageScreen() {
 }
 
 const styles = StyleSheet.create({
-  content: { paddingHorizontal: space.screenX, paddingTop: 8, paddingBottom: 24, gap: 12 },
-  title: { fontSize: 30, fontWeight: '900', letterSpacing: -0.3, color: colors.text },
+  content: { paddingHorizontal: space.screenX, paddingBottom: 24, gap: 12 },
   profile: {
     backgroundColor: colors.card,
     borderRadius: 20,

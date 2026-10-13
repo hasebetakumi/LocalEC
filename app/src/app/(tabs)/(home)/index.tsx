@@ -6,7 +6,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { Icon } from '@/components/Icon';
 import { LoadError, Loading } from '@/components/LoadState';
 import { Tag } from '@/components/Pills';
-import { Screen } from '@/components/Screen';
+import { PageHeader, Screen } from '@/components/Screen';
 import { ProductCard } from '@/features/listings/components/ProductCard';
 import { SectionHeader } from '@/features/listings/components/SectionHeader';
 import { groupHome, type ListSection } from '@/features/listings/derive';
@@ -33,34 +33,36 @@ export default function HomeScreen() {
 
   return (
     <Screen>
-      <View style={styles.header}>
-        <Text style={styles.title} accessibilityRole="header">
-          商品
-        </Text>
-        {data ? (
-          <Tag
-            label={`${data.length}件`}
-            bg={colors.accentLight}
-            fg={colors.accent}
-            style={{ alignSelf: 'center' }}
-          />
-        ) : null}
-        <View style={styles.spacer} />
-        <Pressable
-          testID="bell"
-          accessibilityRole="button"
-          accessibilityLabel={unread > 0 ? `お知らせ 未読${unread}件` : 'お知らせ'}
-          onPress={() => router.push('/notices')}
-          style={({ pressed }) => [styles.bell, pressed && { opacity: 0.8 }]}
-        >
-          <Icon name="bell" size={24} color={colors.text} strokeWidth={2} />
-          {unread > 0 ? (
-            <View style={styles.unread}>
-              <Text style={styles.unreadText}>{unread > 99 ? '99+' : unread}</Text>
-            </View>
-          ) : null}
-        </Pressable>
-      </View>
+      <PageHeader
+        title="商品"
+        right={
+          <>
+            {data ? (
+              <Tag
+                label={`${data.length}件`}
+                bg={colors.accentLight}
+                fg={colors.accent}
+                style={{ alignSelf: 'center' }}
+              />
+            ) : null}
+            <View style={styles.spacer} />
+            <Pressable
+              testID="bell"
+              accessibilityRole="button"
+              accessibilityLabel={unread > 0 ? `お知らせ 未読${unread}件` : 'お知らせ'}
+              onPress={() => router.push('/notices')}
+              style={({ pressed }) => [styles.bell, pressed && { opacity: 0.8 }]}
+            >
+              <Icon name="bell" size={24} color={colors.text} strokeWidth={2} />
+              {unread > 0 ? (
+                <View style={styles.unread}>
+                  <Text style={styles.unreadText}>{unread > 99 ? '99+' : unread}</Text>
+                </View>
+              ) : null}
+            </Pressable>
+          </>
+        }
+      />
 
       {isPending ? (
         <Loading />
@@ -171,15 +173,6 @@ function Band({
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingHorizontal: space.screenX,
-    paddingTop: 8,
-    paddingBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  title: { fontSize: 30, fontWeight: '900', letterSpacing: -0.3, color: colors.text },
   spacer: { flex: 1 },
   unread: {
     position: 'absolute',
@@ -204,7 +197,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  content: { paddingTop: 8, paddingBottom: 24, gap: space.section },
+  content: { paddingBottom: 24, gap: space.section },
   categoryRow: { paddingHorizontal: space.screenX, gap: 14 },
   category: { width: 78, alignItems: 'center', gap: 8 },
   categoryPhoto: {
