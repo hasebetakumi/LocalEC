@@ -23,21 +23,6 @@ export type Database = {
   };
   public: {
     Tables: {
-      booking_number_counter: {
-        Row: {
-          id: number;
-          last: number;
-        };
-        Insert: {
-          id: number;
-          last: number;
-        };
-        Update: {
-          id?: number;
-          last?: number;
-        };
-        Relationships: [];
-      };
       bookings: {
         Row: {
           amount: number | null;

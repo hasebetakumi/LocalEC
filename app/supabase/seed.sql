@@ -154,10 +154,8 @@ from (values
 where l.id = v.id::uuid;
 
 insert into public.bookings (number, listing_id, store_id, user_id, kind, quantity, amount)
-values ('0001', '00000000-0000-4000-8000-000000000107', '00000000-0000-4000-8000-000000000002',
+values ('0427', '00000000-0000-4000-8000-000000000107', '00000000-0000-4000-8000-000000000002',
         '00000000-0000-4000-8000-0000000000aa', 'product', 3, 1500);
-
-update public.booking_number_counter set last = 1 where id = 1;
 
 -- ダミー利用者のアドレスは実在しないので、予約の確定通知は送らない（Resend で 403 になり再送を繰り返す）
 delete from public.notifications where user_id = '00000000-0000-4000-8000-0000000000aa';
