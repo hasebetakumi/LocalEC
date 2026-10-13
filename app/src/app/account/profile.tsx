@@ -5,11 +5,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Band } from '@/components/Bands';
 import { PrimaryButton } from '@/components/Buttons';
+import { ConfirmSheet } from '@/components/ConfirmSheet';
 import { Loading } from '@/components/LoadState';
 import { NavBar, Screen } from '@/components/Screen';
 import { TextField } from '@/components/TextField';
 import { type Profile, requestEmailChange, saveNextPath, updateProfile } from '@/features/auth/api';
 import { useAuth } from '@/features/auth/AuthProvider';
+import { useDiscardGuard } from '@/hooks/useDiscardGuard';
 import { isValidEmail, isValidPhone, normalizePhone } from '@/lib/format';
 
 /** 登録情報の変更（氏名・電話は即反映、メールは確認リンクで完了） */
@@ -46,12 +48,20 @@ function ProfileForm({ userId, profile }: { userId: string; profile: Profile }) 
   const [errors, setErrors] = useState<Errors>({});
   const [notice, setNotice] = useState<{ tone: 'info' | 'danger'; text: string } | null>(null);
   const [saving, setSaving] = useState(false);
+  // 保存した値。メールは確認リンクを押すまで profile が変わらないので、profile とは別に持つ
+  const [saved, setSaved] = useState({
+    name: profile.name,
+    phone: profile.phone,
+    email: profile.email,
+  });
 
   const normalizedPhone = normalizePhone(phone);
   const nameChanged = name.trim() !== profile.name;
   const phoneChanged = normalizedPhone !== profile.phone;
   const emailChanged = email.trim() !== profile.email;
-  const changed = nameChanged || phoneChanged || emailChanged;
+  const changed =
+    name.trim() !== saved.name || normalizedPhone !== saved.phone || email.trim() !== saved.email;
+  const guard = useDiscardGuard(changed);
 
   const save = async () => {
     const e: Errors = {};
@@ -77,6 +87,7 @@ function ProfileForm({ userId, profile }: { userId: string; profile: Profile }) 
         setNotice({ tone: 'info', text: '保存しました。' });
       }
       await refreshProfile();
+      setSaved({ name: name.trim(), phone: normalizedPhone, email: email.trim() });
     } catch {
       setNotice({
         tone: 'danger',
@@ -139,6 +150,16 @@ function ProfileForm({ userId, profile }: { userId: string; profile: Profile }) 
           />
         </ScrollView>
       </KeyboardAvoidingView>
+      <ConfirmSheet
+        visible={guard.confirmVisible}
+        title="入力内容を破棄しますか？"
+        body="保存していない変更は失われます。"
+        confirmLabel="破棄する"
+        cancelLabel="入力を続ける"
+        onConfirm={guard.discard}
+        onClose={guard.keep}
+        testID="discard-sheet"
+      />
     </Screen>
   );
 }

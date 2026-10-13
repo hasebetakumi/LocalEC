@@ -36,7 +36,7 @@ import {
 import { useStaffMutation } from '../hooks';
 import { removePhotoIfUnused } from '../photo';
 import type { ListingKind, ListingStatus, StoreSummary } from '../types';
-import { useDiscardGuard } from '../useDiscardGuard';
+import { useDiscardGuard } from '@/hooks/useDiscardGuard';
 
 type Props = {
   kind: ListingKind;

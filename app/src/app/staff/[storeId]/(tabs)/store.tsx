@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Band } from '@/components/Bands';
@@ -55,6 +55,7 @@ function StoreInfoForm({ store }: { store: StoreInfo }) {
     updateStore(store.id, normalizeStoreForm(v)),
   );
   const changed = isStoreFormChanged(value, original);
+  const scrollRef = useRef<ScrollView>(null);
 
   const doSave = async () => {
     try {
@@ -75,7 +76,11 @@ function StoreInfoForm({ store }: { store: StoreInfo }) {
     const e = validateStoreForm(value);
     setErrors(e);
     setNotice(null);
-    if (Object.keys(e).length > 0) return;
+    if (Object.keys(e).length > 0) {
+      // 入力欄が 1 画面に収まらないので、赤枠の欄が見えるよう先頭へ戻す
+      scrollRef.current?.scrollTo({ y: 0, animated: true });
+      return;
+    }
     // 支払い方法の変更は公開中の商品の表示が変わるので確かめる
     if (isPaymentChanged(value, original)) {
       const count = await countPublishedProducts(store.id).catch(() => 0);
@@ -94,6 +99,7 @@ function StoreInfoForm({ store }: { store: StoreInfo }) {
     >
       {/* 保存ボタンはスクロールの中に置く。固定フッターにすると iOS の浮いたタブバー（NativeTabs）に隠れる（2026-10-13 実機で確認） */}
       <ScrollView
+        ref={scrollRef}
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
         contentInsetAdjustmentBehavior="automatic"

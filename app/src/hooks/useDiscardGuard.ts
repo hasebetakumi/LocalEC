@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 type NavAction = { type: string; payload?: object; source?: string; target?: string };
 
 /**
- * 入力途中で画面を閉じようとしたら止めて、確認を出す（設計書 3 章）。
+ * 入力途中で画面を閉じようとしたら止めて、確認を出す（モーダル／push で開く入力画面に付ける。タブ画面はタブ切替で beforeRemove が発火しないので対象外）。
  * Expo Router 57 は usePreventRemove を公開していないので beforeRemove を直接使う
  */
 export function useDiscardGuard(dirty: boolean) {

@@ -24,7 +24,7 @@ import {
 } from '../form';
 import { useListingBookings, useStaffMutation } from '../hooks';
 import type { StaffListing } from '../types';
-import { useDiscardGuard } from '../useDiscardGuard';
+import { useDiscardGuard } from '@/hooks/useDiscardGuard';
 
 const ALLOWED: Record<string, string> = {
   product: '「数量を減らす」「受け取り期間」「終了する」',
