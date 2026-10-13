@@ -13,7 +13,7 @@
 - **見た目は OS 標準に任せる**。アイコンは iOS が SF Symbols、Android が Material Symbols。design/ の線画アイコン（SVG）は NativeTabs に渡せないので、下タブに限って諦める
 - アプリ側で指定するのは **アクセント色（`colors.accent`）とラベル文字列だけ**。ラベルのフォント・サイズ・余白は触らない
 - Web は **今の JS `Tabs` のまま**。NativeTabs の Web 実装は画面上部に黒いピル（文字のみ・アイコンなし）を出すもので、design/ の画面と合わない。Web は見た目の確認用なので、タブの形が変わらないほうが都合がよい
-- 運営画面（`staff/[storeId]/(tabs)`）は design 04 の独自タブバー（上端 3px の指示線）を維持し、今回は対象外
+- 運営画面（`staff/[storeId]/(tabs)`）も同じ分け方にする（2026-10-13 追加）。当初は design 04 の独自タブバー（上端 3px の指示線）を維持する予定だったが、マイページからスタッフメニューに入ると下タブの見た目が変わって運営側だけ古く見えるため、そろえた。Web と PC 幅（左メニュー）は従来どおり
 
 ## 構成
 
@@ -28,6 +28,14 @@
   | イベント・求人 | `megaphone` / `megaphone.fill` | `campaign`        |
   | 予約・申込   | `ticket` / `ticket.fill`   | `confirmation_number` |
   | マイページ   | `person` / `person.fill`   | `person`              |
+
+  運営画面（店舗モード）
+
+  | タブ | SF Symbols（通常 / 選択） | Material Symbols |
+  | --- | --- | --- |
+  | 掲載 | `list.bullet` / 同じ | `list` |
+  | 予約・申し込み | `calendar.badge.checkmark` / 同じ | `event_available` |
+  | 店舗情報 | `storefront` / `storefront.fill` | `storefront` |
 
 - 「イベント・求人」は design/ ではカレンダーだったが、求人が表せないのでメガホン（募集・告知）に変更。Web 用に線画 `megaphone` を Icon.tsx に追加し、アプリと Web で同じ絵にした
 
@@ -47,6 +55,7 @@
    - 各タブの一覧を最後までスクロールし、末尾がタブバーに隠れないこと。隠れる場合は各タブ画面の `ScrollView` / `FlatList` に `contentInsetAdjustmentBehavior="automatic"` を付ける
    - 下にスクロールするとタブバーが縮む（`minimizeBehavior` の既定 `automatic`）。邪魔なら `never` にする
 3. お知らせ（`(home)/notices`）など、タブ内のスタックに入っても下タブが残ること
+4. マイページ → スタッフメニュー → 店舗を選んだあとの下タブ 3 つも同じ見た目になること。「予約・申し込み」のラベルが欠けないこと、掲載一覧の末尾がタブバーに隠れないこと
 
 ## 既知の制約
 

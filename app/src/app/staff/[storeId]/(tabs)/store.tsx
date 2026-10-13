@@ -92,20 +92,25 @@ function StoreInfoForm({ store }: { store: StoreInfo }) {
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      {/* 保存ボタンはスクロールの中に置く。固定フッターにすると iOS の浮いたタブバー（NativeTabs）に隠れる（2026-10-13 実機で確認） */}
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        contentInsetAdjustmentBehavior="automatic"
+      >
         <StoreFields value={value} errors={errors} onChange={setValue} />
         {notice ? <AdminBand text={notice.text} tone={notice.tone} testID="store-notice" /> : null}
+        <View style={styles.footer}>
+          <PrimaryButton
+            testID="save-store"
+            label={save.isPending ? '保存しています…' : '保存する'}
+            onPress={() => void submit()}
+            disabled={!changed || save.isPending}
+            height={54}
+            labelSize={17}
+          />
+        </View>
       </ScrollView>
-      <View style={styles.footer}>
-        <PrimaryButton
-          testID="save-store"
-          label={save.isPending ? '保存しています…' : '保存する'}
-          onPress={() => void submit()}
-          disabled={!changed || save.isPending}
-          height={54}
-          labelSize={17}
-        />
-      </View>
       <ConfirmSheet
         visible={confirm != null}
         title="支払い方法を変更しますか？"
@@ -123,5 +128,5 @@ function StoreInfoForm({ store }: { store: StoreInfo }) {
 
 const styles = StyleSheet.create({
   content: { paddingTop: 14, paddingHorizontal: adminSpace.screenX, paddingBottom: 24, gap: 14 },
-  footer: { paddingTop: 12, paddingBottom: 12, paddingHorizontal: adminSpace.screenX },
+  footer: { paddingTop: 6 },
 });

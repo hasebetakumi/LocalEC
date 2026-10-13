@@ -1,21 +1,58 @@
 import { Tabs } from 'expo-router';
+import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import type { ComponentProps } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Icon, type IconName } from '@/components/Icon';
+import { Icon } from '@/components/Icon';
 import { useStaffLayout } from '@/features/staff/useStaffLayout';
 import { adminColors } from '@/theme/adminTokens';
 
-const TABS: { name: string; title: string; icon: IconName }[] = [
-  { name: 'listings', title: '掲載', icon: 'list' },
-  { name: 'bookings', title: '予約・申し込み', icon: 'calendarCheck' },
-  { name: 'store', title: '店舗情報', icon: 'store' },
-];
+/**
+ * 店舗モードの下タブ。icon は Web（JS の Tabs）用、sf / md は iOS / Android（NativeTabs）用。
+ * 利用者側（src/app/(tabs)/_layout.tsx）と同じ分け方。設計：docs/設計_下タブ_NativeTabs.md
+ */
+const TABS = [
+  {
+    name: 'listings',
+    title: '掲載',
+    icon: 'list',
+    sf: { default: 'list.bullet', selected: 'list.bullet' },
+    md: 'list',
+  },
+  {
+    name: 'bookings',
+    title: '予約・申し込み',
+    icon: 'calendarCheck',
+    sf: { default: 'calendar.badge.checkmark', selected: 'calendar.badge.checkmark' },
+    md: 'event_available',
+  },
+  {
+    name: 'store',
+    title: '店舗情報',
+    icon: 'store',
+    sf: { default: 'storefront', selected: 'storefront.fill' },
+    md: 'storefront',
+  },
+] as const;
+
+/** iOS / Android：OS 標準のタブバー。指定するのはアクセント色とラベルだけ */
+function NativeStoreTabsLayout() {
+  return (
+    <NativeTabs tintColor={adminColors.accent}>
+      {TABS.map((t) => (
+        <NativeTabs.Trigger key={t.name} name={t.name}>
+          <NativeTabs.Trigger.Label>{t.title}</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Icon sf={t.sf} md={t.md} />
+        </NativeTabs.Trigger>
+      ))}
+    </NativeTabs>
+  );
+}
 
 type TabBarProps = Parameters<NonNullable<ComponentProps<typeof Tabs>['tabBar']>>[0];
 
-/** 店舗モードの下タブ（design 04：選択タブの上端に 3px のバー） */
+/** Web の下タブ（design 04：選択タブの上端に 3px のバー） */
 function StaffTabBar({ state, navigation }: TabBarProps) {
   const insets = useSafeAreaInsets();
   return (
@@ -52,7 +89,8 @@ function StaffTabBar({ state, navigation }: TabBarProps) {
   );
 }
 
-export default function StoreTabsLayout() {
+/** Web：design 04 の JS タブ。PC 幅では左メニューがタブの代わりなので出さない */
+function WebStoreTabsLayout() {
   const { isWide } = useStaffLayout();
   return (
     <Tabs
@@ -66,6 +104,8 @@ export default function StoreTabsLayout() {
     </Tabs>
   );
 }
+
+export default Platform.OS === 'web' ? WebStoreTabsLayout : NativeStoreTabsLayout;
 
 const styles = StyleSheet.create({
   bar: {
