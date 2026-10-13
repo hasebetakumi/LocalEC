@@ -51,7 +51,7 @@ export default function StaffListingDetailScreen() {
   if (listing.isPending || listing.isError || !listing.data) {
     return (
       <StaffScreen>
-        <StaffNavBar fallback={`/staff/${storeId}/listings`} />
+        <StaffNavBar title="掲載" fallback={`/staff/${storeId}/listings`} />
         {listing.isPending ? (
           <Loading />
         ) : listing.isError ? (
@@ -183,7 +183,7 @@ function Detail({
 
   return (
     <StaffScreen>
-      <StaffNavBar fallback={`/staff/${l.storeId}/listings`} right={more} />
+      <StaffNavBar title="掲載" fallback={`/staff/${l.storeId}/listings`} right={more} />
       <ScrollView
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
