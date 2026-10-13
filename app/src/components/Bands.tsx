@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import { colors, radius } from '@/theme/tokens';
+import { colors } from '@/theme/tokens';
 
 /** 詳細の写真直下の帯（残り数＋締切）。受付中は黄、終了・売り切れは灰 */
 export function InfoBand({
@@ -21,31 +21,41 @@ export function InfoBand({
   );
 }
 
-/** 押せない理由など。danger＝赤、info＝青 */
-export function MessageBand({
-  message,
-  tone = 'danger',
+export type BandTone = 'gray' | 'danger' | 'info';
+
+const TONES: Record<BandTone, { bg: string; fg: string }> = {
+  gray: { bg: colors.grayPill, fg: colors.grayPillText },
+  danger: { bg: colors.dangerLight, fg: colors.dangerText },
+  info: { bg: colors.jobLight, fg: colors.infoText },
+};
+
+/**
+ * 帯（灰・赤・青）。押せない理由、保存の結果、A-21 の期限切れの説明など（利用者側・運営側で共通）。
+ * ボタンの直上・直下に出すときは中央寄せ、表の上などに出すときは左寄せ。
+ * 読み上げの割り込み（alert）は赤帯だけ
+ */
+export function Band({
+  text,
+  tone = 'gray',
+  align = 'left',
   style,
   testID,
 }: {
-  message: string;
-  tone?: 'danger' | 'info';
+  text: string;
+  tone?: BandTone;
+  align?: 'left' | 'center';
   style?: StyleProp<ViewStyle>;
   testID?: string;
 }) {
-  const isDanger = tone === 'danger';
+  const c = TONES[tone];
   return (
     <View
       testID={testID}
-      accessibilityRole="alert"
-      style={[
-        styles.message,
-        { backgroundColor: isDanger ? colors.dangerLight : colors.jobLight },
-        style,
-      ]}
+      accessibilityRole={tone === 'danger' ? 'alert' : undefined}
+      style={[styles.band, { backgroundColor: c.bg }, style]}
     >
-      <Text style={[styles.messageText, { color: isDanger ? colors.dangerText : colors.infoText }]}>
-        {message}
+      <Text style={[styles.bandText, { color: c.fg }, align === 'center' && styles.center]}>
+        {text}
       </Text>
     </View>
   );
@@ -62,8 +72,9 @@ const styles = StyleSheet.create({
   },
   infoLeft: { fontSize: 14, fontWeight: '800' },
   infoRight: { fontSize: 14, fontWeight: '700', flexShrink: 1, textAlign: 'right' },
-  message: { borderRadius: radius.input, paddingVertical: 10, paddingHorizontal: 14 },
-  messageText: { fontSize: 14, fontWeight: '700', lineHeight: 22, textAlign: 'center' },
+  band: { borderRadius: 12, paddingVertical: 11, paddingHorizontal: 14 },
+  bandText: { fontSize: 14, fontWeight: '700', lineHeight: 22 },
+  center: { textAlign: 'center' },
 });
 
 /** 青い案内の箱（求人の「応募後、店舗から…」）。左寄せ・通常の太さ */

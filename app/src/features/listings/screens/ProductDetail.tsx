@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { InfoBand, MessageBand } from '@/components/Bands';
+import { Band, InfoBand } from '@/components/Bands';
 import { BottomBar } from '@/components/BottomBar';
 import { PrimaryButton } from '@/components/Buttons';
 import { HeroScroll } from '@/components/HeroScroll';
@@ -127,7 +127,9 @@ export function ProductDetail({ product }: { product: Product }) {
               text={p.foodLabel || 'アレルギー・原材料・消費期限などは店舗にお問い合わせください。'}
             />
           </TermsCard>
-          {message ? <MessageBand message={message} testID="blocked-message" /> : null}
+          {message ? (
+            <Band text={message} tone="danger" align="center" testID="blocked-message" />
+          ) : null}
         </View>
       </HeroScroll>
 

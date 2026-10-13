@@ -13,7 +13,7 @@ import {
   View,
 } from 'react-native';
 
-import { MessageBand } from '@/components/Bands';
+import { Band } from '@/components/Bands';
 import { PrimaryButton, TextButton } from '@/components/Buttons';
 import { Card, Divider } from '@/components/Card';
 import { Icon } from '@/components/Icon';
@@ -97,7 +97,9 @@ export default function MyPageScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.accent} />
         }
       >
-        {emailChanged ? <MessageBand message="メールアドレスを変更しました。" tone="info" /> : null}
+        {emailChanged ? (
+          <Band text="メールアドレスを変更しました。" tone="info" align="center" />
+        ) : null}
 
         {!session ? (
           <PrimaryButton
@@ -184,7 +186,7 @@ export default function MyPageScreen() {
             ) : null}
           </Card>
         ) : null}
-        {notifyError ? <MessageBand message={notifyError} /> : null}
+        {notifyError ? <Band text={notifyError} tone="danger" align="center" /> : null}
 
         <Card style={styles.links}>
           {LEGAL_DOCS.map((doc, i) => (

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { MessageBand } from '@/components/Bands';
+import { Band } from '@/components/Bands';
 import { SecondaryButton } from '@/components/Buttons';
 import { Icon } from '@/components/Icon';
 import { NavBar, Screen } from '@/components/Screen';
@@ -52,7 +52,12 @@ export default function SentScreen() {
           </Text>
         </View>
         {notice ? (
-          <MessageBand message={notice.text} tone={notice.tone} style={{ alignSelf: 'stretch' }} />
+          <Band
+            text={notice.text}
+            tone={notice.tone}
+            align="center"
+            style={{ alignSelf: 'stretch' }}
+          />
         ) : null}
         <View style={styles.spacer} />
         <SecondaryButton

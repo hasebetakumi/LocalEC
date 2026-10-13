@@ -27,7 +27,7 @@ describe('U-22 予約詳細・U-21 キャンセル', () => {
     expect(await screen.findByTestId('booking-number')).toHaveTextContent('0427');
     await fireEvent.press(screen.getByTestId('open-cancel'));
     expect(await screen.findByText('予約をキャンセルしますか？')).toBeTruthy();
-    await fireEvent.press(screen.getByTestId('danger-confirm'));
+    await fireEvent.press(screen.getByTestId('confirm-ok'));
     await waitFor(() => expect(cancelBooking).toHaveBeenCalledWith('b-1'));
   });
 

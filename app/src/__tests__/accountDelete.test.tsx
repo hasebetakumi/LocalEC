@@ -48,7 +48,7 @@ describe('U-02 アカウント削除', () => {
     await renderScreen(<AccountDeleteScreen />);
     await fireEvent.press(await screen.findByTestId('delete-account'));
     expect(await screen.findByText('本当に削除しますか？')).toBeTruthy();
-    await fireEvent.press(screen.getByTestId('danger-confirm'));
+    await fireEvent.press(screen.getByTestId('confirm-ok'));
     await waitFor(() => expect(deleteMyAccount).toHaveBeenCalled());
   });
 });

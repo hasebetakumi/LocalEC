@@ -3,14 +3,14 @@ import { type ReactNode, useState } from 'react';
 import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Band } from '@/components/Bands';
 import { EmptyState } from '@/components/EmptyState';
 import { PrimaryButton, TextButton } from '@/components/Buttons';
 import { Icon } from '@/components/Icon';
 import { LoadError, Loading } from '@/components/LoadState';
-import { ConfirmSheet } from '@/components/admin/ConfirmSheet';
+import { ConfirmSheet } from '@/components/ConfirmSheet';
 import { StaffStatusPill } from '@/components/admin/Labels';
 import { StaffNavBar, StaffScreen } from '@/components/admin/StaffScreen';
-import { AdminBand } from '@/components/admin/WarningBox';
 import { paymentMethodsText } from '@/features/listings/master';
 import { completeBooking, revertBooking, staffCancelBooking } from '@/features/staff/api';
 import {
@@ -125,8 +125,8 @@ function Process({ row: r, onRefetch }: { row: StaffBookingRow; onRefetch: () =>
           ) : null}
         </View>
 
-        {effective === 'expired' ? <AdminBand text={expiredNotice(r.kind)} /> : null}
-        {error ? <AdminBand text={error} tone="danger" testID="process-error" /> : null}
+        {effective === 'expired' ? <Band text={expiredNotice(r.kind)} /> : null}
+        {error ? <Band text={error} tone="danger" testID="process-error" /> : null}
 
         <View style={styles.table}>
           <Row label="状態">
@@ -145,13 +145,13 @@ function Process({ row: r, onRefetch }: { row: StaffBookingRow; onRefetch: () =>
         </View>
 
         {effective === 'completed' ? (
-          <AdminBand
+          <Band
             text={`${status.label}　${r.completedAt ? formatDateTimeJa(r.completedAt) : ''}`}
             tone="gray"
           />
         ) : null}
         {effective === 'cancelled' ? (
-          <AdminBand
+          <Band
             text={`キャンセル（${r.cancelledBy === 'staff' ? '店舗' : '利用者'}）　${r.cancelledAt ? formatDateTimeJa(r.cancelledAt) : ''}`}
           />
         ) : null}
@@ -223,7 +223,7 @@ function Process({ row: r, onRefetch }: { row: StaffBookingRow; onRefetch: () =>
         visible={confirmCancel}
         title={`この${CANCEL_TARGET[r.kind]}をキャンセルにしますか？`}
         body={
-          <AdminBand
+          <Band
             tone="danger"
             text={`お客さまに通知が届きます。${r.kind === 'job' ? '募集枠は変わりません。' : '数量は残り数に戻ります。'}`}
           />

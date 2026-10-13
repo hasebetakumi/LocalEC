@@ -13,11 +13,11 @@ export function Loading() {
   );
 }
 
-/** 読み込み失敗（再読み込みボタンつき） */
+/** 読み込み失敗（再読み込みボタンつき）。商品以外の画面でも使うのでアイコンは中立の三角 */
 export function LoadError({ onRetry }: { onRetry: () => void }) {
   return (
     <EmptyState
-      icon="bag"
+      icon="warning"
       title="読み込めませんでした"
       body={'通信状態を確認して、\nもう一度お試しください。'}
       action={{ label: '再読み込み', onPress: onRetry, kind: 'secondary' }}

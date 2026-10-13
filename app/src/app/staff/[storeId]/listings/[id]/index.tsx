@@ -5,7 +5,7 @@ import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'r
 import { EmptyState } from '@/components/EmptyState';
 import { Icon } from '@/components/Icon';
 import { LoadError, Loading } from '@/components/LoadState';
-import { ConfirmSheet } from '@/components/admin/ConfirmSheet';
+import { ConfirmSheet } from '@/components/ConfirmSheet';
 import { ActionMenu, type ActionMenuItem } from '@/components/admin/ActionMenu';
 import { GroupList } from '@/components/admin/GroupList';
 import { KindLabel, ListingStatusPill } from '@/components/admin/Labels';

@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PrimaryButton } from '@/components/Buttons';
 import { Card, Divider } from '@/components/Card';
-import { DangerSheet } from '@/components/DangerSheet';
+import { ConfirmSheet } from '@/components/ConfirmSheet';
 import { StatusPill } from '@/components/KindPills';
 import { LoadError, Loading } from '@/components/LoadState';
 import { NavBar, Screen } from '@/components/Screen';
@@ -162,7 +162,7 @@ export default function AccountDeleteScreen() {
           />
         )}
       </View>
-      <DangerSheet
+      <ConfirmSheet
         visible={sheetOpen}
         title="本当に削除しますか？"
         body="削除したアカウントは元に戻せません。"

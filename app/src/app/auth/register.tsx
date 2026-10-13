@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { MessageBand } from '@/components/Bands';
+import { Band } from '@/components/Bands';
 import { PrimaryButton } from '@/components/Buttons';
 import { Icon } from '@/components/Icon';
 import { NavBar, Screen } from '@/components/Screen';
@@ -150,7 +150,7 @@ export default function RegisterScreen() {
             </Text>
           </Pressable>
 
-          {submitError ? <MessageBand message={submitError} /> : null}
+          {submitError ? <Band text={submitError} tone="danger" align="center" /> : null}
 
           <View style={styles.spacer} />
           <PrimaryButton

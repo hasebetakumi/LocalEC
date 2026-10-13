@@ -2,7 +2,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { MessageBand } from '@/components/Bands';
+import { Band } from '@/components/Bands';
 import { PrimaryButton, SecondaryButton, TextButton } from '@/components/Buttons';
 import { Icon } from '@/components/Icon';
 import { Screen } from '@/components/Screen';
@@ -60,7 +60,11 @@ export default function LoginScreen() {
           </View>
 
           {linkError ? (
-            <MessageBand message="リンクの有効期限が切れているか、すでに使われています。もう一度リンクを送ってください。" />
+            <Band
+              text="リンクの有効期限が切れているか、すでに使われています。もう一度リンクを送ってください。"
+              tone="danger"
+              align="center"
+            />
           ) : null}
 
           <TextField
@@ -78,7 +82,7 @@ export default function LoginScreen() {
             hint="パスワードはありません。メールに届くリンクを押すとログインできます"
             error={emailError}
           />
-          {sendError ? <MessageBand message={sendError} /> : null}
+          {sendError ? <Band text={sendError} tone="danger" align="center" /> : null}
           <PrimaryButton
             testID="send-login-link"
             label={sending ? '送信しています…' : 'ログイン用リンクを送る'}

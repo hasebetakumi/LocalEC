@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { InfoNote, MessageBand } from '@/components/Bands';
+import { Band, InfoNote } from '@/components/Bands';
 import { BottomBar } from '@/components/BottomBar';
 import { PrimaryButton } from '@/components/Buttons';
 import { HeroScroll } from '@/components/HeroScroll';
@@ -104,9 +104,10 @@ export function EventJobDetail({ listing }: { listing: EventOrJob }) {
           )}
           {l.kind === 'job' ? <InfoNote text={APPLY_NOTE} /> : null}
           {view.message ? (
-            <MessageBand
-              message={view.message.text}
+            <Band
+              text={view.message.text}
               tone={view.message.tone}
+              align="center"
               testID="blocked-message"
             />
           ) : null}

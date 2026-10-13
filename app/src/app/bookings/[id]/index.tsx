@@ -3,10 +3,10 @@ import { type ReactNode, useState } from 'react';
 import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { MessageBand } from '@/components/Bands';
+import { Band } from '@/components/Bands';
 import { TextButton } from '@/components/Buttons';
 import { Card, Divider } from '@/components/Card';
-import { DangerSheet } from '@/components/DangerSheet';
+import { ConfirmSheet } from '@/components/ConfirmSheet';
 import { EmptyState } from '@/components/EmptyState';
 import { StatusPill } from '@/components/KindPills';
 import { LoadError, Loading } from '@/components/LoadState';
@@ -168,7 +168,7 @@ function Detail({ booking: b }: { booking: MyBooking }) {
           </Row>
         </Card>
 
-        {error ? <MessageBand message={error} /> : null}
+        {error ? <Band text={error} tone="danger" align="center" /> : null}
 
         {state === 'can' ? (
           <View style={styles.cancelArea}>
@@ -197,7 +197,7 @@ function Detail({ booking: b }: { booking: MyBooking }) {
         ) : null}
       </ScrollView>
 
-      <DangerSheet
+      <ConfirmSheet
         visible={sheetOpen}
         title={copy.title}
         body={b.kind === 'job' ? '取り消すと元に戻せません' : 'キャンセルすると元に戻せません'}

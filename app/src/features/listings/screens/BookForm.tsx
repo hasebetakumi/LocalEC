@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { InfoNote, MessageBand } from '@/components/Bands';
+import { Band, InfoNote } from '@/components/Bands';
 import { BottomBar } from '@/components/BottomBar';
 import { PrimaryButton } from '@/components/Buttons';
 import { Card, Divider } from '@/components/Card';
@@ -156,7 +156,7 @@ export function BookForm({ listing, onRefetch }: Props) {
           </Card>
         ) : null}
 
-        {message ? <MessageBand message={message} testID="book-error" /> : null}
+        {message ? <Band text={message} tone="danger" align="center" testID="book-error" /> : null}
 
         <Card style={styles.table}>
           {spec.rows.map((r, i) => (

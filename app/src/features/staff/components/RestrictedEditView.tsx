@@ -5,11 +5,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PrimaryButton, TextButton } from '@/components/Buttons';
 import { Icon } from '@/components/Icon';
-import { ConfirmSheet } from '@/components/admin/ConfirmSheet';
+import { ConfirmSheet } from '@/components/ConfirmSheet';
 import { DateTimeField } from '@/components/admin/DateTimeField';
 import { AdminTextField } from '@/components/admin/Fields';
 import { StaffNavBar, StaffScreen } from '@/components/admin/StaffScreen';
-import { AdminBand, WarningBox } from '@/components/admin/WarningBox';
+import { Band } from '@/components/Bands';
+import { WarningBox } from '@/components/admin/WarningBox';
 import { adminColors, adminSpace } from '@/theme/adminTokens';
 
 import { endListing, StaffError, updateListing } from '../api';
@@ -119,9 +120,7 @@ export function RestrictedEditView({
             title={`予約が${l.reservedQuantity}件入っています`}
             body={`変更できるのは${ALLOWED[l.kind]}だけです。予約者へは変更の通知が届きます。`}
           />
-          {saveError ? (
-            <AdminBand text={saveError} tone="danger" testID="restricted-error" />
-          ) : null}
+          {saveError ? <Band text={saveError} tone="danger" testID="restricted-error" /> : null}
 
           <AdminTextField
             label={t.quantity}

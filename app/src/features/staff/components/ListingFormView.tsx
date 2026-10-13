@@ -3,8 +3,9 @@ import { useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Band } from '@/components/Bands';
 import { PrimaryButton, SecondaryButton } from '@/components/Buttons';
-import { ConfirmSheet } from '@/components/admin/ConfirmSheet';
+import { ConfirmSheet } from '@/components/ConfirmSheet';
 import { DateTimeField } from '@/components/admin/DateTimeField';
 import {
   AdminTextField,
@@ -17,7 +18,6 @@ import {
 import { KindLabel } from '@/components/admin/Labels';
 import { PhotoField } from '@/components/admin/PhotoField';
 import { StaffNavBar, StaffScreen } from '@/components/admin/StaffScreen';
-import { AdminBand } from '@/components/admin/WarningBox';
 import { CATEGORIES, paymentMethodsText } from '@/features/listings/master';
 import { useNow } from '@/hooks/useNow';
 import { adminColors, adminSpace } from '@/theme/adminTokens';
@@ -152,7 +152,7 @@ export function ListingFormView({ kind, store, initial, editing }: Props) {
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
         >
-          {saveError ? <AdminBand text={saveError} tone="danger" testID="form-error" /> : null}
+          {saveError ? <Band text={saveError} tone="danger" testID="form-error" /> : null}
 
           {kind === 'notice' ? (
             <FormSection title="内容">

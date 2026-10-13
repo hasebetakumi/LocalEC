@@ -8,7 +8,7 @@ import { resolvePhotoUrl } from '@/lib/photos';
 import { adminColors } from '@/theme/adminTokens';
 
 import { Field } from './Fields';
-import { AdminBand } from './WarningBox';
+import { Band } from '@/components/Bands';
 
 /** 写真（任意）。選ぶとアップロードしてプレビュー（4:3）。変更・削除できる */
 export function PhotoField({
@@ -82,7 +82,7 @@ export function PhotoField({
           )}
         </Pressable>
       )}
-      {failed ? <AdminBand text="写真をアップロードできませんでした。" tone="danger" /> : null}
+      {failed ? <Band text="写真をアップロードできませんでした。" tone="danger" /> : null}
     </Field>
   );
 }

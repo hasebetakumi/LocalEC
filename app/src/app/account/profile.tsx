@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { MessageBand } from '@/components/Bands';
+import { Band } from '@/components/Bands';
 import { PrimaryButton } from '@/components/Buttons';
 import { Loading } from '@/components/LoadState';
 import { NavBar, Screen } from '@/components/Screen';
@@ -127,7 +127,7 @@ function ProfileForm({ userId, profile }: { userId: string; profile: Profile }) 
             hint="ログインに使うため、変更すると新しいアドレスに確認リンクを送ります。リンクを押すと変更が完了します"
             error={errors.email}
           />
-          {notice ? <MessageBand message={notice.text} tone={notice.tone} /> : null}
+          {notice ? <Band text={notice.text} tone={notice.tone} align="center" /> : null}
           <View style={styles.spacer} />
           <PrimaryButton
             testID="save-profile"

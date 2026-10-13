@@ -2,12 +2,12 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 
+import { Band } from '@/components/Bands';
 import { PrimaryButton } from '@/components/Buttons';
 import { LoadError, Loading } from '@/components/LoadState';
-import { ConfirmSheet } from '@/components/admin/ConfirmSheet';
+import { ConfirmSheet } from '@/components/ConfirmSheet';
 import { StaffScreen } from '@/components/admin/StaffScreen';
 import { StoreHeader } from '@/components/admin/StoreHeader';
-import { AdminBand } from '@/components/admin/WarningBox';
 import { countPublishedProducts, updateStore } from '@/features/staff/api';
 import { StoreFields } from '@/features/staff/components/StoreFields';
 import { staffKeys, useStaffMutation, useStore } from '@/features/staff/hooks';
@@ -99,7 +99,7 @@ function StoreInfoForm({ store }: { store: StoreInfo }) {
         contentInsetAdjustmentBehavior="automatic"
       >
         <StoreFields value={value} errors={errors} onChange={setValue} />
-        {notice ? <AdminBand text={notice.text} tone={notice.tone} testID="store-notice" /> : null}
+        {notice ? <Band text={notice.text} tone={notice.tone} testID="store-notice" /> : null}
         <View style={styles.footer}>
           <PrimaryButton
             testID="save-store"

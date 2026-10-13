@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Band } from '@/components/Bands';
 import { PrimaryButton } from '@/components/Buttons';
-import { AdminBand } from '@/components/admin/WarningBox';
 import { StaffNavBar, StaffScreen } from '@/components/admin/StaffScreen';
 import { createStore } from '@/features/staff/api';
 import { StoreFields } from '@/features/staff/components/StoreFields';
@@ -49,10 +49,7 @@ export default function NewStoreScreen() {
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <StoreFields value={value} errors={errors} onChange={setValue} />
           {failed ? (
-            <AdminBand
-              text="追加できませんでした。時間をおいてもう一度お試しください。"
-              tone="danger"
-            />
+            <Band text="追加できませんでした。時間をおいてもう一度お試しください。" tone="danger" />
           ) : null}
         </ScrollView>
         <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 16) + 14 }]}>
