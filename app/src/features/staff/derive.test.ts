@@ -9,6 +9,7 @@ import {
   productTotal,
   customerLabel,
   doneActionLabel,
+  expiredNotice,
   initialOf,
   listingMetric,
   listingScheduleLine,
@@ -43,6 +44,17 @@ describe('予約の状態（運営側）', () => {
     expect(doneActionLabel('product')).toBe('受け取り済みにする');
     expect(doneActionLabel('event')).toBe('参加済みにする');
     expect(revertActionLabel('job')).toBe('未勤務に戻す');
+  });
+  it('期限切れの帯は種類ごとの言葉になる', () => {
+    expect(expiredNotice('product')).toBe(
+      '受け取り期間を過ぎています（期限切れ）。来店があればそのまま受け取り済みにできます。',
+    );
+    expect(expiredNotice('event')).toBe(
+      '開催日を過ぎています（期限切れ）。参加があればそのまま参加済みにできます。',
+    );
+    expect(expiredNotice('job')).toBe(
+      '勤務日を過ぎています（期限切れ）。勤務があればそのまま勤務済みにできます。',
+    );
   });
   it('状態の絞り込み', () => {
     const late = jstDate('2026-10-05 14:00');

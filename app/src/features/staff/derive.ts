@@ -62,6 +62,18 @@ export function revertActionLabel(kind: BookingKind): string {
   return `${OPEN_LABEL[kind]}に戻す`;
 }
 
+const EXPIRED_PERIOD: Record<BookingKind, { period: string; visit: string }> = {
+  product: { period: '受け取り期間', visit: '来店' },
+  event: { period: '開催日', visit: '参加' },
+  job: { period: '勤務日', visit: '勤務' },
+};
+
+/** A-21 の期限切れの帯。種類ごとに期間と行為の言葉を変える（利用者側の履歴の「受け取り期間／開催日／勤務日」と同じ分け方） */
+export function expiredNotice(kind: BookingKind): string {
+  const t = EXPIRED_PERIOD[kind];
+  return `${t.period}を過ぎています（期限切れ）。${t.visit}があればそのまま${DONE_LABEL[kind]}にできます。`;
+}
+
 /** 状態の絞り込み */
 export function matchesStatus(row: StaffBookingRow, filter: StatusFilter, now: Date): boolean {
   const s = staffEffectiveStatus(row, now);

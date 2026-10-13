@@ -18,6 +18,7 @@ import {
   bookingItemText,
   customerLabel,
   doneActionLabel,
+  expiredNotice,
   revertActionLabel,
   scheduleFullText,
   staffEffectiveStatus,
@@ -124,9 +125,7 @@ function Process({ row: r, onRefetch }: { row: StaffBookingRow; onRefetch: () =>
           ) : null}
         </View>
 
-        {effective === 'expired' ? (
-          <AdminBand text="受け取り期間を過ぎています（期限切れ）。来店があればそのまま受け取り済みにできます。" />
-        ) : null}
+        {effective === 'expired' ? <AdminBand text={expiredNotice(r.kind)} /> : null}
         {error ? <AdminBand text={error} tone="danger" testID="process-error" /> : null}
 
         <View style={styles.table}>
