@@ -1,7 +1,8 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, focusManager } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { AppState, Platform } from 'react-native';
 
 import { AuthProvider } from '@/features/auth/AuthProvider';
 import { NotificationsBridge } from '@/features/notifications/NotificationsBridge';
@@ -14,6 +15,15 @@ export default function RootLayout() {
         defaultOptions: { queries: { staleTime: 30_000, retry: 1 } },
       }),
   );
+
+  // アプリを前面に戻したら古い（staleTime を過ぎた）データを取り直す。Web は window の focus で動くので不要
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    const sub = AppState.addEventListener('change', (state) => {
+      focusManager.setFocused(state === 'active');
+    });
+    return () => sub.remove();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

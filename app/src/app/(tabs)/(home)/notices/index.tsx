@@ -9,6 +9,7 @@ import { useNotices } from '@/features/listings/hooks';
 import { useReadNoticeIds } from '@/features/notices/hooks';
 import { isUnread } from '@/features/notices/readState';
 import { useNow } from '@/hooks/useNow';
+import { useRefetchOnFocus } from '@/hooks/useRefetchOnFocus';
 import { formatDateJa } from '@/lib/format';
 import { colors, radius, shadow, space } from '@/theme/tokens';
 
@@ -18,6 +19,7 @@ export default function NoticesScreen() {
   const insets = useSafeAreaInsets();
   const notices = useNotices();
   const readIds = useReadNoticeIds();
+  useRefetchOnFocus(notices.refetch);
 
   return (
     <Screen>

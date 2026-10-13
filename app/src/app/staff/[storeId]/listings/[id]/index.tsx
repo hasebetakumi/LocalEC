@@ -1,4 +1,4 @@
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -24,6 +24,7 @@ import {
 import { useListingBookings, useStaffListing, useStaffMutation } from '@/features/staff/hooks';
 import type { StaffListing, StatusFilter } from '@/features/staff/types';
 import { useNow } from '@/hooks/useNow';
+import { useRefetchOnFocus } from '@/hooks/useRefetchOnFocus';
 import { adminColors, adminShadow, adminSpace } from '@/theme/adminTokens';
 
 export const STATUS_FILTER_OPTIONS = [
@@ -41,7 +42,7 @@ export default function StaffListingDetailScreen() {
   const refetchListing = listing.refetch;
   const refetchBookings = bookings.refetch;
 
-  useFocusEffect(
+  useRefetchOnFocus(
     useCallback(() => {
       void refetchListing();
       void refetchBookings();

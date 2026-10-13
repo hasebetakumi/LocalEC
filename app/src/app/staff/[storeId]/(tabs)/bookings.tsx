@@ -1,5 +1,5 @@
-import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useMemo, useState } from 'react';
+import { router } from 'expo-router';
+import { useMemo, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { EmptyState } from '@/components/EmptyState';
@@ -20,6 +20,7 @@ import { useBookingSearch, useStoreBookings } from '@/features/staff/hooks';
 import { useStaffStore } from '@/features/staff/StaffStoreContext';
 import type { KindFilter, Period, StaffBookingRow, StatusFilter } from '@/features/staff/types';
 import { useNow } from '@/hooks/useNow';
+import { useRefetchOnFocus } from '@/hooks/useRefetchOnFocus';
 import { adminColors, adminSpace } from '@/theme/adminTokens';
 
 const PERIOD_OPTIONS = [
@@ -60,11 +61,7 @@ export default function StaffBookingsScreen() {
   const search = useBookingSearch(number, { storeId: store.id });
   const { refetch } = bookings;
 
-  useFocusEffect(
-    useCallback(() => {
-      void refetch();
-    }, [refetch]),
-  );
+  useRefetchOnFocus(refetch);
 
   const searching = number.length > 0;
   const source = searching ? search : bookings;
@@ -82,7 +79,8 @@ export default function StaffBookingsScreen() {
     <StaffScreen>
       <StoreHeader pcTitle="予約・申し込み" storeName={store.name} />
       <ScrollView
-        contentContainerStyle={styles.content}
+        // 空状態（flex:1）が残りの高さの中央に来るように伸ばす（掲載一覧と同じ）
+        contentContainerStyle={[styles.content, { flexGrow: 1 }]}
         keyboardShouldPersistTaps="handled"
         refreshControl={
           <RefreshControl

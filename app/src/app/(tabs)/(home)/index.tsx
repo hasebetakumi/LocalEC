@@ -18,6 +18,7 @@ import type { Product } from '@/features/listings/types';
 import { useReadNoticeIds } from '@/features/notices/hooks';
 import { unreadCount } from '@/features/notices/readState';
 import { useNow } from '@/hooks/useNow';
+import { useRefetchOnFocus } from '@/hooks/useRefetchOnFocus';
 import { colors, space } from '@/theme/tokens';
 
 function openList(params: { section?: ListSection; category?: ProductCategory }) {
@@ -28,6 +29,7 @@ function openList(params: { section?: ListSection; category?: ProductCategory })
 export default function HomeScreen() {
   const now = useNow();
   const { data, isPending, isError, refetch, isRefetching } = useProducts();
+  useRefetchOnFocus(refetch);
   const groups = useMemo(() => groupHome(data ?? [], now), [data, now]);
   const notices = useNotices();
   const readIds = useReadNoticeIds();
@@ -70,15 +72,10 @@ export default function HomeScreen() {
         <Loading />
       ) : isError ? (
         <LoadError onRetry={() => void refetch()} />
-      ) : data.length === 0 ? (
-        <EmptyState
-          icon="bag"
-          title="いまは商品がありません"
-          body="新しい商品は通知でお知らせします。"
-        />
       ) : (
         <ScrollView
-          contentContainerStyle={styles.content}
+          // 空状態でも引っ張って更新できるよう、空表示もスクロールの中に置く
+          contentContainerStyle={[styles.content, data.length === 0 && { flexGrow: 1 }]}
           refreshControl={
             <RefreshControl
               refreshing={isRefetching}
@@ -87,6 +84,13 @@ export default function HomeScreen() {
             />
           }
         >
+          {data.length === 0 ? (
+            <EmptyState
+              icon="bag"
+              title="いまは商品がありません"
+              body="新しい商品は通知でお知らせします。"
+            />
+          ) : null}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}

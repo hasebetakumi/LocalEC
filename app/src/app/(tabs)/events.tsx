@@ -18,6 +18,7 @@ import {
 import { useEventsAndJobs } from '@/features/listings/hooks';
 import type { EventOrJob } from '@/features/listings/types';
 import { useNow } from '@/hooks/useNow';
+import { useRefetchOnFocus } from '@/hooks/useRefetchOnFocus';
 import { colors, radius, shadow, space } from '@/theme/tokens';
 
 type Filter = 'all' | 'event' | 'job';
@@ -32,6 +33,7 @@ export default function EventsScreen() {
   const [filter, setFilter] = useState<Filter>('all');
   const now = useNow();
   const list = useEventsAndJobs();
+  useRefetchOnFocus(list.refetch);
   const items = useMemo(
     () => (list.data ?? []).filter((l) => filter === 'all' || l.kind === filter),
     [list.data, filter],

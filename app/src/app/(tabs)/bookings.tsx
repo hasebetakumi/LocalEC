@@ -1,5 +1,5 @@
-import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { router } from 'expo-router';
+import { type ReactNode, useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { EmptyState } from '@/components/EmptyState';
@@ -20,6 +20,7 @@ import {
 import { useMyBookings } from '@/features/bookings/hooks';
 import type { MyBooking } from '@/features/bookings/types';
 import { useNow } from '@/hooks/useNow';
+import { useRefetchOnFocus } from '@/hooks/useRefetchOnFocus';
 import { formatDateJa } from '@/lib/format';
 import { colors, kindColors, shadow, space } from '@/theme/tokens';
 
@@ -42,11 +43,7 @@ export default function BookingsScreen() {
   const { refetch } = bookings;
 
   // 予約した後にタブへ戻ってきたら取り直す
-  useFocusEffect(
-    useCallback(() => {
-      if (session) void refetch();
-    }, [session, refetch]),
-  );
+  useRefetchOnFocus(refetch, session != null);
 
   const header = (
     <PageHeader title="予約・申込">
@@ -112,21 +109,21 @@ type ListProps = {
   onRefresh: () => unknown;
 };
 
-function ActiveList({ bookings, now, refreshing, onRefresh }: ListProps) {
-  const groups = groupActive(bookings, now);
-  if (groups.length === 0) {
-    return (
-      <EmptyState
-        icon="ticket"
-        title="予約・申し込みはまだありません"
-        body={'商品やイベントを予約すると、\nここに表示されます。'}
-        action={{ label: '商品を見る', onPress: () => router.navigate('/'), kind: 'primary' }}
-      />
-    );
-  }
+/** 空状態でも引っ張って更新できるよう、空表示もスクロールの中に置く */
+function RefreshableList({
+  refreshing,
+  onRefresh,
+  empty,
+  gap,
+  children,
+}: Pick<ListProps, 'refreshing' | 'onRefresh'> & {
+  empty: boolean;
+  gap?: number;
+  children: ReactNode;
+}) {
   return (
     <ScrollView
-      contentContainerStyle={styles.content}
+      contentContainerStyle={[styles.content, gap != null && { gap }, empty && { flexGrow: 1 }]}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
@@ -135,6 +132,23 @@ function ActiveList({ bookings, now, refreshing, onRefresh }: ListProps) {
         />
       }
     >
+      {children}
+    </ScrollView>
+  );
+}
+
+function ActiveList({ bookings, now, refreshing, onRefresh }: ListProps) {
+  const groups = groupActive(bookings, now);
+  return (
+    <RefreshableList refreshing={refreshing} onRefresh={onRefresh} empty={groups.length === 0}>
+      {groups.length === 0 ? (
+        <EmptyState
+          icon="ticket"
+          title="予約・申し込みはまだありません"
+          body={'商品やイベントを予約すると、\nここに表示されます。'}
+          action={{ label: '商品を見る', onPress: () => router.navigate('/'), kind: 'primary' }}
+        />
+      ) : null}
       {groups.map((g) => (
         <View key={g.key} style={styles.group}>
           <View style={styles.groupHead}>
@@ -174,26 +188,20 @@ function ActiveList({ bookings, now, refreshing, onRefresh }: ListProps) {
           </View>
         </View>
       ))}
-    </ScrollView>
+    </RefreshableList>
   );
 }
 
 function HistoryList({ bookings, now, refreshing, onRefresh }: ListProps) {
   const items = historyList(bookings, now);
-  if (items.length === 0) {
-    return <EmptyState icon="ticket" title="履歴はまだありません" />;
-  }
   return (
-    <ScrollView
-      contentContainerStyle={[styles.content, { gap: 10 }]}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={() => void onRefresh()}
-          tintColor={colors.accent}
-        />
-      }
+    <RefreshableList
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      empty={items.length === 0}
+      gap={10}
     >
+      {items.length === 0 ? <EmptyState icon="ticket" title="履歴はまだありません" /> : null}
       {items.map((b) => {
         const pill = statusPill(b, now);
         return (
@@ -210,7 +218,7 @@ function HistoryList({ bookings, now, refreshing, onRefresh }: ListProps) {
           </Pressable>
         );
       })}
-    </ScrollView>
+    </RefreshableList>
   );
 }
 

@@ -1,5 +1,5 @@
-import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useMemo, useState } from 'react';
+import { router } from 'expo-router';
+import { useMemo, useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { EmptyState } from '@/components/EmptyState';
@@ -15,6 +15,7 @@ import { LISTING_STATUS_LABEL, listingMetric, listingScheduleLine } from '@/feat
 import { useStoreListings } from '@/features/staff/hooks';
 import { useStaffStore } from '@/features/staff/StaffStoreContext';
 import type { ListingKind, StaffListing } from '@/features/staff/types';
+import { useRefetchOnFocus } from '@/hooks/useRefetchOnFocus';
 import { adminColors, adminSpace } from '@/theme/adminTokens';
 
 type KindValue = 'all' | ListingKind;
@@ -57,11 +58,7 @@ export default function ListingsScreen() {
   const [sheet, setSheet] = useState<'kind' | 'status' | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      void refetch();
-    }, [refetch]),
-  );
+  useRefetchOnFocus(refetch);
 
   const items = useMemo(
     () =>

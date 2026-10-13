@@ -1,5 +1,5 @@
-import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { router } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { EmptyState } from '@/components/EmptyState';
@@ -12,6 +12,7 @@ import { BookingRow } from '@/features/staff/components/BookingRow';
 import { useBookingSearch, useStoreSummaries } from '@/features/staff/hooks';
 import type { StoreSummary } from '@/features/staff/types';
 import { useNow } from '@/hooks/useNow';
+import { useRefetchOnFocus } from '@/hooks/useRefetchOnFocus';
 import { adminColors, adminShadow, adminSpace } from '@/theme/adminTokens';
 
 function goBackToMyPage() {
@@ -27,11 +28,7 @@ export default function StoreSelectScreen() {
   const search = useBookingSearch(number);
   const now = useNow();
 
-  useFocusEffect(
-    useCallback(() => {
-      void refetch();
-    }, [refetch]),
-  );
+  useRefetchOnFocus(refetch);
 
   return (
     <StaffScreen>

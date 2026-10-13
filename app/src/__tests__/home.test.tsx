@@ -5,7 +5,7 @@ import { fetchNotices, fetchProducts } from '@/features/listings/api';
 import { liveProduct } from '@/test/fixturesRelative';
 import { renderScreen } from '@/test/render';
 
-jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
+jest.mock('expo-router', () => ({ router: { push: jest.fn() }, useFocusEffect: jest.fn() }));
 jest.mock('@/features/listings/api', () => ({ fetchProducts: jest.fn(), fetchNotices: jest.fn() }));
 
 const mockFetchProducts = jest.mocked(fetchProducts);
