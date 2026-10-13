@@ -20,6 +20,7 @@
     "expo-splash-screen": "~57.0.10",
     "expo-status-bar": "~57.0.1",
     "expo-system-ui": "~57.0.4",
+    "expo-updates": "~57.0.26",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",
@@ -60,7 +61,9 @@
     "format:check": "prettier --check .",
     "gen:types": "supabase gen types typescript --local > src/lib/database.types.ts && prettier --write src/lib/database.types.ts",
     "db:reset": "supabase db reset",
-    "functions": "supabase functions serve --env-file supabase/.env"
+    "functions": "supabase functions serve --env-file supabase/.env",
+    "deploy:web": "expo export --platform web && eas deploy",
+    "deploy:app": "eas update --channel preview"
   },
   "private": true,
   "engines": {

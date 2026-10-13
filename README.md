@@ -155,6 +155,56 @@ npm run db:reset     # データを初期状態に戻す（予約・通知・追
 - メールが届かないときは、`supabase/.env` の `SMTP_PASS` が入っているか、宛先が Resend に登録したアドレスか、`npm run functions` が動いているか（通知のメール）を確かめる。`select email_error from public.notifications order by created_at desc limit 5;` に送信の失敗理由が残る
 - `supabase/.env` を変えたら `npx supabase stop && npx supabase start` と `npm run functions` の起動し直しで反映する
 
+## デモ環境（お客さんに見せる）
+
+方針と分担は `docs/設計_デプロイ.md`。Supabase のホスト版（Free）に、Web 版（EAS Hosting）と Expo Go 版（EAS Update）をつなぐ。公開したあとは PC を動かしておく必要はない。
+
+### 初回だけ
+
+1. Resend でドメイン `dev.localec.meincoltd.com` を認証し、Supabase でプロジェクトを作る（ダッシュボード。手順は設計書 6.1）
+2. `app/.env.production.example` を `app/.env.production` にコピーし、ホスト版の URL と publishable key を入れる
+3. ホスト版にスキーマ・データ・関数・設定を入れる
+
+   ```bash
+   npx supabase link --project-ref <ref>
+   npx supabase db reset --linked                       # マイグレーション＋シード（データが消えるので初回とやり直しのときだけ）
+   npx supabase seed buckets --project-ref <ref>        # 掲載の写真
+   npx supabase functions deploy send-notifications
+   npx supabase secrets set --env-file supabase/.env    # CRON_SECRET・SMTP_*・MAIL_FROM*
+   npx supabase config push                             # 認証の設定・メールのテンプレート・SMTP
+   ```
+
+4. Studio の SQL Editor で Vault の 3 つを本番の値に上書きする（シードはローカル用の値を入れる）
+
+   ```sql
+   select vault.update_secret(id, 'https://<ref>.supabase.co/functions/v1') from vault.secrets where name = 'functions_url';
+   select vault.update_secret(id, '<publishable key>') from vault.secrets where name = 'publishable_key';
+   select vault.update_secret(id, '<supabase/.env の CRON_SECRET>') from vault.secrets where name = 'cron_secret';
+   ```
+
+5. Web 版を出し、出た URL を `supabase/config.toml` の `site_url` と `additional_redirect_urls` に入れて `npx supabase config push` し直す
+
+### 公開・更新
+
+```bash
+npm run deploy:web   # Web 版：expo export → eas deploy。URL が表示される
+npm run deploy:app   # Expo Go 版：eas update --channel preview
+```
+
+`develop` に取り込んだら両方をやり直す。どちらも `app/.env.production` を読む。
+
+### Expo Go で開く
+
+- 自分の端末の Expo Go（meincoltd でログイン済み）で、`eas update` の出力にある URL か、EAS ダッシュボードの Updates の QR を開く
+- `runtimeVersion` は `sdkVersion` ポリシーにしてある。Expo Go は SDK ごとのランタイム（`exposdk:57.0.0`）しか読まないため。開発ビルドに移るときに `appVersion` か `fingerprint` に替える
+- Android の Expo Go と Web ではプッシュは届かない。iOS の Expo Go では届く
+
+### 注意
+
+- Supabase Free は 7 日間アクセスがないと停止する。見せる前日にダッシュボードで起こす
+- データを初期状態に戻すのは `npx supabase db reset --linked`。終わったら 4 の Vault の上書きをもう一度やる
+- `supabase/config.toml` や `supabase/.env` を変えたら、ホスト版にも `config push`・`secrets set` で反映する
+
 ## ディレクトリ
 
 | パス          | 内容                                                                            |
@@ -177,4 +227,5 @@ npm run db:reset     # データを初期状態に戻す（予約・通知・追
 | docs/見積もり根拠_フェーズ1_アケボノ様向け.md | 見積もり根拠のアケボノ様提示版                    |
 | docs/技術選定.md                              | 技術構成と選定理由                                |
 | docs/動作確認手順_フェーズ1.md                | ローカルで全体を確かめるチェックリスト            |
+| docs/設計_デプロイ.md                         | デモ環境の公開方針と分担                          |
 | docs/proposal_slides.md                       | 提案書                                            |
