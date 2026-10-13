@@ -59,6 +59,12 @@
         "projectId": "2e8e1120-63d7-47b2-b1c8-bcc8db090b9d"
       }
     },
-    "owner": "meincoltd"
+    "owner": "meincoltd",
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/2e8e1120-63d7-47b2-b1c8-bcc8db090b9d"
+    }
   }
 }

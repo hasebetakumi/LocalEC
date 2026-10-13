@@ -47,3 +47,6 @@ coverage/
 
 # env
 .env
+
+# デモ環境の接続先（deploy:web・deploy:app が読む）
+.env.production
