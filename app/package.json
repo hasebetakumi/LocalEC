@@ -47,6 +47,7 @@
   "scripts": {
     "start": "supabase start && expo start",
     "start:app": "expo start",
+    "start:tunnel": "expo start --tunnel",
     "stop": "supabase stop",
     "android": "expo start --android",
     "ios": "expo start --ios",

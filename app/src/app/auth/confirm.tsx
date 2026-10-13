@@ -3,39 +3,46 @@ import { useEffect } from 'react';
 
 import { Loading } from '@/components/LoadState';
 import { Screen } from '@/components/Screen';
-import { fetchProfile, verifyEmailLink } from '@/features/auth/api';
+import { exchangeLoginCode, fetchProfile } from '@/features/auth/api';
 import { isProfileComplete } from '@/features/auth/AuthProvider';
 import { goAfterLogin } from '@/features/auth/goAfterLogin';
 import { supabase } from '@/lib/supabase';
 
-/** メールのリンクから戻る先。token_hash を検証してログインし、行き先へ振り分ける（画面は読み込み中だけ） */
+/**
+ * メールのリンクから戻る先。Supabase が付けた code をセッションに交換してログインし、行き先へ振り分ける（画面は読み込み中だけ）
+ * 期限切れなどは code の代わりに error_code が付いて戻る
+ */
 export default function ConfirmScreen() {
-  const { token_hash: tokenHash, type } = useLocalSearchParams<{
-    token_hash?: string;
+  const {
+    code,
+    type,
+    error_code: errorCode,
+  } = useLocalSearchParams<{
+    code?: string;
     type?: string;
+    error_code?: string;
   }>();
 
   useEffect(() => {
-    if (!tokenHash) {
-      router.replace('/auth/login');
+    if (!code) {
+      if (errorCode) {
+        router.replace({ pathname: '/auth/login', params: { error: 'expired' } });
+      } else {
+        router.replace('/auth/login');
+      }
       return;
     }
     let active = true;
     (async () => {
-      if (type === 'email_change') {
-        // メールアドレス変更の確認リンク。完了したらマイページへ
-        try {
-          await verifyEmailLink(tokenHash, 'email_change');
-          if (active) router.replace({ pathname: '/mypage', params: { emailChanged: '1' } });
-        } catch {
-          if (active) router.replace({ pathname: '/auth/login', params: { error: 'expired' } });
-        }
-        return;
-      }
       try {
-        await verifyEmailLink(tokenHash);
+        await exchangeLoginCode(code);
       } catch {
         if (active) router.replace({ pathname: '/auth/login', params: { error: 'expired' } });
+        return;
+      }
+      if (type === 'email_change') {
+        // メールアドレス変更の確認リンク。完了したらマイページへ
+        if (active) router.replace({ pathname: '/mypage', params: { emailChanged: '1' } });
         return;
       }
       const { data } = await supabase.auth.getUser();
@@ -51,7 +58,7 @@ export default function ConfirmScreen() {
     return () => {
       active = false;
     };
-  }, [tokenHash, type]);
+  }, [code, type, errorCode]);
 
   return (
     <Screen>

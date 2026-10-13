@@ -14,8 +14,10 @@ export const supabase = createClient<Database>(env.supabaseUrl, env.supabasePubl
     ...(isWeb ? {} : { storage: AsyncStorage }),
     autoRefreshToken: true,
     persistSession: true,
-    // パスワード再設定のリンクから戻ったときの処理。Web はブラウザが URL を扱うので有効にする
-    detectSessionInUrl: isWeb,
+    // メールのリンクは Supabase が検証したあと「?code=…」を付けてアプリに戻る（PKCE）
+    flowType: 'pkce',
+    // code の交換は Web でも /auth/confirm 画面が行う。自動検出と二重にならないよう切る
+    detectSessionInUrl: false,
     lock: processLock,
   },
 });

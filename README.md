@@ -102,7 +102,7 @@ npm run web            # 端末 B：アプリ（http://localhost:8081）。ス�
 
 ### ログイン
 
-パスワードはない。ログイン画面でメールアドレスを入れ、受信箱に届いたメールのリンクを押す。リンクは 15 分有効。
+パスワードはない。ログイン画面でメールアドレスを入れ、受信箱に届いたメールのリンクを押す。リンクは 15 分有効。リンクは Supabase の確認用 URL で、押すと Supabase が検証してからアプリ（Web なら http://localhost:8081/auth/confirm）に戻る。メールを送った端末・ブラウザと同じところで開くこと。
 メールが届くのは Resend に登録したアドレスだけなので、シードの運営アカウントをそのアドレスにしてある。
 
 | アカウント              | 用途                                                                                                       |
@@ -138,7 +138,10 @@ select * from net._http_response order by id desc limit 5;      -- 関数の応�
 
 - PC とスマホを同じ Wi-Fi につなぎ、`app/.env` の `EXPO_PUBLIC_SUPABASE_URL` を PC の IP アドレス（`http://192.168.x.x:58321`）にしてアプリ（端末 B）を起動し直す
 - Windows（WSL2）では、ファイアウォールで 8081（Expo）と 58321（Supabase）を許可する。Wi-Fi が「パブリック」扱いだと許可ルールが効かないことがある
-- ログインのメールはスマホのメールアプリで開いてリンクを押す。リンクからアプリに戻る動きは、実機ではまだ確かめていない
+- ログインを試すときは次の 2 つが必要
+  - `supabase/.env` に `SUPABASE_AUTH_EXTERNAL_URL=http://<PC の IP>:58321/auth/v1` を書き、`npx supabase stop && npx supabase start`。メールのリンクの先頭（Supabase の確認用 URL）がスマホから届く IP になる
+  - 端末 B を `npm run start:tunnel` で起動して QR コードを読む。`npm run start:app`（LAN 接続）だとアプリの戻り先が `exp://192.168.x.x:8081/...` になり、Supabase Auth が IP のホストを拒否して `site_url`（localhost）に差し替えてしまう。トンネル（`*.exp.direct`）なら `exp://**` で許可される。`@expo/ngrok` が未導入なら `npm i -g @expo/ngrok`
+- ログインのメールはスマホのメールアプリで開いてリンクを押す。ブラウザが一瞬開いてから Expo Go に戻る（「Expo Go で開きますか」の確認が出たら許可する）。メールを送った端末と同じ端末で開くこと（PC の Web で送ってスマホで開く、はできない）
 - プッシュ通知は iOS の Expo Go なら許可ダイアログと端末の登録まで確かめられる。Android の Expo Go ではプッシュが使えない（SDK 53 以降）。実際の受信は開発ビルド（`eas build --profile development`）で確かめる
 
 ### 止める・やり直す

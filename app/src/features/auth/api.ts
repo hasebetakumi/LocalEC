@@ -4,12 +4,12 @@ import * as Linking from 'expo-linking';
 import { supabase } from '@/lib/supabase';
 
 /**
- * メールのリンクから戻る先。
- * Expo Go: exp://<IP>:8081/--/auth/confirm、ビルド版: localec://auth/confirm、Web: http://localhost:8081/auth/confirm
- * メールテンプレートが「{{ .RedirectTo }}?token_hash=…」を組み立てるので、ここにクエリを付けない
+ * メールのリンクから戻る先。Supabase が検証したあと「?code=…」を付けてここに転送する
+ * Expo Go: exp://<xxx>-8081.exp.direct/--/auth/confirm、ビルド版: localec://auth/confirm、Web: http://localhost:8081/auth/confirm
+ * メールアドレス変更は type=email_change を付けて、ログインと区別する（クエリは転送後も残る）
  */
-export function authRedirectUrl(): string {
-  return Linking.createURL('/auth/confirm');
+export function authRedirectUrl(type?: 'email_change'): string {
+  return Linking.createURL('/auth/confirm', { queryParams: type ? { type } : undefined });
 }
 
 export async function sendLoginLink(email: string) {
@@ -32,9 +32,9 @@ export async function sendRegisterLink(input: { email: string; name: string; pho
   if (error) throw error;
 }
 
-/** メールのリンクを検証する。type はログイン・登録が email、メールアドレス変更が email_change */
-export async function verifyEmailLink(tokenHash: string, type: 'email' | 'email_change' = 'email') {
-  const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
+/** メールのリンクから戻ったときの code をセッションに交換する（ログイン・登録・メールアドレス変更で共通） */
+export async function exchangeLoginCode(code: string) {
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) throw error;
 }
 
@@ -57,7 +57,7 @@ export async function setNotificationsEnabled(userId: string, enabled: boolean) 
 export async function requestEmailChange(email: string) {
   const { error } = await supabase.auth.updateUser(
     { email: email.trim() },
-    { emailRedirectTo: authRedirectUrl() },
+    { emailRedirectTo: authRedirectUrl('email_change') },
   );
   if (error) throw error;
 }
