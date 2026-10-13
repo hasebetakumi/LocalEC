@@ -1,3 +1,4 @@
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useMemo } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -9,6 +10,7 @@ import { Tag } from '@/components/Pills';
 import { PageHeader, Screen } from '@/components/Screen';
 import { ProductCard } from '@/features/listings/components/ProductCard';
 import { SectionHeader } from '@/features/listings/components/SectionHeader';
+import { CATEGORY_PHOTOS } from '@/features/listings/categoryPhotos';
 import { groupHome, type ListSection } from '@/features/listings/derive';
 import { useNotices, useProducts } from '@/features/listings/hooks';
 import { CATEGORIES, type ProductCategory } from '@/features/listings/master';
@@ -98,9 +100,12 @@ export default function HomeScreen() {
                 onPress={() => openList({ category: c.key })}
                 style={({ pressed }) => [styles.category, pressed && { opacity: 0.8 }]}
               >
-                <View style={styles.categoryPhoto}>
-                  <Text style={styles.categoryPhotoText}>{c.label}</Text>
-                </View>
+                <Image
+                  source={CATEGORY_PHOTOS[c.key]}
+                  style={styles.categoryPhoto}
+                  contentFit="cover"
+                  accessible={false}
+                />
                 <Text style={styles.categoryLabel}>{c.label}</Text>
               </Pressable>
             ))}
@@ -205,10 +210,7 @@ const styles = StyleSheet.create({
     height: 78,
     borderRadius: 20,
     backgroundColor: colors.photo,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  categoryPhotoText: { fontSize: 11, fontWeight: '700', color: colors.photoText },
   categoryLabel: { fontSize: 12, fontWeight: '700', letterSpacing: -0.25, color: colors.text },
   band: { gap: 12 },
   // 影が切れないよう上下に少し余白を取る
