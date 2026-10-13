@@ -1,6 +1,8 @@
 import { fireEvent, screen } from '@testing-library/react-native';
+import { router } from 'expo-router';
 
 import BookingsScreen from '@/app/(tabs)/bookings';
+import { peekNextPath } from '@/features/auth/api';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { fetchMyBookings } from '@/features/bookings/api';
 import { liveBooking } from '@/test/bookingFixtures';
@@ -60,5 +62,13 @@ describe('U-22 予約・申込', () => {
     await renderScreen(<BookingsScreen />);
     expect(screen.getByText('ログインすると予約・申し込みが表示されます')).toBeTruthy();
     expect(mockFetch).not.toHaveBeenCalled();
+  });
+
+  it('ログインボタンは戻り先（この画面）を保存してからログインへ', async () => {
+    auth(false);
+    await renderScreen(<BookingsScreen />);
+    await fireEvent.press(screen.getByText('ログイン・新規登録'));
+    expect(await peekNextPath()).toBe('/bookings');
+    expect(router.push).toHaveBeenCalledWith('/auth/login');
   });
 });

@@ -8,6 +8,7 @@ import { LoadError, Loading } from '@/components/LoadState';
 import { PageHeader, Screen } from '@/components/Screen';
 import { SegmentedControl } from '@/components/SegmentedControl';
 import { useAuth } from '@/features/auth/AuthProvider';
+import { goToLogin } from '@/features/auth/goToLogin';
 import {
   activeRowText,
   groupActive,
@@ -70,7 +71,7 @@ export default function BookingsScreen() {
           title="ログインすると予約・申し込みが表示されます"
           action={{
             label: 'ログイン・新規登録',
-            onPress: () => router.push('/auth/login'),
+            onPress: () => void goToLogin('/bookings'),
             kind: 'primary',
           }}
         />

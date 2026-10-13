@@ -1,5 +1,5 @@
 import { Redirect } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -8,13 +8,18 @@ import { PrimaryButton } from '@/components/Buttons';
 import { Loading } from '@/components/LoadState';
 import { NavBar, Screen } from '@/components/Screen';
 import { TextField } from '@/components/TextField';
-import { type Profile, requestEmailChange, updateProfile } from '@/features/auth/api';
+import { type Profile, requestEmailChange, saveNextPath, updateProfile } from '@/features/auth/api';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { isValidEmail, isValidPhone, normalizePhone } from '@/lib/format';
 
 /** 登録情報の変更（氏名・電話は即反映、メールは確認リンクで完了） */
 export default function ProfileEditScreen() {
   const { session, profile, loading } = useAuth();
+
+  // 未ログインで開かれたら、ログイン後にこの画面へ戻す
+  useEffect(() => {
+    if (!loading && !session) void saveNextPath('/account/profile');
+  }, [loading, session]);
 
   if (loading) {
     return (

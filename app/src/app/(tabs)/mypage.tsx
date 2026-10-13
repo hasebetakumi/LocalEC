@@ -20,6 +20,7 @@ import { Icon } from '@/components/Icon';
 import { PageHeader, Screen } from '@/components/Screen';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { setNotificationsEnabled } from '@/features/auth/api';
+import { goToLogin } from '@/features/auth/goToLogin';
 import { LEGAL_DOCS } from '@/features/legal/docs';
 import {
   getPushPermission,
@@ -101,7 +102,7 @@ export default function MyPageScreen() {
         {!session ? (
           <PrimaryButton
             label="ログイン・新規登録"
-            onPress={() => router.push('/auth/login')}
+            onPress={() => void goToLogin('/mypage')}
             height={56}
             labelSize={17}
           />

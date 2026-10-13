@@ -7,7 +7,7 @@ import { PrimaryButton, SecondaryButton, TextButton } from '@/components/Buttons
 import { Icon } from '@/components/Icon';
 import { Screen } from '@/components/Screen';
 import { TextField } from '@/components/TextField';
-import { sendLoginLink } from '@/features/auth/api';
+import { clearNextPath, sendLoginLink } from '@/features/auth/api';
 import { isValidEmail } from '@/lib/format';
 import { colors } from '@/theme/tokens';
 
@@ -38,6 +38,8 @@ export default function LoginScreen() {
   };
 
   const browse = () => {
+    // 戻り先を残すと、次に別の入口からログインしたときに古い画面へ飛んでしまう
+    void clearNextPath();
     if (router.canGoBack()) router.back();
     else router.replace('/');
   };

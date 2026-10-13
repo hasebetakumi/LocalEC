@@ -1,5 +1,7 @@
-import { act, render, screen } from '@testing-library/react-native';
-import { Text } from 'react-native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import type { ReactElement } from 'react';
+import { Pressable, Text } from 'react-native';
 
 import { AuthProvider, useAuth } from './AuthProvider';
 import { fetchProfile } from './api';
@@ -21,8 +23,16 @@ jest.mock('@/lib/supabase', () => ({
   },
 }));
 jest.mock('./api', () => ({ fetchProfile: jest.fn() }));
+jest.mock('@/features/notifications/push', () => ({ unregisterPush: jest.fn(async () => {}) }));
 
 const mockFetchProfile = jest.mocked(fetchProfile);
+
+// gcTime を無限にして、テスト後に GC のタイマーが残らないようにする（src/test/render.tsx と同じ）
+const newClient = () => new QueryClient({ defaultOptions: { queries: { gcTime: Infinity } } });
+
+function withQuery(ui: ReactElement, client = newClient()) {
+  return <QueryClientProvider client={client}>{ui}</QueryClientProvider>;
+}
 
 function Probe() {
   const { loading, isRegistered, session } = useAuth();
@@ -43,9 +53,11 @@ describe('AuthProvider', () => {
       }) as never,
     );
     await render(
-      <AuthProvider>
-        <Probe />
-      </AuthProvider>,
+      withQuery(
+        <AuthProvider>
+          <Probe />
+        </AuthProvider>,
+      ),
     );
     expect(await screen.findByText('ready/out/unreg')).toBeTruthy();
 
@@ -65,5 +77,25 @@ describe('AuthProvider', () => {
       }),
     );
     expect(screen.getByTestId('state')).toHaveTextContent('ready/in/reg');
+  });
+
+  it('ログアウトでキャッシュを消す（次にログインした人に前の人のデータを見せない）', async () => {
+    mockGetSession.mockResolvedValue({ data: { session: null } });
+    const client = newClient();
+    client.setQueryData(['staff', 'summaries'], [{ id: 'store-1' }]);
+    function SignOutButton() {
+      const { signOut } = useAuth();
+      return <Pressable testID="out" onPress={() => void signOut()} />;
+    }
+    await render(
+      withQuery(
+        <AuthProvider>
+          <SignOutButton />
+        </AuthProvider>,
+        client,
+      ),
+    );
+    await fireEvent.press(screen.getByTestId('out'));
+    await waitFor(() => expect(client.getQueryData(['staff', 'summaries'])).toBeUndefined());
   });
 });

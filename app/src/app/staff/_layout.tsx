@@ -1,5 +1,5 @@
-import { Redirect, router, Stack } from 'expo-router';
-import { useEffect } from 'react';
+import { Redirect, router, Stack, usePathname } from 'expo-router';
+import { useEffect, useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { PrimaryButton } from '@/components/Buttons';
@@ -10,13 +10,23 @@ import { saveNextPath } from '@/features/auth/api';
 import { adminColors } from '@/theme/adminTokens';
 
 /**
- * 運営画面のガード。未ログインはログインへ（戻り先 /staff）、スタッフでなければ権限なしの表示
+ * 運営画面のガード。未ログインはログインへ（戻り先は開こうとした画面）、スタッフでなければ権限なしの表示
  */
 export default function StaffLayout() {
   const { session, profile, loading } = useAuth();
+  const pathname = usePathname();
+  // この画面にいる間にセッションが消えた＝ログアウト。そのときは戻り先を残さない
+  // （残すと、次に別の人がログインしたときに運営画面へ飛んでしまう）
+  const hadSession = useRef(false);
+  // 開いた時点の画面だけを戻り先にする。画面遷移のたびに保存し直すと、裏に残ったガードが
+  // ほかの入口（マイページなど）で保存した戻り先を上書きしてしまう
+  const openedAt = useRef(pathname);
 
   useEffect(() => {
-    if (!loading && !session) void saveNextPath('/staff');
+    if (session) hadSession.current = true;
+    else if (!loading && !hadSession.current && openedAt.current.startsWith('/staff')) {
+      void saveNextPath(openedAt.current);
+    }
   }, [loading, session]);
 
   if (loading) {

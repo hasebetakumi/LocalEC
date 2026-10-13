@@ -91,19 +91,44 @@ export async function fetchProfile(userId: string): Promise<Profile | null> {
   return data;
 }
 
-// ログイン後に戻る画面（「予約へ進む」から来たとき）。メールのリンクには載せず端末に持つ
+// ログイン後に戻る画面。ログインへ送る側が保存し、ログイン完了（goAfterLogin）で消費する。メールのリンクには載せず端末に持つ
 const NEXT_KEY = 'auth.next';
+/**
+ * 戻り先の有効期間。メールのリンクの期限（15 分、config.toml の otp_expiry）に、登録情報の入力の時間を足した長さ。
+ * これより古い戻り先は、途中でやめたログインの名残なので使わない
+ */
+export const NEXT_TTL_MS = 60 * 60 * 1000;
+
+/** 保存した値を読み、使える戻り先だけ返す（期限切れ・旧形式の文字列・ログイン画面自体は捨てる） */
+export function parseNextPath(raw: string | null, now = Date.now()): string | null {
+  if (!raw) return null;
+  try {
+    const v = JSON.parse(raw) as { path?: unknown; savedAt?: unknown };
+    if (typeof v.path !== 'string' || typeof v.savedAt !== 'number') return null;
+    if (!v.path.startsWith('/') || v.path.startsWith('/auth')) return null;
+    if (now - v.savedAt > NEXT_TTL_MS) return null;
+    return v.path;
+  } catch {
+    // 2026-10-13 以前は文字列をそのまま保存していた。いつ保存したか分からないので使わない
+    return null;
+  }
+}
 
 export async function saveNextPath(path: string) {
-  await AsyncStorage.setItem(NEXT_KEY, path);
+  await AsyncStorage.setItem(NEXT_KEY, JSON.stringify({ path, savedAt: Date.now() }));
 }
 
 export async function peekNextPath(): Promise<string | null> {
-  return AsyncStorage.getItem(NEXT_KEY);
+  return parseNextPath(await AsyncStorage.getItem(NEXT_KEY));
 }
 
 export async function consumeNextPath(): Promise<string | null> {
-  const next = await AsyncStorage.getItem(NEXT_KEY);
+  const next = parseNextPath(await AsyncStorage.getItem(NEXT_KEY));
   await AsyncStorage.removeItem(NEXT_KEY);
   return next;
+}
+
+/** ログインせずに戻ったとき、古い戻り先が次のログインに残らないよう消す */
+export async function clearNextPath() {
+  await AsyncStorage.removeItem(NEXT_KEY);
 }

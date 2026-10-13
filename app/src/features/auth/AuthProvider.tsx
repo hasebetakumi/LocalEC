@@ -1,4 +1,5 @@
 import type { Session } from '@supabase/supabase-js';
+import { useQueryClient } from '@tanstack/react-query';
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 
 import { supabase } from '@/lib/supabase';
@@ -31,6 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [userVersion, setUserVersion] = useState(0);
 
   const userId = session?.user.id;
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     let active = true;
@@ -74,7 +76,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // この端末に別の人の通知が届かないよう、先に端末トークンを外す
     await unregisterPush().catch(() => {});
     await supabase.auth.signOut();
-  }, []);
+    // 前の人のデータ（運営側の店舗一覧・予約、利用者側の予約など）を次にログインした人に一瞬でも見せない
+    queryClient.clear();
+  }, [queryClient]);
 
   // 別のユーザーの読み込み結果は使わない
   const profile = userId && loaded?.userId === userId ? loaded.profile : null;
