@@ -6,6 +6,8 @@ type Shape = { d: string } | { cx: number; cy: number; r: number; fill?: boolean
 const ICONS = {
   tag: [{ d: 'M3.5 12.5V3.5h9l8.5 8.5-9 9z M8 8h.01' }],
   calendar: [{ d: 'M4 6h16v15H4z M4 10.5h16 M8.5 3v4 M15.5 3v4' }],
+  // 下タブ「イベント・求人」（募集・告知）。アプリ側は SF Symbols / Material のメガホンを使う
+  megaphone: [{ d: 'M3 10.5l17-5.5v14L3 13.5z M7 14v4.5a1.5 1.5 0 0 0 3 0V15' }],
   ticket: [{ d: 'M5.5 3h13v18l-3.2-2-3.3 2-3.3-2-3.2 2z M9 8.5h6 M9 12.5h6' }],
   person: [
     { d: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4.5 21c0-4.2 3.4-6.2 7.5-6.2s7.5 2 7.5 6.2' },
