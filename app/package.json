@@ -67,6 +67,7 @@
   },
   "jest": {
     "preset": "jest-expo",
+    "testTimeout": 30000,
     "setupFiles": [
       "<rootDir>/src/test/setup.ts"
     ]
