@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#E9E3D8;-webkit-font-smoothing:antialiased}a{color:#B3471A;text-decoration:none}a:hover{color:#8C3611;text-decoration:underline}</style>
+</helmet>
+<div style="width:max-content;padding:48px 56px 96px;font-family:'Noto Sans JP',system-ui,sans-serif;color:#1F1B17;display:flex;flex-direction:column;gap:56px">
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;gap:6px;font-size:13px;font-weight:700">
+<a href="00_画面一覧と遷移図.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">00 画面一覧・遷移図・未決事項</a>
+<a href="01_利用者画面_閲覧.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#1F1B17;color:#fff">01 利用者：閲覧</a>
+<a href="02_利用者画面_予約とアカウント.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">02 利用者：予約・アカウント</a>
+<a href="03_運営画面_PC.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">03 運営：PC</a>
+<a href="04_運営画面_スマホ.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">04 運営：スマホ</a>
+<a href="05_状態違い.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">05 状態違い</a>
+<a href="06_デザインルール.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">06 デザインルール</a>
+</div>
+<div style="font-size:34px;font-weight:800">01 利用者画面：登録・閲覧</div>
+<div style="font-size:15px;color:#4A443D">LocalEC（仮称）フェーズ1　スマホ幅 390pt。生成りの地にテラコッタのアクセント。写真が主役のカードと、丸いピル型のボタン。線で囲まず、面と間隔で区切る（カードは枠線なし・薄い影、入力欄は塗り、戻るは矢印アイコン、副ボタンは薄い塗り）。</div>
+</div>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<div style="font-size:22px;font-weight:800;border-bottom:2px solid #1F1B17;padding-bottom:8px">登録・ログイン（U-01）</div>
+<div style="display:flex;gap:44px;align-items:flex-start">
+
+<div data-screen-label="U-01 ログイン" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-01</span><span style="font-size:16px;font-weight:700">ログイン</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="flex:1;padding:48px 24px 24px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:14px">
+<div style="width:76px;height:76px;border-radius:24px;background:#B3471A;display:flex;align-items:center;justify-content:center"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h14l-1 11H6z"></path><path d="M9 9V7a3 3 0 0 1 6 0v2"></path><path d="M9.5 14c.8 1.4 4.2 1.4 5 0"></path></svg></div>
+<div style="font-size:28px;font-weight:900;letter-spacing:.02em">LocalEC</div>
+<div style="font-size:14px;color:#6A6159">地域の商品を、予約して受け取る</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:13px;font-weight:700;color:#6A6159;padding-left:4px">メールアドレス</div><div style="height:54px;border-radius:14px;background:#EFE9DF;display:flex;align-items:center;padding:0 16px;font-size:16px;color:#9A9087">example@mail.jp</div><div style="font-size:12.5px;color:#6A6159;line-height:1.5;padding-left:4px">パスワードはありません。メールに届くリンクを押すとログインできます</div></div>
+<div style="height:56px;border-radius:999px;background:#B3471A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;margin-top:6px">ログイン用リンクを送る</div>
+<div style="display:flex;align-items:center;gap:12px;margin:6px 0"><span style="flex:1;height:1px;background:#DDD3C4"></span><span style="font-size:13px;color:#9A9087">はじめての方</span><span style="flex:1;height:1px;background:#DDD3C4"></span></div>
+<div style="height:56px;border-radius:999px;background:#EFE9DF;color:#1F1B17;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700">新規登録</div>
+<div style="text-align:center;font-size:14px;font-weight:700;color:#6A6159;margin-top:6px">ログインせずに商品を見る</div>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div><b style="color:#B3471A">→ U-01 メール送信後</b>　リンクを押すとログイン済みで U-10 へ</div>
+<div><b style="color:#B3471A">→ U-01 新規登録</b></div>
+<div>未登録のメールでも同じ表示。リンク先で新規登録へ案内</div>
+</div>
+</div>
+
+<div data-screen-label="U-01 新規登録" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-01</span><span style="font-size:16px;font-weight:700">新規登録</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="height:56px;flex:none;display:flex;align-items:center;gap:2px;padding:0 10px;white-space:nowrap"><span style="width:40px;height:40px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span><span style="font-size:17px;font-weight:800">新規登録</span></div>
+<div style="flex:1;padding:6px 24px 24px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:13px;font-weight:700;color:#6A6159;padding-left:4px">お名前</div><div style="height:52px;border-radius:14px;background:#EFE9DF;display:flex;align-items:center;padding:0 16px;font-size:16px;color:#9A9087">例）栗橋 花子</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:13px;font-weight:700;color:#6A6159;padding-left:4px">電話番号</div><div style="height:52px;border-radius:14px;background:#EFE9DF;display:flex;align-items:center;padding:0 16px;font-size:16px;color:#9A9087">例）09012345678</div><div style="font-size:12.5px;color:#6A6159;line-height:1.5;padding-left:4px">受け取り時の確認と、お店からの連絡に使います</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:13px;font-weight:700;color:#6A6159;padding-left:4px">メールアドレス</div><div style="height:52px;border-radius:14px;background:#EFE9DF;display:flex;align-items:center;padding:0 16px;font-size:16px;color:#9A9087">example@mail.jp</div><div style="font-size:12.5px;color:#6A6159;line-height:1.5;padding-left:4px">ログインに使います（パスワードはありません）</div></div>
+<div style="display:flex;gap:12px;align-items:flex-start;background:#fff;border-radius:16px;padding:14px">
+<span style="width:26px;height:26px;flex:none;border-radius:8px;background:#B3471A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800">✓</span>
+<span style="font-size:14.5px;line-height:1.6"><span style="color:#B3471A;font-weight:700;text-decoration:underline">利用規約</span>と<span style="color:#B3471A;font-weight:700;text-decoration:underline">プライバシーポリシー</span>に同意する</span>
+</div>
+<div style="height:56px;border-radius:999px;background:#B3471A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;margin-top:auto">登録する</div>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div>同意にチェックするまで「登録する」は押せない</div>
+<div><b style="color:#B3471A">→ U-01 メール送信後</b>　リンクを押すと登録完了＋ログイン済みで U-10 へ</div>
+<div>電話番号は必須。SMS認証はフェーズ1では行わない</div>
+</div>
+</div>
+
+<div data-screen-label="U-01 メール送信後" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-01</span><span style="font-size:16px;font-weight:700">メール送信後</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="height:56px;flex:none;display:flex;align-items:center;gap:2px;padding:0 10px;white-space:nowrap"><span style="width:40px;height:40px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span></div>
+<div style="flex:1;padding:40px 24px 24px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center">
+<div style="width:84px;height:84px;border-radius:42px;background:#FBEBE0;display:flex;align-items:center;justify-content:center"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#B3471A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18v12H3z"></path><path d="M3 7l9 6 9-6"></path></svg></div>
+<div style="font-size:24px;font-weight:900">メールを送りました</div>
+<div style="font-size:15.5px;line-height:1.75;color:#4A443D"><b style="color:#1F1B17">example@mail.jp</b> 宛にログイン用のリンクを送りました。メールを開いてリンクを押すと、このアプリに戻ってログインが完了します。</div>
+<div style="background:#fff;border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.6;color:#4A443D;text-align:left;width:100%">メールが届かないときは、迷惑メールフォルダをご確認ください。リンクの有効期限は15分です。</div>
+<div style="height:52px;border-radius:999px;background:#EFE9DF;color:#1F1B17;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;width:100%;margin-top:auto">メールを再送する</div>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div>ログイン・新規登録どちらもこの画面を経由。パスワード再設定は不要</div>
+<div><b style="color:#B3471A">→ U-10</b>　メール内リンクを押す</div>
+</div>
+</div>
+
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<div style="font-size:22px;font-weight:800;border-bottom:2px solid #1F1B17;padding-bottom:8px">ホームと一覧（U-10・U-13・U-11）</div>
+<div style="display:flex;gap:44px;align-items:flex-start">
+
+<div data-screen-label="U-10 商品ホーム" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-10</span><span style="font-size:16px;font-weight:700">商品（ホーム）</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="flex:1;overflow:hidden;display:flex;flex-direction:column;gap:18px;padding-top:8px">
+<div style="padding:0 20px;display:flex;align-items:center;gap:10px"><span style="font-size:30px;font-weight:900;letter-spacing:-.01em">商品</span><span style="font-size:13px;font-weight:700;color:#B3471A;background:#FBEBE0;padding:3px 9px;border-radius:999px">18件</span><span style="flex:1"></span><span style="position:relative;width:44px;height:44px;border-radius:22px;background:#fff;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z M10 21h4"></path></svg><span style="position:absolute;top:6px;right:6px;min-width:18px;height:18px;border-radius:9px;background:#B3471A;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid #F6F1E8;box-sizing:border-box">2</span></span></div>
+<div style="flex:none;display:flex;gap:14px;padding:0 20px;overflow:hidden">
+<sc-for list="{{ cats }}" as="c" hint-placeholder-count="7">
+<div style="flex:none;width:78px;display:flex;flex-direction:column;align-items:center;gap:8px"><div style="flex:none;width:78px;height:78px;border-radius:20px;background:repeating-linear-gradient(135deg,#EADFD0 0 9px,#E3D6C4 9px 18px);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#8C7B68">{{ c.p }}</div><span style="font-size:12px;font-weight:700;letter-spacing:-.02em;white-space:nowrap">{{ c.t }}</span></div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="padding:0 20px;display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:19px;font-weight:800">もうすぐ終了！</span><span style="font-size:13px;font-weight:700;color:#B3471A">すべて見る</span></div>
+<div style="display:flex;gap:12px;padding:0 20px;overflow:hidden">
+<sc-for list="{{ soon }}" as="d" hint-placeholder-count="2">
+<div style="width:292px;flex:none;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 3px rgba(31,27,23,.06)">
+<div style="height:150px;position:relative;background:repeating-linear-gradient(135deg,#EADFD0 0 12px,#E3D6C4 12px 24px);display:flex;align-items:center;justify-content:center;color:#8C7B68;font-size:13px;font-weight:700">{{ d.photo }}
+<span style="{{ d.b1S }}">{{ d.b1 }}</span>
+<span style="position:absolute;top:10px;right:10px;background:rgba(31,27,23,.78);color:#fff;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px">{{ d.remain }}</span>
+</div>
+<div style="padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px">
+<span style="font-size:12px;font-weight:700;color:#6A6159">{{ d.store }}</span>
+<span style="font-size:16.5px;font-weight:700;line-height:1.35">{{ d.name }}</span>
+<div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:4px">
+<span style="font-size:12.5px;color:#4A443D;line-height:1.4">受け取り<br><b style="font-size:13.5px">{{ d.period }}</b></span>
+<div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:13px;color:#9A9087;text-decoration:line-through">{{ d.was }}</span><span style="font-size:24px;font-weight:900;color:#B3471A;letter-spacing:-.01em">{{ d.price }}</span></div>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="padding:0 20px;display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:19px;font-weight:800">新着</span><span style="font-size:13px;font-weight:700;color:#B3471A">すべて見る</span></div>
+<div style="display:flex;gap:12px;padding:0 20px;overflow:hidden">
+<sc-for list="{{ fresh }}" as="d" hint-placeholder-count="2">
+<div style="width:292px;flex:none;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 3px rgba(31,27,23,.06)">
+<div style="height:150px;position:relative;background:repeating-linear-gradient(135deg,#E3E8DA 0 12px,#DCE2D2 12px 24px);display:flex;align-items:center;justify-content:center;color:#6E7A5E;font-size:13px;font-weight:700">{{ d.photo }}
+<span style="{{ d.b1S }}">{{ d.b1 }}</span>
+<span style="position:absolute;top:10px;right:10px;background:rgba(31,27,23,.78);color:#fff;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px">{{ d.remain }}</span>
+</div>
+<div style="padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px">
+<span style="font-size:12px;font-weight:700;color:#6A6159">{{ d.store }}</span>
+<span style="font-size:16.5px;font-weight:700;line-height:1.35">{{ d.name }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="flex:none;height:80px;background:#fff;border-top:1px solid #EAE2D6;display:flex;padding-top:8px">
+<sc-for list="{{ tab0 }}" as="t" hint-placeholder-count="5"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ t.c }}" stroke-width="{{ t.w }}" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.d }}"></path></svg><span style="{{ t.s }}">{{ t.l }}</span></div></sc-for>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div>構成：カテゴリの写真アイコン → 「もうすぐ終了」→「新着」→ カテゴリ別の帯（横スクロール）</div>
+<div><b style="color:#B3471A">→ U-12</b>　カードをタップ　<b style="color:#B3471A">→ U-10 一覧</b>　すべて見る／カテゴリ</div>
+<div>割引バッジ（半額・◯%OFF）は左上、残り数は右上。価格は元値取り消し線＋割引後</div>
+<div>「残りわずか」：残り3以下　「締切間近」：締切まで24時間以内</div>
+</div>
+</div>
+
+<div data-screen-label="U-10 一覧 すべて見る" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-10・U-13</span><span style="font-size:16px;font-weight:700">一覧（すべて見る）＋絞り込み</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="height:56px;flex:none;display:flex;align-items:center;gap:2px;padding:0 10px;white-space:nowrap"><span style="width:40px;height:40px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span><span style="font-size:17px;font-weight:800">もうすぐ終了！</span></div>
+<div style="flex:1;overflow:hidden;display:flex;flex-direction:column;gap:12px;padding:4px 20px 0">
+<div style="display:flex;gap:8px">
+<sc-for list="{{ fchips }}" as="f" hint-placeholder-count="3"><span style="{{ f.s }}">{{ f.t }}</span></sc-for>
+</div>
+<sc-for list="{{ soonList }}" as="d" hint-placeholder-count="3">
+<div style="background:#fff;border-radius:20px;overflow:hidden;flex:none;box-shadow:0 1px 3px rgba(31,27,23,.06)">
+<div style="height:140px;position:relative;background:repeating-linear-gradient(135deg,#EADFD0 0 12px,#E3D6C4 12px 24px);display:flex;align-items:center;justify-content:center;color:#8C7B68;font-size:13px;font-weight:700">{{ d.photo }}
+<span style="{{ d.b1S }}">{{ d.b1 }}</span>
+<span style="position:absolute;top:10px;right:10px;background:rgba(31,27,23,.78);color:#fff;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px">{{ d.remain }}</span>
+</div>
+<div style="padding:12px 14px 14px;display:flex;flex-direction:column;gap:3px">
+<span style="font-size:12px;font-weight:700;color:#6A6159">{{ d.store }}</span>
+<span style="font-size:16.5px;font-weight:700">{{ d.name }}</span>
+<div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:2px">
+<span style="font-size:13px;color:#4A443D">受け取り <b>{{ d.period }}</b></span>
+<div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:13px;color:#9A9087;text-decoration:line-through">{{ d.was }}</span><span style="font-size:24px;font-weight:900;color:#B3471A">{{ d.price }}</span></div>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div>上部の「カテゴリ」「店舗」チップで U-13 絞り込みシートを開く（右の画面）</div>
+<div>新着順。カテゴリの帯から来たときはタイトルがカテゴリ名になる</div>
+</div>
+</div>
+
+<div data-screen-label="U-13 絞り込み" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-13</span><span style="font-size:16px;font-weight:700">絞り込みシート</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column;position:relative">
+<div style="height:50px;flex:none"></div>
+<div style="padding:10px 20px;font-size:17px;font-weight:700">もうすぐ終了！</div>
+<div style="position:absolute;inset:0;background:rgba(31,27,23,.5)"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:28px 28px 0 0;padding:10px 20px 34px;display:flex;flex-direction:column;gap:16px">
+<div style="width:40px;height:5px;border-radius:3px;background:#DDD3C4;align-self:center"></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:20px;font-weight:800">絞り込み</span><span style="width:36px;height:36px;border-radius:18px;background:#F6F1E8;display:flex;align-items:center;justify-content:center;font-size:18px">×</span></div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-size:14px;font-weight:700">カテゴリ</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ catChips }}" as="c" hint-placeholder-count="6"><span style="{{ c.s }}">{{ c.t }}</span></sc-for></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px">
+<div style="font-size:14px;font-weight:700;margin-bottom:6px">店舗</div>
+<sc-for list="{{ stores }}" as="s" hint-placeholder-count="4"><div style="height:50px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #F0EBE4"><span style="{{ s.r }}"></span><span style="font-size:15.5px">{{ s.t }}</span></div></sc-for>
+</div>
+<div style="display:flex;gap:10px">
+<div style="flex:1;height:56px;border-radius:999px;background:#EFE9DF;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700">クリア</div>
+<div style="flex:2;height:56px;border-radius:999px;background:#B3471A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700">この条件で見る</div>
+</div>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div>カテゴリ・店舗とも1つだけ選ぶ。キーワード検索はなし</div>
+<div>U-11 イベント・求人一覧でも同じシートを使う</div>
+</div>
+</div>
+
+<div data-screen-label="U-11 イベント・求人一覧" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-11</span><span style="font-size:16px;font-weight:700">イベント・求人一覧</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="flex:1;overflow:hidden;display:flex;flex-direction:column;gap:14px;padding:8px 20px 0">
+<div style="font-size:30px;font-weight:900;letter-spacing:-.01em">イベント・求人</div>
+<div style="display:flex;background:#EFE9DF;border-radius:999px;padding:4px">
+<div style="flex:1;height:40px;border-radius:999px;background:#1F1B17;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14.5px;font-weight:700">すべて</div>
+<div style="flex:1;height:40px;display:flex;align-items:center;justify-content:center;font-size:14.5px;font-weight:700;color:#4A443D">イベント</div>
+<div style="flex:1;height:40px;display:flex;align-items:center;justify-content:center;font-size:14.5px;font-weight:700;color:#4A443D">求人</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ ejs }}" as="e" hint-placeholder-count="4">
+<div style="background:#fff;border-radius:20px;padding:12px;display:flex;gap:12px;flex:none;box-shadow:0 1px 3px rgba(31,27,23,.06)">
+<div style="width:92px;height:92px;flex:none;border-radius:14px;background:repeating-linear-gradient(135deg,#E3E8DA 0 10px,#DCE2D2 10px 20px);display:flex;align-items:center;justify-content:center;color:#6E7A5E;font-size:12px;font-weight:700;position:relative">写真<span style="{{ e.kindS }}">{{ e.kind }}</span></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+<div style="font-size:16px;font-weight:700;line-height:1.4">{{ e.title }}</div>
+<div style="font-size:13px;color:#4A443D;line-height:1.55">{{ e.when }}<br>{{ e.where }}</div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:2px"><span style="font-size:14px;font-weight:800">{{ e.meta }}</span><span style="{{ e.stS }}">{{ e.st }}</span></div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="flex:none;height:80px;background:#fff;border-top:1px solid #EAE2D6;display:flex;padding-top:8px">
+<sc-for list="{{ tab1 }}" as="t" hint-placeholder-count="5"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ t.c }}" stroke-width="{{ t.w }}" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.d }}"></path></svg><span style="{{ t.s }}">{{ t.l }}</span></div></sc-for>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div><b style="color:#B3471A">→ U-12</b>　イベント詳細／求人詳細</div>
+<div>種類のラベルは写真の上に。「残りわずか」は赤字で右下</div>
+</div>
+</div>
+
+<div data-screen-label="U-11 お知らせ一覧" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-11</span><span style="font-size:16px;font-weight:700">お知らせ一覧</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="flex:1;overflow:hidden;display:flex;flex-direction:column;gap:14px;padding:8px 20px 0">
+<div style="display:flex;align-items:center;gap:10px"><span style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex:none;margin-left:-10px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span><span style="font-size:30px;font-weight:900;letter-spacing:-.01em">お知らせ</span></div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ news }}" as="n" hint-placeholder-count="5">
+<div style="background:#fff;border-radius:18px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:14px 16px;display:flex;flex-direction:column;gap:5px;flex:none">
+<div style="display:flex;align-items:center;gap:8px"><span style="font-size:12.5px;font-weight:700;color:#6A6159">{{ n.date }}</span><span style="font-size:12.5px;font-weight:700;color:#6A6159">{{ n.store }}</span><span style="{{ n.newS }}">NEW</span></div>
+<div style="font-size:16px;font-weight:700;line-height:1.45">{{ n.title }}</div>
+<div style="font-size:13.5px;color:#4A443D;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">{{ n.body }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="flex:none;height:80px;background:#fff;border-top:1px solid #EAE2D6;display:flex;padding-top:8px">
+<sc-for list="{{ tab2 }}" as="t" hint-placeholder-count="5"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ t.c }}" stroke-width="{{ t.w }}" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.d }}"></path></svg><span style="{{ t.s }}">{{ t.l }}</span></div></sc-for>
+</div>
+</div>
+<div style="max-width:390px;font-size:13px;line-height:1.6;color:#4A443D"><b style="color:#B3471A">→ お知らせ詳細</b>　商品（U-10）右上のベルから開く。ベルには未読件数。読むだけ、新しい順、未読は NEW</div>
+</div>
+
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<div style="font-size:22px;font-weight:800;border-bottom:2px solid #1F1B17;padding-bottom:8px">詳細（U-12）　※縦に長い画面はスクロール全体を表示</div>
+<div style="display:flex;gap:44px;align-items:flex-start">
+
+<div data-screen-label="U-12 商品詳細" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-12</span><span style="font-size:16px;font-weight:700">商品詳細</span><span style="font-size:12px;color:#6A6159">スクロール全体</span></div>
+<div style="width:390px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:300px;flex:none;position:relative;background:repeating-linear-gradient(135deg,#EADFD0 0 14px,#E3D6C4 14px 28px);display:flex;align-items:center;justify-content:center;color:#8C7B68;font-size:14px;font-weight:700">写真：日替わり弁当
+<div style="position:absolute;top:56px;left:16px;width:44px;height:44px;border-radius:22px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 2px 8px rgba(0,0,0,.15)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+<span style="position:absolute;left:16px;bottom:16px;background:#B3471A;color:#fff;font-size:13px;font-weight:800;padding:6px 12px;border-radius:999px">本日限定</span>
+</div>
+<div style="background:#FDF0C8;padding:11px 20px;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:800;color:#6B4A00"><span>残り12食</span><span style="font-weight:700">予約締切 10:00</span></div>
+<div style="padding:18px 20px 20px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:13.5px;font-weight:700;color:#6A6159">カフェ あけぼの 駅前店</div>
+<div style="font-size:26px;font-weight:900;line-height:1.3">日替わり弁当</div>
+<div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:15px;color:#9A9087;text-decoration:line-through">800円</span><span style="font-size:34px;font-weight:900;color:#B3471A;letter-spacing:-.01em">600<span style="font-size:18px">円</span></span><span style="font-size:12px;font-weight:700;color:#B3471A;background:#FBEBE0;padding:3px 8px;border-radius:999px">25%OFF</span></div>
+<div style="font-size:15px;line-height:1.8;color:#4A443D;margin-top:4px">今日のメインは鶏の照り焼き。地元の野菜を使った副菜が3種類付きます。ごはんは地元産のお米です。</div>
+</div>
+<div style="background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 3px rgba(31,27,23,.06)">
+<div style="padding:14px 16px;border-bottom:1px solid #F0EBE4;display:flex;gap:12px;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B3471A" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="8.6"></circle><path d="M12 7.4V12l3.2 1.9"></path></svg><div style="display:flex;flex-direction:column"><span style="font-size:12px;font-weight:700;color:#6A6159">受け取り時間</span><span style="font-size:18px;font-weight:800">10/5(月) 11:30〜13:30</span></div></div>
+<div style="padding:14px 16px;display:flex;gap:12px;align-items:flex-start"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B3471A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg><div style="display:flex;flex-direction:column;gap:3px;flex:1"><span style="font-size:12px;font-weight:700;color:#6A6159">受け取り場所</span><span style="font-size:16px;font-weight:800">カフェ あけぼの 駅前店</span><span style="font-size:14px;color:#4A443D;line-height:1.5">埼玉県久喜市栗橋東1-2-8</span><div style="height:46px;border-radius:999px;background:#FBEBE0;color:#B3471A;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;margin-top:8px">地図アプリで開く ↗</div></div></div>
+</div>
+<div style="background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 3px rgba(31,27,23,.06)">
+<div style="padding:14px 16px;border-bottom:1px solid #F0EBE4;display:flex;flex-direction:column;gap:8px">
+<span style="font-size:12px;font-weight:700;color:#6A6159">お支払い（店頭で）</span>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span style="font-size:13.5px;font-weight:700;padding:6px 12px;border-radius:999px;background:#F6F1E8">現金</span><span style="font-size:13.5px;font-weight:700;padding:6px 12px;border-radius:999px;background:#F6F1E8">PayPay</span></div>
+<span style="font-size:12.5px;color:#6A6159">アプリでのお支払いはありません</span>
+</div>
+<div style="padding:14px 16px;border-bottom:1px solid #F0EBE4;display:flex;flex-direction:column;gap:3px"><span style="font-size:12px;font-weight:700;color:#6A6159">キャンセル</span><span style="font-size:15px;font-weight:700">できます（10/5(月) 10:00 まで）</span></div>
+<div style="padding:14px 16px;display:flex;flex-direction:column;gap:8px"><span style="font-size:12px;font-weight:700;color:#6A6159">食品表示</span>
+<span style="font-size:14px;line-height:1.6">アレルギー・原材料・消費期限などは店舗にお問い合わせください。</span></div>
+</div>
+</div>
+<div style="background:#fff;border-top:1px solid #EAE2D6;padding:12px 20px 30px;display:flex;align-items:center;gap:14px">
+<div style="display:flex;flex-direction:column;flex:none"><span style="font-size:13px;color:#9A9087;text-decoration:line-through">800円</span><span style="font-size:26px;font-weight:900;color:#B3471A;line-height:1.1">600<span style="font-size:15px">円</span></span></div>
+<div style="flex:1;height:58px;border-radius:999px;background:#B3471A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800">予約へ進む</div>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div><b style="color:#B3471A">→ U-20 予約</b>　下部固定のバー（価格＋ボタン）</div>
+<div>写真直下の帯で「残り数」と「予約締切」を最初に伝える</div>
+<div>元値は掲載側で任意入力。なければ割引バッジと取り消し線を出さない</div>
+<div>未ログインなら「予約へ進む」で U-01 へ</div>
+</div>
+</div>
+
+<div data-screen-label="U-12 イベント詳細" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-12</span><span style="font-size:16px;font-weight:700">イベント詳細</span><span style="font-size:12px;color:#6A6159">スクロール全体</span></div>
+<div style="width:390px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:250px;flex:none;position:relative;background:repeating-linear-gradient(135deg,#E3E8DA 0 14px,#DCE2D2 14px 28px);display:flex;align-items:center;justify-content:center;color:#6E7A5E;font-size:14px;font-weight:700">写真：さつまいも畑
+<div style="position:absolute;top:56px;left:16px;width:44px;height:44px;border-radius:22px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 2px 8px rgba(0,0,0,.15)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+<span style="position:absolute;left:16px;bottom:16px;background:#2E7D52;color:#fff;font-size:13px;font-weight:800;padding:6px 12px;border-radius:999px">イベント</span>
+</div>
+<div style="background:#FDF0C8;padding:11px 20px;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:800;color:#6B4A00"><span>残り定員 8名 / 20名</span><span style="font-weight:700">申し込み締切 10/15(木)</span></div>
+<div style="padding:18px 20px 20px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:13.5px;font-weight:700;color:#6A6159">あけぼの農園</div>
+<div style="font-size:26px;font-weight:900;line-height:1.3">親子でさつまいも掘り体験</div>
+<div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:13px;color:#6A6159">1名</span><span style="font-size:30px;font-weight:900;letter-spacing:-.01em">500<span style="font-size:16px">円</span></span></div>
+</div>
+<div style="background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 3px rgba(31,27,23,.06)">
+<div style="padding:14px 16px;border-bottom:1px solid #F0EBE4;display:flex;gap:12px;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B3471A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v15H4z M4 10.5h16 M8.5 3v4 M15.5 3v4"></path></svg><div style="display:flex;flex-direction:column"><span style="font-size:12px;font-weight:700;color:#6A6159">日時</span><span style="font-size:18px;font-weight:800">10/18(日) 10:00〜12:00</span></div></div>
+<div style="padding:14px 16px;display:flex;gap:12px;align-items:flex-start"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B3471A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg><div style="display:flex;flex-direction:column;gap:3px;flex:1"><span style="font-size:12px;font-weight:700;color:#6A6159">場所</span><span style="font-size:16px;font-weight:800">あけぼの農園 第2畑</span><span style="font-size:14px;color:#4A443D">埼玉県久喜市栗橋北3-10</span><div style="height:46px;border-radius:999px;background:#FBEBE0;color:#B3471A;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;margin-top:8px">地図アプリで開く ↗</div></div></div>
+</div>
+<div style="background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 3px rgba(31,27,23,.06)">
+<div style="padding:14px 16px;border-bottom:1px solid #F0EBE4;display:flex;flex-direction:column;gap:8px">
+<span style="font-size:12px;font-weight:700;color:#6A6159">お支払い（当日受付で）</span>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span style="font-size:13.5px;font-weight:700;padding:6px 12px;border-radius:999px;background:#F6F1E8">現金</span><span style="font-size:13.5px;font-weight:700;padding:6px 12px;border-radius:999px;background:#F6F1E8">PayPay</span></div>
+<span style="font-size:12.5px;color:#6A6159">アプリでのお支払いはありません</span>
+</div>
+<div style="padding:14px 16px;border-bottom:1px solid #F0EBE4;display:flex;flex-direction:column;gap:3px"><span style="font-size:12px;font-weight:700;color:#6A6159">キャンセル</span><span style="font-size:15px;font-weight:700">できます（10/16(金) 18:00 まで）</span></div>
+<div style="padding:14px 16px;display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:700;color:#6A6159">参加条件・持ち物</span><span style="font-size:14.5px;line-height:1.7">小学生以下のお子さまと保護者。軍手・汚れてもよい服装でお越しください。</span></div>
+</div>
+</div>
+<div style="background:#fff;border-top:1px solid #EAE2D6;padding:12px 20px 30px;display:flex;align-items:center;gap:14px">
+<div style="display:flex;flex-direction:column;flex:none"><span style="font-size:12px;color:#6A6159">1名</span><span style="font-size:26px;font-weight:900;line-height:1.1">500<span style="font-size:15px">円</span></span></div>
+<div style="flex:1;height:58px;border-radius:999px;background:#B3471A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800">参加を申し込む</div>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div><b style="color:#B3471A">→ U-20 申し込み</b>　人数を選ぶ画面へ</div>
+<div>支払い方法は商品と同じく店舗管理（A-02）の設定を表示</div>
+</div>
+</div>
+
+<div data-screen-label="U-12 求人詳細" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-12</span><span style="font-size:16px;font-weight:700">求人詳細</span><span style="font-size:12px;color:#6A6159">スクロール全体</span></div>
+<div style="width:390px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:250px;flex:none;position:relative;background:repeating-linear-gradient(135deg,#E9E3D1 0 14px,#E2DBC6 14px 28px);display:flex;align-items:center;justify-content:center;color:#7F7556;font-size:14px;font-weight:700">写真：稲の脱穀
+<div style="position:absolute;top:56px;left:16px;width:44px;height:44px;border-radius:22px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 2px 8px rgba(0,0,0,.15)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+<span style="position:absolute;left:16px;bottom:16px;background:#2F5F9E;color:#fff;font-size:13px;font-weight:800;padding:6px 12px;border-radius:999px">求人</span>
+</div>
+<div style="background:#E7EFFA;padding:11px 20px;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:800;color:#244F86"><span>募集 5名・応募受付中</span><span style="font-weight:700">応募締切 10/8(木)</span></div>
+<div style="padding:18px 20px 20px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:13.5px;font-weight:700;color:#6A6159">あけぼの農園</div>
+<div style="font-size:26px;font-weight:900;line-height:1.3">稲の脱穀作業（日払い）</div>
+<div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:14px;font-weight:700;color:#6A6159">日給</span><span style="font-size:30px;font-weight:900;letter-spacing:-.01em">9,000<span style="font-size:16px">円</span></span></div>
+</div>
+<div style="background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 3px rgba(31,27,23,.06)">
+<div style="padding:14px 16px;border-bottom:1px solid #F0EBE4;display:flex;gap:12px;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B3471A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v15H4z M4 10.5h16 M8.5 3v4 M15.5 3v4"></path></svg><div style="display:flex;flex-direction:column"><span style="font-size:12px;font-weight:700;color:#6A6159">日時</span><span style="font-size:18px;font-weight:800">10/10(土) 8:00〜15:00</span></div></div>
+<div style="padding:14px 16px;display:flex;gap:12px;align-items:flex-start"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B3471A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg><div style="display:flex;flex-direction:column;gap:3px;flex:1"><span style="font-size:12px;font-weight:700;color:#6A6159">場所</span><span style="font-size:16px;font-weight:800">あけぼの農園 作業場</span><span style="font-size:14px;color:#4A443D">埼玉県久喜市栗橋北3-12</span><div style="height:46px;border-radius:999px;background:#FBEBE0;color:#B3471A;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;margin-top:8px">地図アプリで開く ↗</div></div></div>
+</div>
+<div style="background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 3px rgba(31,27,23,.06)">
+<div style="padding:14px 16px;border-bottom:1px solid #F0EBE4;display:flex;flex-direction:column;gap:3px"><span style="font-size:12px;font-weight:700;color:#6A6159">応募の取り消し</span><span style="font-size:15px;font-weight:700">できます（10/8(木) 18:00 まで）</span></div>
+<div style="padding:14px 16px;display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:700;color:#6A6159">条件・仕事内容</span><span style="font-size:14.5px;line-height:1.7">18歳以上。刈り取った稲の運搬と脱穀機の補助。昼食付き。報酬は当日現金でお支払いします。</span></div>
+</div>
+<div style="background:#E7EFFA;border-radius:16px;padding:12px 16px;font-size:14px;line-height:1.6;color:#1E3F6B">応募後、店舗からご登録の電話番号またはメールアドレスにご連絡いたします。</div>
+</div>
+<div style="background:#fff;border-top:1px solid #EAE2D6;padding:12px 20px 30px">
+<div style="height:58px;border-radius:999px;background:#B3471A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800">この求人に応募する</div>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div><b style="color:#B3471A">→ U-20 応募確認</b></div>
+<div>求人は募集人数に達しても応募できるため、帯は青で「受付中」を伝える。キャンセルは「応募の取り消し」と表記</div>
+</div>
+</div>
+
+<div data-screen-label="U-11 お知らせ詳細" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-11</span><span style="font-size:16px;font-weight:700">お知らせ詳細</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="height:56px;flex:none;display:flex;align-items:center;gap:2px;padding:0 10px;white-space:nowrap"><span style="width:40px;height:40px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span><span style="font-size:17px;font-weight:800">お知らせ</span></div>
+<div style="flex:1;padding:8px 20px 24px"><div style="background:#fff;border-radius:22px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:22px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:13px;font-weight:700;color:#6A6159">2026年10月3日（土）</div>
+<div style="font-size:22px;font-weight:900;line-height:1.45">駅前店の営業時間が変わります</div>
+<div style="height:1px;background:#EAE2D6"></div>
+<div style="font-size:15.5px;line-height:1.9;color:#1F1B17">10月12日（月）から、カフェ あけぼの 駅前店の営業時間を 8:00〜17:00 に変更します。お弁当の受け取り時間は各掲載に記載の時間をご確認ください。<br><br>今後ともよろしくお願いいたします。</div>
+</div></div>
+<div style="flex:none;height:80px;background:#fff;border-top:1px solid #EAE2D6;display:flex;padding-top:8px">
+<sc-for list="{{ tab2 }}" as="t" hint-placeholder-count="5"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ t.c }}" stroke-width="{{ t.w }}" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.d }}"></path></svg><span style="{{ t.s }}">{{ t.l }}</span></div></sc-for>
+</div>
+</div>
+<div style="max-width:390px;font-size:13px;line-height:1.6;color:#4A443D">読むだけ。写真は付けない（本文のみ）</div>
+</div>
+
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const D = ['M3.5 12.5V3.5h9l8.5 8.5-9 9z M8 8h.01', 'M4 6h16v15H4z M4 10.5h16 M8.5 3v4 M15.5 3v4', 'M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z M10 21h4', 'M5.5 3h13v18l-3.2-2-3.3 2-3.3-2-3.2 2z M9 8.5h6 M9 12.5h6', 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4.5 21c0-4.2 3.4-6.2 7.5-6.2s7.5 2 7.5 6.2'];
+    D.splice(2, 1);
+    const L = ['商品', 'イベント・求人', '予約・申込', 'マイページ'];
+    const tab = a => L.map((l, i) => ({ l, d: D[i], c: i === a ? '#B3471A' : '#8A8178', w: i === a ? 2.3 : 1.8, s: 'font-size:11px;font-weight:700;letter-spacing:-.05em;white-space:nowrap;color:' + (i === a ? '#B3471A' : '#6A6159') }));
+    const cats = [['お弁当', '弁当'], ['お米', '米'], ['野菜', '野菜'], ['パン', 'パン'], ['スイーツ', 'ケーキ'], ['加工品', '瓶'], ['ランドリー', '店舗']].map(([t, p]) => ({ t, p }));
+    const B = 'position:absolute;top:10px;left:10px;font-size:12px;font-weight:800;padding:5px 10px;border-radius:999px;';
+    const bOff = B + 'background:#B3471A;color:#fff', bFew = B + 'background:#C2362B;color:#fff', bNew = B + 'background:#fff;color:#B3471A', bToday = B + 'background:#1F1B17;color:#fff';
+    const soon = [
+      { photo: '写真：日替わり弁当', b1: '25%OFF', b1S: bOff, remain: '残り12食', store: 'カフェ あけぼの 駅前店', name: '日替わり弁当', period: '11:30〜13:30', was: '800円', price: '600円' },
+      { photo: '写真：シフォンケーキ', b1: '半額', b1S: bOff, remain: '残り2個', store: 'カフェ あけぼの 駅前店', name: '季節のシフォンケーキ', period: '13:00〜17:00', was: '1,800円', price: '900円' }
+    ];
+    const fresh = [
+      { photo: '写真：新米', b1: '新着', b1S: bNew, remain: '残り17袋', store: 'あけぼの農園 直売所', name: '新米コシヒカリ 5kg' },
+      { photo: '写真：ドレッシング', b1: '新着', b1S: bNew, remain: '残り30本', store: 'カフェ あけぼの 駅前店', name: '自家製にんじんドレッシング' }
+    ];
+    const soonList = [
+      soon[0],
+      { photo: '写真：パン詰め合わせ', b1: '半額', b1S: bOff, remain: '残り5袋', store: 'カフェ あけぼの 駅前店', name: '本日のパン詰め合わせ', period: '17:00〜19:00', was: '800円', price: '400円' },
+      { photo: '写真：シフォンケーキ', b1: '残りわずか', b1S: bFew, remain: '残り2個', store: 'カフェ あけぼの 駅前店', name: '季節のシフォンケーキ', period: '13:00〜17:00', was: '1,800円', price: '900円' }
+    ];
+    const chip = (on) => 'height:40px;padding:0 14px;border-radius:999px;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;white-space:nowrap;' + (on ? 'background:#1F1B17;color:#fff' : 'background:#fff;color:#1F1B17;border:1.5px solid #DDD3C4');
+    const fchips = [{ t: 'カテゴリ：すべて ▾', s: chip(0) }, { t: '店舗：すべて ▾', s: chip(0) }];
+    const catChips = ['すべて', 'お弁当', 'お米', '野菜', 'パン', 'スイーツ', '加工品', 'ランドリー'].map((t, i) => ({ t, s: 'display:inline-flex;align-items:center;white-space:nowrap;font-size:14.5px;font-weight:700;padding:10px 16px;border-radius:999px;' + (i === 0 ? 'background:#1F1B17;color:#fff' : 'background:#fff;color:#1F1B17;border:1.5px solid #DDD3C4') }));
+    const rOn = 'width:22px;height:22px;border-radius:11px;border:7px solid #B3471A;box-sizing:border-box', rOff = 'width:22px;height:22px;border-radius:11px;border:2px solid #B9AFA3;box-sizing:border-box';
+    const stores = ['すべての店舗', 'カフェ あけぼの 駅前店', 'あけぼの農園 直売所', 'コインランドリー あけぼの'].map((t, i) => ({ t, r: i === 0 ? rOn : rOff }));
+    const K = 'position:absolute;top:6px;left:6px;font-size:10.5px;font-weight:800;padding:3px 7px;border-radius:999px;color:#fff;';
+    const kE = K + 'background:#2E7D52', kJ = K + 'background:#2F5F9E';
+    const sOk = 'font-size:12px;font-weight:700;color:#6A6159', sFew = 'font-size:12px;font-weight:800;color:#C2362B';
+    const ejs = [
+      { kind: 'イベント', kindS: kE, st: '残りわずか', stS: sFew, title: '親子でさつまいも掘り体験', when: '10/18(日) 10:00〜12:00', where: 'あけぼの農園', meta: '残り8名 / 20名　500円' },
+      { kind: '求人', kindS: kJ, st: '募集中', stS: sOk, title: '稲の脱穀作業（日払い）', when: '10/10(土) 8:00〜15:00', where: 'あけぼの農園', meta: '日給 9,000円　5名' },
+      { kind: 'イベント', kindS: kE, st: '', stS: sOk, title: '秋の園庭開放と子ども健康相談', when: '10/24(土) 9:30〜11:30', where: 'あけぼの保育園', meta: '残り15名 / 30名　無料' },
+      { kind: '求人', kindS: kJ, st: '募集中', stS: sOk, title: 'カフェのホールスタッフ', when: '週2日〜 10:00〜15:00', where: 'カフェ あけぼの 駅前店', meta: '時給 1,100円　2名' }
+    ];
+    const nOn = 'font-size:10.5px;font-weight:800;color:#fff;background:#B3471A;padding:2px 7px;border-radius:999px', nOff = 'display:none';
+    const news = [
+      { date: '10/3(土)', store: 'カフェ あけぼの 駅前店', newS: nOn, title: '駅前店の営業時間が変わります', body: '10月12日（月）から、カフェ あけぼの 駅前店の営業時間を 8:00〜17:00 に変更します。お弁当の受け取り時間は各掲載に記載の時間をご確認ください。' },
+      { date: '9/28(月)', store: 'カフェ あけぼの 駅前店', newS: nOn, title: '駅東口の道路工事について', body: '10月中旬まで、駅東口からお店までの道の一部が通行止めになります。お越しの際は北側の道をご利用ください。' },
+      { date: '9/20(日)', store: 'あけぼの農園 直売所', newS: nOff, title: '新米の販売を始めました', body: 'あけぼの農園で今年の新米の収穫が始まりました。直売所での受け取り予約を「商品」から受け付けています。' },
+      { date: '9/12(土)', store: 'コインランドリー あけぼの', newS: nOff, title: 'コインランドリーの機械を入れ替えました', body: '大型の洗濯乾燥機を2台追加しました。布団や毛布もまとめて洗えます。' },
+      { date: '9/1(火)', store: 'あけぼの保育園', newS: nOff, title: '秋の地域清掃のお知らせ', body: '9月27日（日）に栗橋地区の清掃活動を行います。' }
+    ];
+    return { tab0: tab(0), tab1: tab(1), tab2: tab(2), cats, soon, fresh, soonList, fchips, catChips, stores, ejs, news };
+  }
+}
+</script>
+</body>
+</html>

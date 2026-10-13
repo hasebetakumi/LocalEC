@@ -7,6 +7,7 @@ module.exports = defineConfig([
   expoConfig,
   prettierConfig,
   {
-    ignores: ['dist/*', 'coverage/*'],
+    // supabase/functions は Deno（Edge Functions）なのでアプリの Lint から外す
+    ignores: ['dist/*', 'coverage/*', 'supabase/functions/*'],
   },
 ]);

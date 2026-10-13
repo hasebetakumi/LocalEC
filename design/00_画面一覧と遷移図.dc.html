@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#EFEAE3;-webkit-font-smoothing:antialiased}a{color:#B3471A;text-decoration:none}a:hover{color:#8C3611;text-decoration:underline}</style>
+</helmet>
+<div style="width:1440px;padding:48px 56px 96px;font-family:'Noto Sans JP',system-ui,sans-serif;color:#231F1A;display:flex;flex-direction:column;gap:48px">
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;gap:6px;font-size:13px;font-weight:700">
+<a href="00_画面一覧と遷移図.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#231F1A;color:#fff">00 画面一覧・遷移図・未決事項</a>
+<a href="01_利用者画面_閲覧.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">01 利用者：閲覧</a>
+<a href="02_利用者画面_予約とアカウント.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">02 利用者：予約・アカウント</a>
+<a href="03_運営画面_PC.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">03 運営：PC</a>
+<a href="04_運営画面_スマホ.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">04 運営：スマホ</a>
+<a href="05_状態違い.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">05 状態違い</a>
+<a href="06_デザインルール.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">06 デザインルール</a>
+</div>
+<div style="font-size:13px;font-weight:700;color:#B3471A;letter-spacing:.1em">アケボノ様 地域ECアプリ「LocalEC」（仮称）</div>
+<div style="font-size:38px;font-weight:800">フェーズ1 画面設計</div>
+<div style="font-size:15px;color:#4A443D;line-height:1.7;max-width:980px">「どの画面に何があり、どう遷移するか」を確認いただくための資料です。デザインは類似サービス2社の良い点を取り入れつつ、生成りの地＋テラコッタの配色で独自性を出しています（→ 06）。画面名の番号は要件定義の機能番号に対応しています。紫の「未決 Q◯」は要件に書かれておらず画面上で決める必要がある点で、ページ下部の一覧に仮置きの案とともにまとめています。</div>
+</div>
+
+<section style="display:flex;flex-direction:column;gap:18px">
+<div style="font-size:24px;font-weight:800;border-bottom:2px solid #231F1A;padding-bottom:8px">1. ナビゲーション構成（利用者）</div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="4">
+<div style="background:#fff;border-radius:14px;border:1px solid #E1D9CE;overflow:hidden;display:flex;flex-direction:column">
+<div style="background:#231F1A;color:#fff;padding:12px 16px;display:flex;flex-direction:column;gap:2px"><span style="font-size:11.5px;font-weight:700;opacity:.8">タブ {{ n.i }}</span><span style="font-size:17px;font-weight:800">{{ n.t }}</span></div>
+<div style="padding:12px 16px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ n.items }}" as="it" hint-placeholder-count="3"><div style="display:flex;gap:8px;align-items:baseline;font-size:14px;line-height:1.5"><span style="font-size:12px;font-weight:800;color:#B3471A;white-space:nowrap;min-width:38px">{{ it.no }}</span><span>{{ it.t }}</span></div></sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="font-size:14px;color:#4A443D;line-height:1.7">4タブ構成。お知らせはタブにせず、商品（ホーム）右上のベルから開きます（ベルに未読件数）。スタッフ用メニューはタブを増やさず、スタッフでログインしたときだけマイページ最上部に入口を表示します。アプリ起動時はタブ1「商品」が開きます。</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:18px">
+<div style="font-size:24px;font-weight:800;border-bottom:2px solid #231F1A;padding-bottom:8px">2. 遷移図</div>
+<div style="display:flex;gap:18px;font-size:13px;color:#4A443D;align-items:center">
+<span style="display:flex;gap:6px;align-items:center"><span style="width:28px;height:18px;border-radius:5px;background:#fff;border:1.5px solid #231F1A"></span>アプリの画面</span>
+<span style="display:flex;gap:6px;align-items:center"><span style="width:28px;height:18px;border-radius:5px;background:#FFF1E4;border:1.5px solid #B3471A"></span>確定・完了の画面</span>
+<span style="display:flex;gap:6px;align-items:center"><span style="width:28px;height:18px;border-radius:5px;border:1.5px dashed #8A8279"></span>アプリの外（店頭・電話など）</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px;background:#fff;border-radius:16px;padding:22px 24px">
+<div style="font-size:18px;font-weight:800">利用者側</div>
+<sc-for list="{{ userFlows }}" as="f" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;align-items:center;padding:10px 0;border-top:1px solid #F0EBE4">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="{{ f.tagS }}">{{ f.t }}</span><span style="font-size:12px;color:#5F5850">{{ f.sub }}</span></div>
+<div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;row-gap:10px">
+<sc-for list="{{ f.nodes }}" as="nd" hint-placeholder-count="5">
+<div style="display:flex;align-items:center"><span style="{{ nd.arrowS }}">→</span><div style="{{ nd.s }}"><span style="font-size:11.5px;font-weight:800;color:#B3471A">{{ nd.no }}</span><span style="font-size:14px;font-weight:700;line-height:1.35">{{ nd.t }}</span></div></div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+<div style="font-size:13px;color:#4A443D;line-height:1.7;border-top:1px solid #F0EBE4;padding-top:12px">共通の分岐：締切後・売り切れ・定員到達のときは U-12 のボタンが押せない（理由を表示）。予約・申し込み後は U-22 から U-21 キャンセル（期限内のみ）。未ログインで予約しようとした場合は U-01 を挟む（未決 Q1）。</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px;background:#fff;border-radius:16px;padding:22px 24px">
+<div style="font-size:18px;font-weight:800">運営側（スタッフ）</div>
+<sc-for list="{{ adminFlows }}" as="f" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;align-items:center;padding:10px 0;border-top:1px solid #F0EBE4">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="{{ f.tagS }}">{{ f.t }}</span><span style="font-size:12px;color:#5F5850">{{ f.sub }}</span></div>
+<div style="display:flex;align-items:center;flex-wrap:wrap;row-gap:10px">
+<sc-for list="{{ f.nodes }}" as="nd" hint-placeholder-count="5">
+<div style="display:flex;align-items:center"><span style="{{ nd.arrowS }}">→</span><div style="{{ nd.s }}"><span style="font-size:11.5px;font-weight:800;color:#B3471A">{{ nd.no }}</span><span style="font-size:14px;font-weight:700;line-height:1.35">{{ nd.t }}</span></div></div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+<div style="font-size:13px;color:#4A443D;line-height:1.7;border-top:1px solid #F0EBE4;padding-top:12px">自動で起きること：公開期間による公開・終了、数量0／定員到達での締切（求人は締め切らない）、受け取り期間終了後の未受け取りを「期限切れ」に。スタッフの操作は不要で、A-11・A-20 の状態表示に反映されます。</div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:18px">
+<div style="font-size:24px;font-weight:800;border-bottom:2px solid #231F1A;padding-bottom:8px">3. 画面一覧</div>
+<div style="background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E1D9CE">
+<div style="display:grid;grid-template-columns:96px 240px minmax(0,1fr) 150px 190px;padding:12px 20px;background:#231F1A;color:#fff;font-size:13px;font-weight:700"><span>No.</span><span>画面</span><span>主な内容</span><span>幅</span><span>掲載ページ</span></div>
+<sc-for list="{{ screens }}" as="s" hint-placeholder-count="20">
+<div style="{{ s.rowS }}"><span style="font-size:14px;font-weight:800;color:#B3471A">{{ s.no }}</span><span style="font-size:15px;font-weight:700">{{ s.name }}</span><span style="font-size:13.5px;color:#4A443D;line-height:1.6">{{ s.desc }}</span><span style="font-size:13px">{{ s.w }}</span><a href="{{ s.href }}" style="font-size:13px;font-weight:700">{{ s.file }}</a></div>
+</sc-for>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;align-items:baseline;gap:14px;border-bottom:2px solid #231F1A;padding-bottom:8px"><span style="font-size:24px;font-weight:800">4. 決めていただきたい点（未決事項）</span><span style="font-size:14px;color:#4A443D">画面では右の「仮置き」で描いています。ご判断をお願いします。</span></div>
+<div style="background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E1D9CE">
+<div style="display:grid;grid-template-columns:70px 72px 150px minmax(0,1.2fr) minmax(0,1fr);padding:12px 20px;background:#7A5AA8;color:#fff;font-size:13px;font-weight:700;gap:16px"><span>No.</span><span>状態</span><span>関係する画面</span><span>決める必要がある点</span><span>仮置きした案</span></div>
+<sc-for list="{{ qs }}" as="q" hint-placeholder-count="25">
+<div style="display:grid;grid-template-columns:70px 72px 150px minmax(0,1.2fr) minmax(0,1fr);padding:12px 20px;border-top:1px solid #EEE8F5;gap:16px;align-items:start"><span style="font-size:14px;font-weight:800;color:#7A5AA8">{{ q.no }}</span><span style="{{ q.stS }}">{{ q.st }}</span><span style="font-size:13px;font-weight:700;color:#4A443D">{{ q.scr }}</span><span style="font-size:14px;line-height:1.65">{{ q.q }}</span><span style="font-size:13.5px;line-height:1.65;color:#4A443D">{{ q.a }}</span></div>
+</sc-for>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const nav = [
+      { i: 1, t: '商品', items: [{ no: 'U-10', t: '商品一覧（ホーム）' }, { no: 'U-13', t: '絞り込み' }, { no: 'U-12', t: '商品詳細' }, { no: 'U-20', t: '予約 → 完了' }, { no: 'U-11', t: 'お知らせ一覧・詳細（右上のベルから）' }] },
+      { i: 2, t: 'イベント・求人', items: [{ no: 'U-11', t: 'イベント・求人一覧' }, { no: 'U-13', t: '絞り込み' }, { no: 'U-12', t: 'イベント詳細／求人詳細' }, { no: 'U-20', t: '申し込み／応募 → 完了' }] },
+      { i: 3, t: '予約・申込', items: [{ no: 'U-22', t: '予約・申し込み中／履歴' }, { no: 'U-22', t: '予約詳細（予約番号）' }, { no: 'U-21', t: 'キャンセル' }] },
+      { i: 4, t: 'マイページ', items: [{ no: '共通', t: '氏名・電話番号・メールの変更' }, { no: 'U-30', t: '通知オン・オフ' }, { no: '共通', t: '規約・特商法・問い合わせ・ログアウト' }, { no: 'U-02', t: 'アカウント削除' }, { no: 'A-01', t: 'スタッフメニュー（スタッフのみ）' }] }
+    ];
+    const base = 'display:flex;flex-direction:column;gap:2px;padding:9px 13px;border-radius:10px;min-width:110px;';
+    const NS = { s: base + 'background:#fff;border:1.5px solid #231F1A', d: base + 'background:#FFF1E4;border:1.5px solid #B3471A', o: base + 'background:#fff;border:1.5px dashed #8A8279' };
+    const arr = 'font-size:20px;font-weight:800;color:#8A8279;padding:0 8px', noArr = 'display:none';
+    const flow = (t, sub, tagS, list) => ({ t, sub, tagS, nodes: list.map(([no, tt, k], i) => ({ no, t: tt, s: NS[k], arrowS: i ? arr : noArr })) });
+    const tag = (bg, c) => 'align-self:flex-start;font-size:14px;font-weight:800;padding:4px 10px;border-radius:7px;background:' + bg + ';color:' + c;
+    const userFlows = [
+      flow('商品', '予約 → 店頭払い', tag('#FFF1E4', '#8C3611'), [['U-10', '商品一覧', 's'], ['U-12', '商品詳細', 's'], ['U-20', '数量を選ぶ', 's'], ['U-20', '予約完了（予約番号）', 'd'], ['店頭', '番号と名前を伝える', 'o'], ['店頭', 'その場で支払う', 'o'], ['A-21', 'スタッフが受け取り済みに', 'o']]),
+      flow('イベント', '申し込み → 当日参加', tag('#E6F2EA', '#1F5A38'), [['U-11', 'イベント・求人一覧', 's'], ['U-12', 'イベント詳細', 's'], ['U-20', '人数を選ぶ', 's'], ['U-20', '申し込み完了（申し込み番号）', 'd'], ['会場', '番号と名前を伝える', 'o'], ['会場', 'その場で支払う', 'o'], ['A-21', 'スタッフが受付済みに', 'o']]),
+      flow('求人', '応募 → 電話連絡', tag('#E7EFFA', '#244F86'), [['U-11', 'イベント・求人一覧', 's'], ['U-12', '求人詳細', 's'], ['U-20', '応募内容の確認', 's'], ['U-20', '応募を受け付けました（受付番号）', 'd'], ['電話', '店舗から電話またはメールで連絡', 'o'], ['電話', '番号と名前を伝える', 'o'], ['A-21', 'スタッフが対応済みに', 'o']]),
+      flow('アカウント', '登録・削除', tag('#EFEBE5', '#4A443D'), [['U-01', 'ログイン／新規登録', 's'], ['U-10', '商品一覧', 's'], ['…', 'マイページ', 's'], ['U-02', 'アカウント削除', 's'], ['U-02', '確認 → ログイン画面へ', 'd']])
+    ];
+    const adminFlows = [
+      flow('基本の流れ', '店舗を選ぶ → 店舗モード', tag('#231F1A', '#fff'), [['A-01', '店舗を選ぶ', 's'], ['A-11', '商品・イベント・求人（一覧）', 's'], ['A-10', '掲載入力 → 公開', 'd'], ['A-11', '掲載詳細（予約一覧）', 's'], ['A-21', '店頭で受け取り済みに', 'd']]),
+      flow('店頭の近道', '本日の予定・番号検索', tag('#FFF6DB', '#4D3900'), [['A-01', '店舗を選ぶ（全店舗の番号検索）', 's'], ['A-20', '予約・申し込み（初期値：本日×未完了）', 's'], ['A-21', '受け取り済みに', 'd']]),
+      flow('予約後の変更', '数量・期間・終了', tag('#EFEBE5', '#4A443D'), [['A-11', '掲載詳細', 's'], ['A-12', '予約後の編集（制限あり）', 's'], ['通知', '予約者へ変更通知', 'o']]),
+      flow('その他', '店舗・キャンセル', tag('#EFEBE5', '#4A443D'), [['A-02', '店舗情報（常に編集できるフォーム）', 's'], ['A-21', 'キャンセルへ変更', 's'], ['通知', '利用者へキャンセル通知', 'o']])
+    ];
+    const F = { a: ['01 利用者：閲覧', '01_利用者画面_閲覧.dc.html'], b: ['02 利用者：予約', '02_利用者画面_予約とアカウント.dc.html'], c: ['04 スマホ ／ 03 PC', '04_運営画面_スマホ.dc.html'], d: ['04 運営：スマホ', '04_運営画面_スマホ.dc.html'], e: ['05 状態違い', '05_状態違い.dc.html'] };
+    const rN = 'display:grid;grid-template-columns:96px 240px minmax(0,1fr) 150px 190px;padding:12px 20px;border-top:1px solid #F0EBE4;align-items:start', rA = rN + ';background:#FBF8F4';
+    const S = (no, name, desc, w, f, admin) => ({ no, name, desc, w, file: F[f][0], href: F[f][1], rowS: admin ? rA : rN });
+    const screens = [
+      S('U-01', '登録・ログイン', 'パスワードなし。ログイン（メールに届くリンク）／新規登録（氏名・電話・メール・規約同意）／メール送信後', 'スマホ', 'a'),
+      S('U-10', '商品一覧（ホーム）', 'カテゴリの写真アイコン＋「もうすぐ終了」「新着」「カテゴリ別」の横スクロール帯。「すべて見る」で縦一覧。割引バッジ・元値取り消し線', 'スマホ', 'a'),
+      S('U-11', 'イベント・求人一覧／お知らせ一覧', 'イベント・求人は別タブ。イベントは日時・場所・残り定員、求人は報酬・募集人数。お知らせはホーム右上のベルから開く。冒頭と日付', 'スマホ', 'a'),
+      S('U-12', '詳細', '商品／イベント／求人それぞれの詳細。地図アプリで開くリンク、支払い方法、締切、キャンセル可否、食品表示', 'スマホ', 'a'),
+      S('U-13', '絞り込み', '一覧上部のチップから下のシートでカテゴリ・店舗を選ぶ。キーワード検索なし', 'スマホ', 'a'),
+      S('U-20', '予約・申し込み', '商品：数量／イベント：人数／求人：確認のみ。数量・人数は常に＋−で入力（上限1でも同じ画面）。完了画面に予約番号', 'スマホ', 'b'),
+      S('U-21', 'キャンセル', '予約・申込の詳細から。確認ダイアログ。期限後はボタンを出さず理由表示', 'スマホ', 'b'),
+      S('U-22', '予約・申込', '予約・申し込み中／履歴の切り替え。予約番号を大きく。5つの状態', 'スマホ', 'b'),
+      S('U-30', '通知設定', 'マイページ内のスイッチ1つ。Web版では非表示', 'スマホ', 'b'),
+      S('共通', 'マイページ', '氏名・電話番号・メールアドレスの変更、規約類、問い合わせ、ログアウト、アカウント削除', 'スマホ', 'b'),
+      S('U-02', 'アカウント削除', '説明画面＋確認ダイアログ。予約中があると削除不可（受け取り・キャンセル後に）。記録は「削除済みユーザー」として残る旨', 'スマホ', 'b'),
+      S('A-01', 'スタッフメニュー（店舗一覧）', '一番親は店舗。店舗ごとの掲載数・受け取り待ち。店舗を選ぶと「その店舗モード」になり、以降の画面はすべてその店舗だけ。店舗をまたぐのはここの本日の受け取り待ちと番号検索のみュー）', 'スマホ・PC', 'c', 1),
+      S('A-02', '店舗情報', '店舗モードの「店舗情報」。名称・住所・電話・営業時間・支払い方法。常に編集できるフォーム（表示／編集の切替なし）。店舗の追加は A-01 から同じ項目で', 'スマホ・PC', 'c', 1),
+      S('A-10', '掲載入力', '店舗モードの中で開く（店舗は固定）。種類（商品／イベント／求人／お知らせ）で入力項目が切り替わる。順は基本情報 → 日時・受け取り → 説明 → 公開設定', 'スマホ・PC', 'c', 1),
+      S('A-11', '商品・イベント・求人（一覧）／掲載詳細（予約一覧）', '一覧：種類・状態で絞り込み（补足文なし）。詳細：状態・受け取り・予約数／上限・編集・複製・終了＋その掲載の予約一覧（集計なし）', 'スマホ・PC', 'c', 1),
+      S('A-12', '予約が入った後の編集', '数量を減らす・受け取り期間・終了のみ。他は鍵付きで編集不可、削除不可', 'スマホ・PC', 'e', 1),
+      S('A-20', '予約・申し込み（この店舗）', '表は1つ。絞り込みは期間（本日／今後／過去／すべて）・種類・状態（すべて／未完了／完了／キャンセル・期限切れ）。初期値「本日×未完了」＝本日の予定。番号検索は前方一致。削除済みユーザー表示', 'スマホ・PC', 'c', 1),
+      S('A-21', '受け取り・参加・勤務の記録', '番号を大きく、状態は表の1行目。「受け取り済み／参加済み／勤務済みにする」（PC は確認ダイアログあり）。誤操作は「未受け取りに戻す」。キャンセルへの変更（通知の確認つき）', 'スマホ・PC', 'd', 1),
+      S('A-22', '期限切れ表示', '受け取り期間終了後の未受け取りを「期限切れ」と表示', 'スマホ・PC', 'd', 1)
+    ];
+    const stOk = 'justify-self:start;font-size:12px;font-weight:800;padding:3px 9px;border-radius:999px;background:#E4F2E9;color:#1F5A38', stWait = 'justify-self:start;font-size:12px;font-weight:800;padding:3px 9px;border-radius:999px;background:#F1ECF8;color:#7A5AA8';
+    const Q = (no, scr, q, a, ok) => ({ no, scr, q, a, st: ok ? '確定' : '未決', stS: ok ? stOk : stWait });
+    const qs = [
+      Q('Q1', 'U-01・U-12', 'ログインせずに一覧・詳細を見られるようにするか', '見るだけはログイン不要。「予約へ進む」を押した時点で U-01 へ', 1),
+      Q('Q2', 'U-01', '登録・ログインの方式（パスワード、メール確認、SMS認証の有無）', 'パスワードなし。メールに届くリンクで登録・ログイン（Too Good To Go 型）。電話番号は必須入力だがSMS認証はフェーズ1では行わない', 1),
+      Q('Q3', 'U-20・U-22・A-20', '予約番号の形式（桁数・数字のみか）', '数字4桁。商品・イベント・求人で番号の呼び方を「予約番号／申し込み番号／受付番号」に分ける', 1),
+      Q('Q4', 'U-10・U-11', '売り切れ・締切後・定員到達の掲載を一覧に残すか', '公開期間中は残し「売り切れ」等を重ねて表示。公開終了で一覧から消える', 1),
+      Q('Q5', 'U-10・U-11', '「残りわずか」「締切間近」を出す基準', '残りわずか：残り3以下　締切間近：締切まで24時間以内', 1),
+      Q('Q6', 'U-13・A-10', 'カテゴリの種類と、掲載ごとの入力の有無（要件の入力項目にカテゴリがない）', '固定の選択肢（お弁当／お米／野菜／パン／スイーツ／加工品／ランドリー）を A-10 で掲載ごとに選ぶ。商品では必須', 1),
+      Q('Q7', 'U-11', 'イベントと求人を同じタブ内でどう分けるか', '上部の切り替え「すべて／イベント／求人」', 1),
+      Q('Q8', 'U-12・U-20', 'イベント料金の支払い方法の表示（店舗の支払い方法を使うか、本文に書くか）', '商品と同じく店舗管理（A-02）の支払い方法を表示。「当日受付で」の注記付き', 1),
+      Q('Q9', 'U-12・U-22', '求人の「キャンセル」の利用者向け表記', '「応募の取り消し」と表記', 1),
+      Q('Q10', 'U-11・A-10', 'お知らせに写真を付けられるか', '付けない（本文のみ）', 1),
+      Q('Q11', 'U-22・A-21', 'イベント申し込み・求人応募の状態名と、開催日・勤務日を過ぎたあとの扱い', '申し込み直後は「申し込み済み」（求人は「応募受付中」）。スタッフが A-21 で受付済み・対応済みにした時点で「参加済み」「勤務済み」として履歴へ。記録がないまま翌日になったら状態名そのまま履歴へ', 1),
+      Q('Q12', 'U-20', '求人応募時に自己PRなどの入力欄を設けるか', '設けない（登録済みの氏名・電話番号のみ）', 1),
+      Q('Q13', 'U-21・A-21', 'キャンセル理由の入力（利用者・スタッフとも）と通知への記載', '理由入力なし。スタッフによるキャンセル通知は定型文', 1),
+      Q('Q14', 'マイページ・A-01', 'スタッフメニューの入口の位置', 'マイページ最上部（スタッフのみ表示）で開始。店頭での利用頻度が高ければ「マイページ」タブを「スタッフ」タブに差し替える案へ', 1),
+      Q('Q15', 'マイページ', 'メールアドレスの変更機能（ログインに使うため）', '入れる。新しいアドレスに届く確認リンクを押した時点で変更完了（誤入力でログイン不能になるのを防ぐ）', 1),
+      Q('Q16', 'U-02', 'アカウント削除時、予約中の予約をどうするか', '予約中がある間は削除できない。受け取りかキャンセルのあとに削除（自動キャンセルはしない）', 1),
+      Q('Q17', 'A-11', '公開開始前の掲載の状態表示（状態は3つのみの指定）', '4つ目の状態「公開予定」を追加（公開／公開予定／終了／下書き）。要件の変更として確認', 1),
+      Q('Q18', 'A-10・U-12', '食品表示の入力形式', '自由記述1欄（アレルギー・消費期限など）。初期値は「店舗にお問い合わせください」。商品詳細では独立したカードで表示', 1),
+      Q('Q19', 'A-10', 'イベント・求人・お知らせの「タイトル」「写真」、商品の「タイトル」「説明」「元値」が入力項目に明記されていない', '全種類にタイトルを持たせ、写真は商品・イベント・求人で任意、商品に説明欄を追加。元値は任意入力（あれば割引バッジと取り消し線を表示）。要件の追加として確認', 1),
+      Q('Q20', 'A-21・A-22', '受け取り済みの取り消し（誤操作）、期限切れ後に来店した場合に受け取り済みにできるか', 'どちらも可。受け取り済みの詳細に「予約中に戻す」を置く', 1),
+      Q('Q21', 'A-02', '支払い方法の選択肢の種類、店舗の削除・非表示', '現金／PayPay／クレジットカード／交通系IC／その他。店舗は掲載で使用中なら削除不可', 1),
+      Q('Q22', 'A-01', 'スタッフメニューで本日の件数を表示してよいか（集計画面は対象外）', '「本日の予定 ◯件」を1つだけ表示。今日が受け取り日・開催日・勤務日で未記録のもの（商品・イベント・求人）', 1),
+      Q('Q23', 'A-20', '店頭で予約番号を入力して探す欄を設けるか（キーワード検索は対象外）', '設ける。番号の前方一致で絞り込み（店舗・掲載をまたぐ）。キーワード検索はなし', 1),
+      Q('Q24', 'A-12', '掲載を「終了」したとき、入っている予約の扱い', '予約は残す（受け取り可能）。新規予約だけ止める', 1),
+      Q('Q25', 'U-22', 'キャンセル期限後に利用者がお店へ連絡する手段の表示', '受け取り場所の店舗の電話番号を表示（A-02 に電話番号項目を追加）', 1)
+    ];
+    return { nav, userFlows, adminFlows, screens, qs };
+  }
+}
+</script>
+</body>
+</html>

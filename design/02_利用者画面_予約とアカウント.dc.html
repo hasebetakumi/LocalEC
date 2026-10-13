@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#E9E3D8;-webkit-font-smoothing:antialiased}a{color:#B3471A;text-decoration:none}a:hover{color:#8C3611;text-decoration:underline}</style>
+</helmet>
+<div style="width:max-content;padding:48px 56px 96px;font-family:'Noto Sans JP',system-ui,sans-serif;color:#1F1B17;display:flex;flex-direction:column;gap:56px">
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;gap:6px;font-size:13px;font-weight:700">
+<a href="00_画面一覧と遷移図.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">00 画面一覧・遷移図・未決事項</a>
+<a href="01_利用者画面_閲覧.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">01 利用者：閲覧</a>
+<a href="02_利用者画面_予約とアカウント.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#1F1B17;color:#fff">02 利用者：予約・アカウント</a>
+<a href="03_運営画面_PC.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">03 運営：PC</a>
+<a href="04_運営画面_スマホ.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">04 運営：スマホ</a>
+<a href="05_状態違い.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">05 状態違い</a>
+<a href="06_デザインルール.dc.html" style="white-space:nowrap;padding:6px 10px;border-radius:8px;background:#fff;color:#4A443D">06 デザインルール</a>
+</div>
+<div style="font-size:34px;font-weight:800">02 利用者画面：予約・申込・マイページ</div>
+<div style="font-size:15px;color:#4A443D">LocalEC（仮称）フェーズ1　スマホ幅 390pt。</div>
+</div>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<div style="font-size:22px;font-weight:800;border-bottom:2px solid #1F1B17;padding-bottom:8px">予約・申し込み（U-20）</div>
+<div style="display:flex;gap:44px;align-items:flex-start">
+
+<div data-screen-label="U-20 商品の予約" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-20</span><span style="font-size:16px;font-weight:700">商品：数量を選んで予約</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="height:56px;flex:none;display:flex;align-items:center;gap:2px;padding:0 10px;white-space:nowrap"><span style="width:40px;height:40px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span><span style="font-size:17px;font-weight:800">予約内容の確認</span></div>
+<div style="flex:1;padding:4px 20px 0;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:12px;align-items:center;background:#fff;border-radius:20px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:12px">
+<div style="width:72px;height:72px;flex:none;border-radius:14px;background:repeating-linear-gradient(135deg,#EADFD0 0 8px,#E3D6C4 8px 16px)"></div>
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:12.5px;font-weight:700;color:#6A6159">カフェ あけぼの 駅前店</span><span style="font-size:17px;font-weight:800">日替わり弁当</span><div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:12.5px;color:#9A9087;text-decoration:line-through">800円</span><span style="font-size:17px;font-weight:900;color:#B3471A">600円</span><span style="font-size:12px;color:#6A6159">/ 1食</span></div></div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:16px;font-weight:800">数量</span><span style="font-size:13px;font-weight:700;color:#6B4A00;background:#FDF0C8;padding:3px 10px;border-radius:999px">残り12食</span></div>
+<div style="display:flex;align-items:center;justify-content:center;gap:22px;background:#F6F1E8;border-radius:999px;padding:6px">
+<div style="width:56px;height:56px;border-radius:28px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)">−</div>
+<div style="min-width:72px;text-align:center;font-size:32px;font-weight:900">2<span style="font-size:15px;font-weight:700;margin-left:2px">食</span></div>
+<div style="width:56px;height:56px;border-radius:28px;background:#B3471A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:600">＋</div>
+</div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:4px 16px">
+<div style="display:grid;grid-template-columns:90px 1fr;gap:4px 10px;padding:11px 0;border-bottom:1px solid #F0EBE4;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">受け取り</span><span style="font-weight:800">10/5(月) 11:30〜13:30</span></div>
+<div style="display:grid;grid-template-columns:90px 1fr;gap:4px 10px;padding:11px 0;border-bottom:1px solid #F0EBE4;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">場所</span><span>カフェ あけぼの 駅前店</span></div>
+<div style="display:grid;grid-template-columns:90px 1fr;gap:4px 10px;padding:11px 0;border-bottom:1px solid #F0EBE4;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">お支払い</span><span>店頭で（現金・PayPay）</span></div>
+<div style="display:grid;grid-template-columns:90px 1fr;gap:4px 10px;padding:11px 0;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">キャンセル</span><span>10/5(月) 10:00 まで</span></div>
+</div>
+</div>
+<div style="background:#fff;border-top:1px solid #EAE2D6;padding:12px 20px 30px;display:flex;align-items:center;gap:14px">
+<div style="display:flex;flex-direction:column;flex:none"><span style="font-size:12px;color:#6A6159">合計・店頭払い</span><span style="font-size:26px;font-weight:900;color:#B3471A;line-height:1.1">1,200<span style="font-size:15px">円</span></span></div>
+<div style="flex:1;height:58px;border-radius:999px;background:#B3471A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">予約を確定する</div>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div><b style="color:#B3471A">→ U-20 完了</b></div>
+<div>1人あたりの上限なし。＋は残り数量まで押せる（超過・締切後 → 05）</div>
+</div>
+</div>
+
+<div data-screen-label="U-20 イベントの申し込み" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-20</span><span style="font-size:16px;font-weight:700">イベント：人数を選んで申し込み</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="height:56px;flex:none;display:flex;align-items:center;gap:2px;padding:0 10px;white-space:nowrap"><span style="width:40px;height:40px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span><span style="font-size:17px;font-weight:800">申し込み内容の確認</span></div>
+<div style="flex:1;padding:4px 20px 0;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:12px;align-items:center;background:#fff;border-radius:20px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:12px">
+<div style="width:72px;height:72px;flex:none;border-radius:14px;background:repeating-linear-gradient(135deg,#E3E8DA 0 8px,#DCE2D2 8px 16px)"></div>
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:12.5px;font-weight:700;color:#6A6159">あけぼの農園</span><span style="font-size:17px;font-weight:800">親子でさつまいも掘り体験</span><div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:17px;font-weight:900;color:#B3471A">500円</span><span style="font-size:12px;color:#6A6159">/ 1名</span></div></div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:16px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:16px;font-weight:800">参加人数</span><span style="font-size:13px;font-weight:700;color:#6B4A00;background:#FDF0C8;padding:3px 10px;border-radius:999px">残り8名</span></div>
+<div style="display:flex;align-items:center;justify-content:center;gap:22px;background:#F6F1E8;border-radius:999px;padding:6px">
+<div style="width:56px;height:56px;border-radius:28px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)">−</div>
+<div style="min-width:72px;text-align:center;font-size:32px;font-weight:900">2<span style="font-size:15px;font-weight:700;margin-left:2px">名</span></div>
+<div style="width:56px;height:56px;border-radius:28px;background:#B3471A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:600">＋</div>
+</div>
+<div style="font-size:12.5px;color:#6A6159;text-align:center">1回の申し込みで4名まで選べます</div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:4px 16px">
+<div style="display:grid;grid-template-columns:90px 1fr;gap:4px 10px;padding:11px 0;border-bottom:1px solid #F0EBE4;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">日時</span><span style="font-weight:800">10/18(日) 10:00〜12:00</span></div>
+<div style="display:grid;grid-template-columns:90px 1fr;gap:4px 10px;padding:11px 0;border-bottom:1px solid #F0EBE4;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">場所</span><span>あけぼの農園</span></div>
+<div style="display:grid;grid-template-columns:90px 1fr;gap:4px 10px;padding:11px 0;border-bottom:1px solid #F0EBE4;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">お支払い</span><span>当日受付で（現金・PayPay）</span></div>
+<div style="display:grid;grid-template-columns:90px 1fr;gap:4px 10px;padding:11px 0;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">キャンセル</span><span>10/16(金) 18:00 まで</span></div>
+</div>
+</div>
+<div style="background:#fff;border-top:1px solid #EAE2D6;padding:12px 20px 30px;display:flex;align-items:center;gap:14px">
+<div style="display:flex;flex-direction:column;flex:none"><span style="font-size:12px;color:#6A6159">合計・当日払い</span><span style="font-size:26px;font-weight:900;color:#B3471A;line-height:1.1">1,000<span style="font-size:15px">円</span></span></div>
+<div style="flex:1;height:58px;border-radius:999px;background:#B3471A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">申し込みを確定する</div>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div>人数の上限は掲載ごとの設定（A-10）。上限1でも同じ画面（＋が押せないだけ）</div>
+<div>申し込みで確定（承認待ちなし）</div>
+</div>
+</div>
+
+<div data-screen-label="U-20 求人の応募" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-20</span><span style="font-size:16px;font-weight:700">求人：確認して応募</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="height:56px;flex:none;display:flex;align-items:center;gap:2px;padding:0 10px;white-space:nowrap"><span style="width:40px;height:40px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span><span style="font-size:17px;font-weight:800">応募内容の確認</span></div>
+<div style="flex:1;padding:4px 20px 0;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:12px;align-items:center;background:#fff;border-radius:20px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:12px">
+<div style="width:72px;height:72px;flex:none;border-radius:14px;background:repeating-linear-gradient(135deg,#E9E3D1 0 8px,#E2DBC6 8px 16px)"></div>
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:12.5px;font-weight:700;color:#6A6159">あけぼの農園</span><span style="font-size:17px;font-weight:800">稲の脱穀作業（日払い）</span><div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:17px;font-weight:900;color:#B3471A">9,000円</span><span style="font-size:12px;color:#6A6159">/ 日給</span></div></div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:4px 16px">
+<div style="display:grid;grid-template-columns:90px 1fr;gap:4px 10px;padding:11px 0;border-bottom:1px solid #F0EBE4;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">日時</span><span style="font-weight:800">10/10(土) 8:00〜15:00</span></div>
+<div style="display:grid;grid-template-columns:90px 1fr;gap:4px 10px;padding:11px 0;border-bottom:1px solid #F0EBE4;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">場所</span><span>あけぼの農園</span></div>
+<div style="display:grid;grid-template-columns:90px 1fr;gap:4px 10px;padding:11px 0;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">報酬</span><span>当日現金でお支払い</span></div>
+</div>
+<div style="background:#E7EFFA;border-radius:16px;padding:14px 16px;font-size:14.5px;line-height:1.7;color:#1E3F6B">応募後、店舗からご登録の電話番号またはメールアドレスにご連絡いたします。</div>
+</div>
+<div style="background:#fff;border-top:1px solid #EAE2D6;padding:12px 20px 30px">
+<div style="height:58px;border-radius:999px;background:#B3471A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">応募する</div>
+</div>
+</div>
+<div style="max-width:390px;font-size:13px;line-height:1.6;color:#4A443D">人数・数量なし。応募者情報の表示・自己PR等の入力欄は設けない</div>
+</div>
+
+<div data-screen-label="U-20 予約完了" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-20</span><span style="font-size:16px;font-weight:700">予約完了（予約番号）</span></div>
+<div style="width:390px;height:844px;background:#B3471A;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700;color:#fff"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="flex:1;padding:28px 20px 0;display:flex;flex-direction:column;gap:16px;align-items:stretch">
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px;color:#fff">
+<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M7.5 12.5l3 3 6-6.5"></path></svg>
+<div style="font-size:24px;font-weight:900">予約が完了しました</div>
+</div>
+<div style="background:#fff;border-radius:24px;padding:22px 18px 18px;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 10px 30px rgba(0,0,0,.15)">
+<span style="font-size:13px;font-weight:700;color:#6A6159">予約番号</span>
+<span style="font-size:60px;font-weight:900;letter-spacing:.14em;line-height:1.1">0427</span>
+<span style="font-size:15px;font-weight:700;margin-top:4px">日替わり弁当　2食</span>
+<div style="width:100%;height:1px;background:#EAE2D6;margin:12px 0"></div>
+<div style="width:100%;display:flex;flex-direction:column;gap:14px;font-size:15px;line-height:1.5">
+<div style="display:flex;gap:12px;align-items:flex-start"><span style="width:26px;height:26px;flex:none;border-radius:13px;background:#B3471A;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center">1</span><span><b>10/5(月) 11:30〜13:30</b> に<br><b>カフェ あけぼの 駅前店</b>へ</span></div>
+<div style="display:flex;gap:12px;align-items:flex-start"><span style="width:26px;height:26px;flex:none;border-radius:13px;background:#B3471A;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center">2</span><span>予約番号（<b>0427</b>）とお名前を伝える</span></div>
+<div style="display:flex;gap:12px;align-items:flex-start"><span style="width:26px;height:26px;flex:none;border-radius:13px;background:#B3471A;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center">3</span><span>その場で <b>1,200円</b> お支払い</span></div>
+</div>
+</div>
+</div>
+<div style="padding:12px 20px 30px;display:flex;flex-direction:column;gap:10px">
+<div style="height:56px;border-radius:999px;background:#fff;color:#B3471A;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">予約・申込を見る</div>
+<div style="height:48px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff">商品一覧へ戻る</div>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div>完了画面だけ地をアクセント色にして「成功」を強く伝える。予約番号は数字4桁</div>
+</div>
+</div>
+
+<div data-screen-label="U-20 申し込み完了" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-20</span><span style="font-size:16px;font-weight:700">イベント：申し込み完了（申し込み番号）</span></div>
+<div style="width:390px;height:844px;background:#2E7D52;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700;color:#fff"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="flex:1;padding:28px 20px 0;display:flex;flex-direction:column;gap:16px;align-items:stretch">
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px;color:#fff">
+<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M7.5 12.5l3 3 6-6.5"></path></svg>
+<div style="font-size:24px;font-weight:900">申し込みが完了しました</div>
+</div>
+<div style="background:#fff;border-radius:24px;padding:22px 18px 18px;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 10px 30px rgba(0,0,0,.15)">
+<span style="font-size:13px;font-weight:700;color:#6A6159">申し込み番号</span>
+<span style="font-size:60px;font-weight:900;letter-spacing:.14em;line-height:1.1">0102</span>
+<span style="font-size:15px;font-weight:700;margin-top:4px">親子でさつまいも掘り体験　2名</span>
+<div style="width:100%;height:1px;background:#EAE2D6;margin:12px 0"></div>
+<div style="width:100%;display:flex;flex-direction:column;gap:14px;font-size:15px;line-height:1.5">
+<div style="display:flex;gap:12px;align-items:flex-start"><span style="width:26px;height:26px;flex:none;border-radius:13px;background:#2E7D52;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center">1</span><span><b>10/18(日) 10:00</b> までに<br><b>あけぼの農園</b>へ</span></div>
+<div style="display:flex;gap:12px;align-items:flex-start"><span style="width:26px;height:26px;flex:none;border-radius:13px;background:#2E7D52;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center">2</span><span>申し込み番号（<b>0102</b>）とお名前を伝える</span></div>
+<div style="display:flex;gap:12px;align-items:flex-start"><span style="width:26px;height:26px;flex:none;border-radius:13px;background:#2E7D52;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center">3</span><span>受付で <b>1,000円</b> お支払い</span></div>
+</div>
+</div>
+</div>
+<div style="padding:12px 20px 30px;display:flex;flex-direction:column;gap:10px">
+<div style="height:56px;border-radius:999px;background:#fff;color:#2E7D52;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">予約・申込を見る</div>
+<div style="height:48px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff">イベント・求人へ戻る</div>
+</div>
+</div>
+<div style="max-width:390px;font-size:13px;line-height:1.6;color:#4A443D">商品と同じ構成。地色はイベントの緑。無料イベントは手順③を出さない</div>
+</div>
+
+<div data-screen-label="U-20 応募受付完了" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-20</span><span style="font-size:16px;font-weight:700">求人：応募受付完了</span></div>
+<div style="width:390px;height:844px;background:#2F5F9E;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700;color:#fff"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="flex:1;padding:28px 20px 0;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px;color:#fff">
+<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M7.5 12.5l3 3 6-6.5"></path></svg>
+<div style="font-size:24px;font-weight:900">応募を受け付けました</div>
+</div>
+<div style="background:#fff;border-radius:24px;padding:22px 18px 18px;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 10px 30px rgba(0,0,0,.15)">
+<span style="font-size:13px;font-weight:700;color:#6A6159">受付番号</span>
+<span style="font-size:60px;font-weight:900;letter-spacing:.14em;line-height:1.1">0057</span>
+<span style="font-size:15px;font-weight:700;margin-top:4px">稲の脱穀作業（日払い）</span>
+<div style="width:100%;height:1px;background:#EAE2D6;margin:12px 0"></div>
+<div style="width:100%;display:flex;flex-direction:column;gap:14px;font-size:15px;line-height:1.5">
+<div style="display:flex;gap:12px;align-items:flex-start"><span style="width:26px;height:26px;flex:none;border-radius:13px;background:#2F5F9E;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center">1</span><span>店舗からご登録の<b>電話またはメール</b>に連絡が届く</span></div>
+<div style="display:flex;gap:12px;align-items:flex-start"><span style="width:26px;height:26px;flex:none;border-radius:13px;background:#2F5F9E;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center">2</span><span>受付番号（<b>0057</b>）とお名前を伝える</span></div>
+</div>
+<div style="font-size:12.5px;color:#6A6159;margin-top:12px;text-align:center">アプリには採用の結果は表示されません</div>
+</div>
+</div>
+<div style="padding:12px 20px 30px;display:flex;flex-direction:column;gap:10px">
+<div style="height:56px;border-radius:999px;background:#fff;color:#2F5F9E;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">予約・申込を見る</div>
+<div style="height:48px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff">イベント・求人へ戻る</div>
+</div>
+</div>
+<div style="max-width:390px;font-size:13px;line-height:1.6;color:#4A443D">通知文言も「応募を受け付けました」</div>
+</div>
+
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<div style="font-size:22px;font-weight:800;border-bottom:2px solid #1F1B17;padding-bottom:8px">予約・申込・キャンセル（U-22・U-21）</div>
+<div style="display:flex;gap:44px;align-items:flex-start">
+
+<div data-screen-label="U-22 予約・申込 予約・申し込み中" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-22</span><span style="font-size:16px;font-weight:700">予約・申込：予約・申し込み中</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="flex:1;overflow:hidden;display:flex;flex-direction:column;gap:14px;padding:8px 20px 0">
+<div style="font-size:30px;font-weight:900;letter-spacing:-.01em">予約・申込</div>
+<div style="display:flex;background:#EFE9DF;border-radius:999px;padding:4px">
+<div style="flex:1;height:40px;border-radius:999px;background:#1F1B17;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14.5px;font-weight:700">予約・申し込み中</div>
+<div style="flex:1;height:40px;display:flex;align-items:center;justify-content:center;font-size:14.5px;font-weight:700;color:#4A443D">履歴</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:baseline;gap:8px;padding-left:4px"><span style="font-size:17px;font-weight:900;color:{{ g.hC }}">{{ g.h }}</span><span style="font-size:12.5px;font-weight:700;color:#6A6159">{{ g.sub }}</span></div>
+<div style="background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 3px rgba(31,27,23,.06)">
+<sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="2">
+<div style="display:flex;gap:12px;align-items:center;padding:13px 16px;border-top:1px solid #F0EBE4">
+<div style="width:10px;height:10px;border-radius:5px;flex:none;background:{{ r.color }}"></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:15.5px;font-weight:800;line-height:1.35">{{ r.title }}</span>
+<span style="font-size:12.5px;color:#4A443D">{{ r.time }}</span>
+<span style="font-size:12.5px;color:#6A6159">{{ r.where }}</span>
+</div>
+<div style="flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:2px"><span style="font-size:11px;font-weight:700;color:#6A6159">{{ r.st }}</span><span style="font-size:17px;font-weight:900;letter-spacing:.08em;line-height:1.1">{{ r.num }}</span></div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="flex:none;height:80px;background:#fff;border-top:1px solid #EAE2D6;display:flex;padding-top:8px">
+<sc-for list="{{ tab3 }}" as="t" hint-placeholder-count="5"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ t.c }}" stroke-width="{{ t.w }}" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.d }}"></path></svg><span style="{{ t.s }}">{{ t.l }}</span></div></sc-for>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div><b style="color:#B3471A">→ U-22 予約詳細</b>　カードをタップ</div>
+<div>日付で束ねる（今日は赤字）。点の色＝種類（商品・イベント・求人）。番号は右端、店頭では詳細の大きな番号を見せる</div>
+</div>
+</div>
+
+<div data-screen-label="U-22 予約・申込 履歴" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-22</span><span style="font-size:16px;font-weight:700">予約・申込：履歴</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="flex:1;overflow:hidden;display:flex;flex-direction:column;gap:14px;padding:8px 20px 0">
+<div style="font-size:30px;font-weight:900;letter-spacing:-.01em">予約・申込</div>
+<div style="display:flex;background:#EFE9DF;border-radius:999px;padding:4px">
+<div style="flex:1;height:40px;display:flex;align-items:center;justify-content:center;font-size:14.5px;font-weight:700;color:#4A443D">予約・申し込み中</div>
+<div style="flex:1;height:40px;border-radius:999px;background:#1F1B17;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14.5px;font-weight:700">履歴</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ hist }}" as="r" hint-placeholder-count="5">
+<div style="background:#fff;border-radius:18px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:12px 16px;display:flex;flex-direction:column;gap:4px;flex:none">
+<div style="display:flex;align-items:center"><span style="{{ r.stS }}">{{ r.st }}</span></div>
+<div style="font-size:15.5px;font-weight:800">{{ r.title }}</div>
+<div style="font-size:13px;color:#4A443D">{{ r.l1 }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="flex:none;height:80px;background:#fff;border-top:1px solid #EAE2D6;display:flex;padding-top:8px">
+<sc-for list="{{ tab3 }}" as="t" hint-placeholder-count="5"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ t.c }}" stroke-width="{{ t.w }}" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.d }}"></path></svg><span style="{{ t.s }}">{{ t.l }}</span></div></sc-for>
+</div>
+</div>
+<div style="max-width:390px;font-size:13px;line-height:1.6;color:#4A443D">状態：受け取り済み／参加済み／勤務済み／キャンセル／期限切れ。期限切れにペナルティなし。イベント・求人はスタッフが A-21 で記録した時点で履歴へ。記録がなければ翌日に状態名そのまま履歴へ</div>
+</div>
+
+<div data-screen-label="U-22 予約詳細" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-22・U-21</span><span style="font-size:16px;font-weight:700">予約詳細（キャンセル可）</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="height:56px;flex:none;display:flex;align-items:center;gap:2px;padding:0 10px;white-space:nowrap"><span style="width:40px;height:40px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span><span style="font-size:17px;font-weight:800">予約の詳細</span></div>
+<div style="flex:1;padding:4px 20px 0;display:flex;flex-direction:column;gap:12px">
+<div style="background:#fff;border-radius:24px;padding:20px 16px 18px;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 1px 3px rgba(31,27,23,.06)">
+<span style="font-size:13px;font-weight:700;color:#6A6159;margin-top:6px">予約番号</span>
+<span style="font-size:60px;font-weight:900;letter-spacing:.14em;line-height:1.1">0427</span>
+<span style="font-size:13px;color:#4A443D">店頭でこの番号とお名前をお伝えください</span>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:4px 16px">
+<div style="display:grid;grid-template-columns:86px 1fr;padding:11px 0;border-bottom:1px solid #F0EBE4;font-size:14.5px;align-items:center"><span style="color:#6A6159;font-weight:700;font-size:13px">状態</span><span style="display:flex"><span style="font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;background:#FBEBE0;color:#8C3611">予約済み</span></span></div>
+<div style="display:grid;grid-template-columns:86px 1fr;padding:11px 0;border-bottom:1px solid #F0EBE4;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">商品</span><span style="font-weight:800">日替わり弁当　2食</span></div>
+<div style="display:grid;grid-template-columns:86px 1fr;padding:11px 0;border-bottom:1px solid #F0EBE4;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">お支払い</span><span style="display:flex;flex-direction:column;gap:2px;line-height:1.4"><b style="color:#B3471A;font-size:16px">1,200円</b><span>店頭で（現金・PayPay）</span></span></div>
+<div style="display:grid;grid-template-columns:86px 1fr;padding:11px 0;border-bottom:1px solid #F0EBE4;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">受け取り</span><span style="font-weight:800">10/5(月) 11:30〜13:30</span></div>
+<div style="display:grid;grid-template-columns:86px 1fr;padding:11px 0;font-size:14.5px"><span style="color:#6A6159;font-weight:700;font-size:13px">場所</span><span style="line-height:1.55">カフェ あけぼの 駅前店<br>埼玉県久喜市栗橋東1-2-8<br><b style="color:#B3471A">地図アプリで開く ↗</b></span></div>
+</div>
+</div>
+<div style="padding:12px 20px 30px;display:flex;flex-direction:column;gap:8px">
+<div style="font-size:13px;color:#4A443D;text-align:center">10/5(月) 10:00 までキャンセルできます</div>
+<div style="height:48px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#C2362B">予約をキャンセルする</div>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div><b style="color:#B3471A">→ U-21 確認</b></div>
+<div>期限を過ぎたらボタンを出さず理由を表示（→ 05）</div>
+</div>
+</div>
+
+<div data-screen-label="U-21 キャンセル確認" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-21</span><span style="font-size:16px;font-weight:700">キャンセルの確認</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column;position:relative">
+<div style="height:50px;flex:none"></div>
+<div style="padding:10px 20px;font-size:17px;font-weight:700">予約の詳細</div>
+<div style="position:absolute;inset:0;background:rgba(31,27,23,.55);display:flex;align-items:flex-end;padding:0">
+<div style="background:#fff;border-radius:28px 28px 0 0;padding:14px 20px 34px;display:flex;flex-direction:column;gap:14px;width:100%;box-sizing:border-box">
+<div style="width:40px;height:5px;border-radius:3px;background:#DDD3C4;align-self:center"></div>
+<div style="font-size:20px;font-weight:900;text-align:center;margin-top:4px">予約をキャンセルしますか？</div>
+<div style="font-size:13.5px;color:#4A443D;text-align:center">キャンセルすると元に戻せません</div>
+<div style="height:56px;border-radius:999px;background:#C2362B;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800">キャンセルする</div>
+<div style="height:56px;border-radius:999px;background:#EFE9DF;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700">やめる（予約を残す）</div>
+</div>
+</div>
+</div>
+<div style="max-width:390px;font-size:13px;line-height:1.6;color:#4A443D">確定で状態が「キャンセル」になり、数量・定員が戻る。理由入力なし</div>
+</div>
+
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:20px">
+<div style="font-size:22px;font-weight:800;border-bottom:2px solid #1F1B17;padding-bottom:8px">マイページ・アカウント（共通・U-30・U-02）</div>
+<div style="display:flex;gap:44px;align-items:flex-start">
+
+<div data-screen-label="マイページ" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">共通・U-30</span><span style="font-size:16px;font-weight:700">マイページ（通知設定を含む）</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="flex:1;overflow:hidden;padding:8px 20px 0;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:30px;font-weight:900;letter-spacing:-.01em">マイページ</div>
+<div style="background:#fff;border-radius:20px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:14px 16px;display:flex;align-items:center;gap:12px">
+<div style="width:48px;height:48px;border-radius:24px;background:#FBEBE0;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B3471A" stroke-width="1.9" stroke-linecap="round"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4.5 21c0-4.2 3.4-6.2 7.5-6.2s7.5 2 7.5 6.2"></path></svg></div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1"><span style="font-size:18px;font-weight:900">栗橋 花子</span><span style="font-size:13px;color:#4A443D">090-1234-5678</span><span style="font-size:13px;color:#4A443D">hanako@mail.jp</span></div>
+<span style="font-size:14px;font-weight:700;color:#B3471A;white-space:nowrap">変更 ›</span>
+</div>
+<div style="background:#1F1B17;color:#fff;border-radius:20px;padding:0 16px;height:56px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:15.5px;font-weight:800">スタッフメニュー</span><span style="font-size:12px;opacity:.8">スタッフのみ表示 ›</span></div>
+<div style="background:#fff;border-radius:20px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:0 16px">
+<div style="height:62px;display:flex;justify-content:space-between;align-items:center">
+<div style="display:flex;flex-direction:column"><span style="font-size:15.5px;font-weight:700">お知らせ通知</span><span style="font-size:12px;color:#6A6159">新着・予約確定・リマインドなど</span></div>
+<div style="width:52px;height:32px;border-radius:16px;background:#2E7D52;position:relative;flex:none"><div style="position:absolute;right:3px;top:3px;width:26px;height:26px;border-radius:13px;background:#fff"></div></div>
+</div>
+</div>
+<div style="background:#fff;border-radius:20px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:0 16px">
+<sc-for list="{{ links }}" as="k" hint-placeholder-count="4"><div style="height:52px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #F0EBE4;font-size:15px"><span>{{ k }}</span><span style="color:#9A9087">›</span></div></sc-for>
+</div>
+<div style="display:flex;justify-content:space-between;padding:4px 6px 0;font-size:14px;font-weight:700"><span style="color:#4A443D">ログアウト</span><span style="color:#C2362B">アカウント削除</span></div>
+</div>
+<div style="flex:none;height:80px;background:#fff;border-top:1px solid #EAE2D6;display:flex;padding-top:8px">
+<sc-for list="{{ tab4 }}" as="t" hint-placeholder-count="5"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ t.c }}" stroke-width="{{ t.w }}" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.d }}"></path></svg><span style="{{ t.s }}">{{ t.l }}</span></div></sc-for>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div>U-30 通知はオン・オフ1つだけ。Web版ではこの行を出さない</div>
+<div><b style="color:#B3471A">→ A-01</b>　スタッフメニュー（スタッフでログイン時のみ）</div>
+</div>
+</div>
+
+<div data-screen-label="登録情報の変更" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">共通</span><span style="font-size:16px;font-weight:700">登録情報の変更</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="height:56px;flex:none;display:flex;align-items:center;gap:2px;padding:0 10px;white-space:nowrap"><span style="width:40px;height:40px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span><span style="font-size:17px;font-weight:800">登録情報</span></div>
+<div style="flex:1;padding:6px 24px 30px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:13px;font-weight:700;color:#6A6159;padding-left:4px">お名前</div><div style="height:52px;border-radius:14px;background:#EFE9DF;display:flex;align-items:center;padding:0 16px;font-size:16px">栗橋 花子</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:13px;font-weight:700;color:#6A6159;padding-left:4px">電話番号</div><div style="height:52px;border-radius:14px;background:#EFE9DF;display:flex;align-items:center;padding:0 16px;font-size:16px">09012345678</div><div style="font-size:12.5px;color:#6A6159;line-height:1.5;padding-left:4px">変更後の内容は、予約中の予約にも反映されます</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:13px;font-weight:700;color:#6A6159;padding-left:4px">メールアドレス</div><div style="height:52px;border-radius:14px;background:#EFE9DF;display:flex;align-items:center;padding:0 16px;font-size:16px">hanako@mail.jp</div><div style="font-size:12.5px;color:#6A6159;line-height:1.5;padding-left:4px">ログインに使うため、変更すると新しいアドレスに確認リンクを送ります。リンクを押すと変更が完了します</div></div>
+<div style="height:56px;border-radius:999px;background:#B3471A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;margin-top:auto">保存する</div>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div>氏名・電話番号は保存で即反映</div>
+<div>メールアドレスは新アドレスへの確認リンクを押すまで旧アドレスのまま（誤入力でログイン不能になるのを防ぐ）</div>
+</div>
+</div>
+
+<div data-screen-label="U-02 アカウント削除" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-02</span><span style="font-size:16px;font-weight:700">アカウント削除</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="height:56px;flex:none;display:flex;align-items:center;gap:2px;padding:0 10px;white-space:nowrap"><span style="width:40px;height:40px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span><span style="font-size:17px;font-weight:800">アカウント削除</span></div>
+<div style="flex:1;padding:6px 22px 0;display:flex;flex-direction:column;gap:14px">
+<div style="font-size:20px;font-weight:900;line-height:1.5">アカウントを削除する前に<br>ご確認ください</div>
+<div style="background:#fff;border-radius:20px;box-shadow:0 1px 3px rgba(31,27,23,.06);padding:16px;display:flex;flex-direction:column;gap:12px;font-size:15px;line-height:1.65">
+<div style="display:flex;gap:10px"><b style="color:#C2362B">・</b><span>削除すると、このアカウントではログインできなくなります。</span></div>
+<div style="display:flex;gap:10px"><b style="color:#C2362B">・</b><span>受け取り前の予約があると削除できません。受け取りかキャンセルのあとにお手続きください。</span></div>
+<div style="display:flex;gap:10px"><b style="color:#C2362B">・</b><span>これまでの予約の記録は、お名前などを消したうえで「削除済みユーザー」として運営側に残ります。</span></div>
+</div>
+</div>
+<div style="padding:12px 22px 30px">
+<div style="height:56px;border-radius:999px;background:#C2362B;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">アカウントを削除する</div>
+</div>
+</div>
+<div style="max-width:390px;font-size:13px;line-height:1.6;color:#4A443D"><b style="color:#B3471A">→ 確認シート</b>　→ 削除後 U-01 ログインへ。受け取り前の予約が1件でもあれば右の表示</div>
+</div>
+
+<div data-screen-label="U-02 受け取り前の予約があるため削除できない" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-02</span><span style="font-size:16px;font-weight:700">予約中があるため削除できない</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;display:flex;flex-direction:column">
+<div style="height:50px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:15px;font-weight:700"><span>9:41</span><span style="width:54px;height:12px;border-radius:4px;background:#1F1B17"></span></div>
+<div style="height:56px;flex:none;display:flex;align-items:center;gap:2px;padding:0 10px;white-space:nowrap"><span style="width:40px;height:40px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1B17" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span><span style="font-size:17px;font-weight:800">アカウント削除</span></div>
+<div style="flex:1;padding:6px 22px 0;display:flex;flex-direction:column;gap:14px">
+<div style="font-size:20px;font-weight:900;line-height:1.5">受け取り前の予約があるため、<br>今は削除できません</div>
+<div style="font-size:14.5px;line-height:1.7;color:#4A443D">以下の予約を受け取るか、キャンセルしたあとに、もう一度お手続きください。</div>
+<div style="background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 3px rgba(31,27,23,.06)">
+<div style="padding:14px 16px;border-bottom:1px solid #F0EBE4;display:flex;flex-direction:column;gap:4px"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;background:#FBEBE0;color:#8C3611">予約済み</span><span style="font-size:13px;color:#6A6159">予約番号 <b style="color:#1F1B17;font-size:15px">0427</b></span></div><span style="font-size:15px;font-weight:700">日替わり弁当　2食</span><span style="font-size:13px;color:#4A443D">10/5(月) 11:30〜13:30　駅前店</span></div>
+<div style="padding:14px 16px;display:flex;flex-direction:column;gap:4px"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;background:#FBEBE0;color:#8C3611">予約済み</span><span style="font-size:13px;color:#6A6159">予約番号 <b style="color:#1F1B17;font-size:15px">0431</b></span></div><span style="font-size:15px;font-weight:700">新米コシヒカリ 5kg　1袋</span><span style="font-size:13px;color:#4A443D">10/5(月)〜10/12(月)　直売所</span></div>
+</div>
+</div>
+<div style="padding:12px 22px 30px;display:flex;flex-direction:column;gap:10px">
+<div style="height:56px;border-radius:999px;background:#B3471A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">予約・申込を見る</div>
+<div style="height:56px;border-radius:999px;background:#EFE9DF;color:#9A9087;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">アカウントを削除する</div>
+</div>
+</div>
+<div style="max-width:390px;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.6;color:#4A443D">
+<div>「予約済み」「申し込み済み」「応募済み」が対象。削除ボタンは押せない</div>
+<div>キャンセル期限後・キャンセル不可の予約は受け取り（または期限切れ）後に削除できる</div>
+</div>
+
+<div data-screen-label="U-02 削除の確認" style="display:flex;flex-direction:column;gap:12px;flex:none">
+<div style="display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-size:13px;font-weight:800;color:#fff;background:#1F1B17;padding:4px 8px;border-radius:6px">U-02</span><span style="font-size:16px;font-weight:700">削除の確認</span></div>
+<div style="width:390px;height:844px;background:#F6F1E8;border:6px solid #1F1B17;border-radius:44px;overflow:hidden;position:relative">
+<div style="position:absolute;inset:0;background:rgba(31,27,23,.55);display:flex;align-items:flex-end">
+<div style="background:#fff;border-radius:28px 28px 0 0;padding:14px 20px 34px;display:flex;flex-direction:column;gap:14px;width:100%;box-sizing:border-box">
+<div style="width:40px;height:5px;border-radius:3px;background:#DDD3C4;align-self:center"></div>
+<div style="font-size:20px;font-weight:900;text-align:center;margin-top:4px">本当に削除しますか？</div>
+<div style="font-size:14.5px;line-height:1.7;color:#4A443D;text-align:center">削除したアカウントは元に戻せません。</div>
+<div style="height:56px;border-radius:999px;background:#C2362B;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800">削除する</div>
+<div style="height:56px;border-radius:999px;background:#EFE9DF;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700">やめる</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const D = ['M3.5 12.5V3.5h9l8.5 8.5-9 9z M8 8h.01', 'M4 6h16v15H4z M4 10.5h16 M8.5 3v4 M15.5 3v4', 'M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z M10 21h4', 'M5.5 3h13v18l-3.2-2-3.3 2-3.3-2-3.2 2z M9 8.5h6 M9 12.5h6', 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4.5 21c0-4.2 3.4-6.2 7.5-6.2s7.5 2 7.5 6.2'];
+    D.splice(2, 1);
+    const L = ['商品', 'イベント・求人', '予約・申込', 'マイページ'];
+    const tab = a => L.map((l, i) => ({ l, d: D[i], c: i === a ? '#B3471A' : '#8A8178', w: i === a ? 2.3 : 1.8, s: 'font-size:11px;font-weight:700;letter-spacing:-.05em;white-space:nowrap;color:' + (i === a ? '#B3471A' : '#6A6159') }));
+    const pill = (bg, c) => 'font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;background:' + bg + ';color:' + c;
+    // ピルの色＝種類（商品・イベント・求人）。キャンセル・期限切れのみ灰
+    const S = { 商品: pill('#FBEBE0', '#8C3611'), イベント: pill('#E4F2E9', '#1F5A38'), 求人: pill('#E7EFFA', '#244F86'), off: pill('#EFE9DF', '#5F5850') };
+    const active = [
+      { st: '予約済み', stS: S.商品, kind: '商品', numL: '予約番号', num: '0427', title: '日替わり弁当　2食', l1: '10/5(月) 11:30〜13:30　駅前店' },
+      { st: '予約済み', stS: S.商品, kind: '商品', numL: '予約番号', num: '0431', title: '新米コシヒカリ 5kg　1袋', l1: '10/5(月)〜10/12(月)　直売所' },
+      { st: '申し込み済み', stS: S.イベント, kind: 'イベント', numL: '申し込み番号', num: '0102', title: '親子でさつまいも掘り体験　2名', l1: '10/18(日) 10:00〜12:00　あけぼの農園' },
+      { st: '応募済み', stS: S.求人, kind: '求人', numL: '受付番号', num: '0057', title: '稲の脱穀作業（日払い）', l1: '10/10(土) 8:00〜15:00　連絡をお待ちください' }
+    ];
+    // 予約・申し込み中：日付で束ねる（1c）。点の色＝種類
+    const C = { 商品: '#B3471A', イベント: '#2E7D52', 求人: '#2F5F9E' };
+    const rows = [
+      { k: '商品', st: '予約済み', num: '0427', title: '日替わり弁当　2食', time: '11:30〜13:30', where: 'カフェ あけぼの 駅前店', g: 0 },
+      { k: '商品', st: '予約済み', num: '0431', title: '新米コシヒカリ 5kg　1袋', time: '〜10/12(月)', where: 'あけぼの農園 直売所', g: 0 },
+      { k: '求人', st: '応募済み', num: '0057', title: '稲の脱穀作業（日払い）', time: '8:00〜15:00', where: '連絡をお待ちください', g: 1 },
+      { k: 'イベント', st: '申し込み済み', num: '0102', title: '親子でさつまいも掘り体験　2名', time: '10:00〜12:00', where: 'あけぼの農園', g: 2 }
+    ].map(r => ({ ...r, color: C[r.k] }));
+    const heads = [{ h: '今日', sub: '10/5(月)', hC: '#B3471A' }, { h: '10/10(土)', sub: '', hC: '#1F1B17' }, { h: '10/18(日)', sub: '', hC: '#1F1B17' }];
+    const groups = heads.map((h, i) => ({ ...h, rows: rows.filter(r => r.g === i) }));
+    const hist = [
+      { st: '受け取り済み', stS: S.商品, kind: '商品', numL: '予約番号', num: '0398', title: '季節のシフォンケーキ　1個', l1: '9/27(日) 受け取り' },
+      { st: '参加済み', stS: S.イベント, kind: 'イベント', numL: '申し込み番号', num: '0088', title: '稲刈り体験　2名', l1: '9/26(土) 参加' },
+      { st: 'キャンセル', stS: S.off, kind: '商品', numL: '予約番号', num: '0377', title: '日替わり弁当　1食', l1: '9/24(木) キャンセル' },
+      { st: '期限切れ', stS: S.off, kind: '商品', numL: '予約番号', num: '0350', title: '自家製にんじんドレッシング　2本', l1: '受け取り期間 9/18(金) まで' },
+      { st: '受け取り済み', stS: S.商品, kind: '商品', numL: '予約番号', num: '0331', title: 'ランドリーカード 5,000円分　1枚', l1: '9/15(火) 受け取り' },
+      { st: '受け取り済み', stS: S.商品, kind: '商品', numL: '予約番号', num: '0302', title: '日替わり弁当　3食', l1: '9/10(木) 受け取り' }
+    ];
+    const links = ['利用規約', 'プライバシーポリシー', '特定商取引法に基づく表記', 'お問い合わせ'];
+    return { tab3: tab(2), tab4: tab(3), groups, hist, links };
+  }
+}
+</script>
+</body>
+</html>

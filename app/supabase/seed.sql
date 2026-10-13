@@ -1,0 +1,221 @@
+-- ============================================================
+-- LocalEC 開発用シード（npx supabase db reset で投入）
+-- 日時は「実行した日の日本時間」を基準にした相対値。いつ reset しても本日の商品が出る
+-- ============================================================
+set timezone = 'Asia/Tokyo';
+
+-- 基準日（日本時間の今日 0:00）
+create temporary table seed_base as select date_trunc('day', now()) as today;
+
+-- 店舗 --------------------------------------------------------
+insert into public.stores (id, name, address, phone, hours_text, payment_methods) values
+  ('00000000-0000-4000-8000-000000000001', 'カフェ あけぼの 駅前店', '埼玉県久喜市栗橋東1-2-8', '0480000001', E'8:00〜18:00\n月曜定休', '{cash,paypay}'),
+  ('00000000-0000-4000-8000-000000000002', 'あけぼの農園 直売所', '埼玉県久喜市栗橋北3-10', '0480000002', '9:00〜17:00', '{cash,paypay,credit}'),
+  ('00000000-0000-4000-8000-000000000003', 'コインランドリー あけぼの', '埼玉県久喜市栗橋東2-5-1', '0480000003', '24時間', '{cash,transit_ic,other}');
+
+-- 商品 --------------------------------------------------------
+-- 予約締切は受け取り終了より前にする（A-10 の入力規則と同じ）。締切を過ぎた商品は「締切後」になるので、
+-- 午後に予約を試すときは「日替わり弁当（明日）」「新米コシヒカリ」など受け取りが先の商品を使う
+insert into public.listings (
+  id, store_id, kind, title, body, status, publish_start, publish_end,
+  category, price, original_price, quantity_total, unit,
+  pickup_start, pickup_end, booking_deadline, cancel_deadline
+)
+select v.id::uuid, v.store_id::uuid, 'product', v.title, v.body, 'published', v.publish_start, v.publish_end,
+       v.category::public.product_category, v.price, v.original_price, v.quantity_total, v.unit,
+       v.pickup_start, v.pickup_end, v.booking_deadline, v.cancel_deadline
+from seed_base b, lateral (values
+  ('00000000-0000-4000-8000-000000000101', '00000000-0000-4000-8000-000000000001', '日替わり弁当',
+   '今日のメインは鶏の照り焼き。地元の野菜を使った副菜が3種類付きます。ごはんは地元産のお米です。',
+   b.today - interval '1 day', b.today + interval '1 day',
+   'bento', 600, 800, 20, '食',
+   b.today + interval '11 hours 30 minutes', b.today + interval '13 hours 30 minutes',
+   b.today + interval '10 hours', b.today + interval '10 hours'),
+  ('00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000001', '季節のシフォンケーキ',
+   'ふんわり焼き上げた本日限定のシフォンケーキ。',
+   b.today - interval '1 day', b.today + interval '1 day',
+   'sweets', 900, 1800, 2, '個',
+   b.today + interval '13 hours', b.today + interval '17 hours',
+   b.today + interval '12 hours', null),
+  ('00000000-0000-4000-8000-000000000103', '00000000-0000-4000-8000-000000000001', '本日のパン詰め合わせ',
+   '閉店前のパンをお得に。',
+   b.today - interval '1 day', b.today + interval '1 day',
+   'bread', 400, 800, 5, '袋',
+   b.today + interval '17 hours', b.today + interval '19 hours',
+   b.today + interval '16 hours', b.today + interval '16 hours'),
+  ('00000000-0000-4000-8000-000000000104', '00000000-0000-4000-8000-000000000002', '新米コシヒカリ 5kg',
+   'あけぼの農園で今年収穫した新米です。直売所でお受け取りください。',
+   now() - interval '1 hour', b.today + interval '4 days',
+   'rice', 2800, null, 17, '袋',
+   b.today + interval '9 hours', b.today + interval '3 days 17 hours',
+   b.today + interval '3 days 17 hours', b.today + interval '1 day 18 hours'),
+  ('00000000-0000-4000-8000-000000000105', '00000000-0000-4000-8000-000000000001', '自家製にんじんドレッシング',
+   '地元のにんじんを使った自家製ドレッシング。',
+   now() - interval '2 hours', b.today + interval '8 days',
+   'processed', 650, 750, 30, '本',
+   b.today + interval '8 hours', b.today + interval '7 days 18 hours',
+   b.today + interval '7 days 17 hours', null),
+  ('00000000-0000-4000-8000-000000000106', '00000000-0000-4000-8000-000000000003', 'ランドリーカード 5,000円分',
+   '5,000円分のプリペイドカードをお得に。',
+   b.today - interval '5 days', b.today + interval '31 days',
+   'laundry', 4800, 5000, 50, '枚',
+   b.today, b.today + interval '30 days 23 hours',
+   b.today + interval '30 days 23 hours', null),
+  -- 売り切れ確認用（下で 3 セット分を予約済みにする）
+  ('00000000-0000-4000-8000-000000000107', '00000000-0000-4000-8000-000000000002', '朝採れ野菜セット',
+   'その日の朝に採れた野菜を詰め合わせました。',
+   b.today - interval '1 day', b.today + interval '2 days',
+   'vegetable', 500, null, 3, 'セット',
+   -- 受け取りを明日にして、期限切れ処理で枠が戻らないようにする
+   b.today + interval '1 day 10 hours', b.today + interval '1 day 12 hours',
+   b.today + interval '23 hours', null),
+  -- 締切後確認用（締切が今日 0:00）
+  ('00000000-0000-4000-8000-000000000108', '00000000-0000-4000-8000-000000000001', '焼きたてメロンパン',
+   '外はさっくり、中はふんわり。',
+   b.today - interval '1 day', b.today + interval '1 day',
+   'bread', 180, null, 6, '個',
+   b.today + interval '15 hours', b.today + interval '17 hours',
+   b.today, null)
+) as v(id, store_id, title, body, publish_start, publish_end, category, price, original_price, quantity_total, unit,
+       pickup_start, pickup_end, booking_deadline, cancel_deadline);
+
+-- イベント ----------------------------------------------------
+insert into public.listings (
+  id, store_id, kind, title, body, status, publish_start, publish_end,
+  price_per_person, capacity, max_per_booking, event_start, event_end,
+  place_name, place_address, application_deadline, cancel_deadline, conditions
+)
+select v.id::uuid, '00000000-0000-4000-8000-000000000002', 'event', v.title, v.body, 'published',
+       b.today - interval '2 days', v.event_end,
+       v.price, v.capacity, 4, v.event_start, v.event_end,
+       v.place_name, v.place_address, v.event_start - interval '3 days', v.event_start - interval '2 days', v.conditions
+from seed_base b, lateral (values
+  ('00000000-0000-4000-8000-000000000201', '親子でさつまいも掘り体験', '秋の畑でさつまいもを掘ってみませんか。掘ったおいもはお持ち帰りいただけます。',
+   500, 20, b.today + interval '10 days 10 hours', b.today + interval '10 days 12 hours',
+   'あけぼの農園 第2畑', '埼玉県久喜市栗橋北3-10', '小学生以下のお子さまと保護者。軍手・汚れてもよい服装でお越しください。'),
+  ('00000000-0000-4000-8000-000000000202', '秋の園庭開放と子ども健康相談', '園庭で自由に遊べます。保健師による健康相談もあります。',
+   0, 30, b.today + interval '16 days 9 hours 30 minutes', b.today + interval '16 days 11 hours 30 minutes',
+   'あけぼの保育園', '埼玉県久喜市栗橋東3-1-1', null)
+) as v(id, title, body, price, capacity, event_start, event_end, place_name, place_address, conditions);
+
+-- 求人 --------------------------------------------------------
+insert into public.listings (
+  id, store_id, kind, title, body, status, publish_start, publish_end,
+  pay_text, pay_amount, pay_unit, headcount, work_start, work_end, work_text,
+  place_name, place_address, application_deadline, cancel_deadline, conditions
+)
+select v.id::uuid, v.store_id::uuid, 'job', v.title, null, 'published',
+       b.today - interval '3 days', v.work_end,
+       v.pay_text, v.pay_amount, v.pay_unit::public.pay_unit, v.headcount, v.work_start, v.work_end, v.work_text,
+       v.place_name, v.place_address, v.work_start - interval '2 days', v.work_start - interval '2 days', v.conditions
+from seed_base b, lateral (values
+  ('00000000-0000-4000-8000-000000000301', '00000000-0000-4000-8000-000000000002', '稲の脱穀作業（日払い）',
+   '日給 9,000円', 9000, 'daily', 5, b.today + interval '7 days 8 hours', b.today + interval '7 days 15 hours', null,
+   'あけぼの農園 作業場', '埼玉県久喜市栗橋北3-12', '18歳以上。刈り取った稲の運搬と脱穀機の補助。昼食付き。報酬は当日現金でお支払いします。'),
+  ('00000000-0000-4000-8000-000000000302', '00000000-0000-4000-8000-000000000001', 'カフェのホールスタッフ',
+   '時給 1,100円', 1100, 'hourly', 2, b.today + interval '14 days 10 hours', b.today + interval '60 days 15 hours', '週2日〜 10:00〜15:00',
+   'カフェ あけぼの 駅前店', '埼玉県久喜市栗橋東1-2-8', '接客経験は問いません。')
+) as v(id, store_id, title, pay_text, pay_amount, pay_unit, headcount, work_start, work_end, work_text,
+       place_name, place_address, conditions);
+
+-- お知らせ ----------------------------------------------------
+insert into public.listings (id, store_id, kind, title, body, status, publish_start, publish_end)
+select v.id::uuid, v.store_id::uuid, 'notice', v.title, v.body, 'published', v.publish_start, b.today + interval '60 days'
+from seed_base b, lateral (values
+  ('00000000-0000-4000-8000-000000000401', '00000000-0000-4000-8000-000000000001', '駅前店の営業時間が変わります',
+   '10月12日（月）から、カフェ あけぼの 駅前店の営業時間を 8:00〜17:00 に変更します。お弁当の受け取り時間は各掲載に記載の時間をご確認ください。', b.today - interval '1 day'),
+  ('00000000-0000-4000-8000-000000000402', '00000000-0000-4000-8000-000000000001', '駅東口の道路工事について',
+   '10月中旬まで、駅東口からお店までの道の一部が通行止めになります。お越しの際は北側の道をご利用ください。', b.today - interval '6 days'),
+  ('00000000-0000-4000-8000-000000000403', '00000000-0000-4000-8000-000000000002', '新米の販売を始めました',
+   'あけぼの農園で今年の新米の収穫が始まりました。直売所での受け取り予約を「商品」から受け付けています。', b.today - interval '14 days')
+) as v(id, store_id, title, body, publish_start);
+
+-- 売り切れ再現用のダミー利用者と予約 ----------------------------
+insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_user_meta_data, created_at, updated_at)
+values ('00000000-0000-0000-0000-000000000000', '00000000-0000-4000-8000-0000000000aa', 'authenticated', 'authenticated',
+        'seed-user@example.com', 'x', now(),
+        '{"name":"シード 太郎","phone":"09000000000","agreed_terms_at":"2026-10-10T00:00:00Z"}', now(), now());
+
+-- 掲載の写真（バケット内のパス。ファイルは supabase/seed-photos/ にあり、db reset でアップロードされる）。
+-- 予約が入ると写真は変えられないので、予約より先に入れる
+update public.listings as l set photo_url = 'seed/' || v.file
+from (values
+  ('00000000-0000-4000-8000-000000000101', 'bento.jpg'),
+  ('00000000-0000-4000-8000-000000000102', 'chiffon.jpg'),
+  ('00000000-0000-4000-8000-000000000103', 'bread.jpg'),
+  ('00000000-0000-4000-8000-000000000104', 'rice.jpg'),
+  ('00000000-0000-4000-8000-000000000105', 'dressing.jpg'),
+  ('00000000-0000-4000-8000-000000000106', 'laundry.jpg'),
+  ('00000000-0000-4000-8000-000000000107', 'vegetables.jpg'),
+  ('00000000-0000-4000-8000-000000000108', 'melonpan.jpg'),
+  ('00000000-0000-4000-8000-000000000201', 'sweet-potato.jpg'),
+  ('00000000-0000-4000-8000-000000000202', 'playground.jpg'),
+  ('00000000-0000-4000-8000-000000000301', 'rice-harvest.jpg'),
+  ('00000000-0000-4000-8000-000000000302', 'cafe.jpg')
+) as v(id, file)
+where l.id = v.id::uuid;
+
+insert into public.bookings (number, listing_id, store_id, user_id, kind, quantity, amount)
+values ('0427', '00000000-0000-4000-8000-000000000107', '00000000-0000-4000-8000-000000000002',
+        '00000000-0000-4000-8000-0000000000aa', 'product', 3, 1500);
+
+-- ダミー利用者のアドレスは実在しないので、予約の確定通知は送らない（Resend で 403 になり再送を繰り返す）
+delete from public.notifications where user_id = '00000000-0000-4000-8000-0000000000aa';
+
+drop table seed_base;
+
+-- 運営画面の確認用スタッフ（3 店舗すべてに所属）。ログインのメールは Resend で届く。
+-- ドメインを認証するまで Resend は登録したアドレスにしか送れないため、そのアドレスにする
+insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_user_meta_data, created_at, updated_at)
+values ('00000000-0000-0000-0000-000000000000', '00000000-0000-4000-8000-0000000000cc', 'authenticated', 'authenticated',
+        't-hasebe@meincoltd.com', 'x', now(),
+        '{"name":"山田 太郎","phone":"09011112222","agreed_terms_at":"2026-10-10T00:00:00Z"}', now(), now());
+
+update public.profiles set is_staff = true where id = '00000000-0000-4000-8000-0000000000cc';
+
+insert into public.store_staff (store_id, user_id) values
+  ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-0000000000cc'),
+  ('00000000-0000-4000-8000-000000000002', '00000000-0000-4000-8000-0000000000cc'),
+  ('00000000-0000-4000-8000-000000000003', '00000000-0000-4000-8000-0000000000cc');
+
+-- 下書きと公開予定の掲載（運営画面の絞り込み確認用）
+insert into public.listings (id, store_id, kind, title, status, publish_start, publish_end)
+values ('00000000-0000-4000-8000-000000000501', '00000000-0000-4000-8000-000000000001', 'product',
+        '日替わり弁当（下書き）', 'draft', now(), now() + interval '7 days');
+insert into public.listings (
+  id, store_id, kind, title, body, status, publish_start, publish_end,
+  category, price, original_price, quantity_total, unit, pickup_start, pickup_end, booking_deadline, cancel_deadline
+)
+select '00000000-0000-4000-8000-000000000502', '00000000-0000-4000-8000-000000000001', 'product',
+       '日替わり弁当（明日）', '明日のメインは鮭の塩焼きです。', 'published',
+       b.today + interval '18 hours', b.today + interval '1 day 13 hours 30 minutes',
+       'bento', 600, 800, 20, '食',
+       b.today + interval '1 day 11 hours 30 minutes', b.today + interval '1 day 13 hours 30 minutes',
+       b.today + interval '1 day 10 hours', b.today + interval '1 day 10 hours'
+from (select date_trunc('day', now()) as today) b;
+
+update public.listings set photo_url = 'seed/bento.jpg' where id = '00000000-0000-4000-8000-000000000501';
+update public.listings set photo_url = 'seed/bento-salmon.jpg' where id = '00000000-0000-4000-8000-000000000502';
+
+-- SQL で直接入れたユーザーは、認証サーバーが読むトークン列が NULL だとログインできない（Database error finding user）。
+-- 空文字にし、メールの ID 連携の行も入れる
+update auth.users
+set confirmation_token = '', recovery_token = '', email_change_token_new = '', email_change_token_current = '',
+    email_change = '', phone_change = '', phone_change_token = '', reauthentication_token = ''
+where id in ('00000000-0000-4000-8000-0000000000aa', '00000000-0000-4000-8000-0000000000cc');
+
+insert into auth.identities (id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
+select gen_random_uuid(), u.id, u.id::text,
+       jsonb_build_object('sub', u.id::text, 'email', u.email, 'email_verified', true),
+       'email', now(), now(), now()
+from auth.users u
+where u.id in ('00000000-0000-4000-8000-0000000000aa', '00000000-0000-4000-8000-0000000000cc');
+
+-- 通知の配信（ローカル）：定期実行とトリガーが Edge Function を呼ぶための設定。
+-- anon の JWT はローカル共通の固定値。本番は Studio で同じ名前の秘密を登録する（docs/設計_通知の配信.md 7 章）
+select vault.create_secret('http://supabase_kong_localec:8000/functions/v1', 'functions_url');
+select vault.create_secret('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0', 'publishable_key');
+select vault.create_secret('local-cron-secret', 'cron_secret');
+
+-- シードの公開済み掲載は「新着」として送らない（公開予定の掲載は、公開時刻に通知される）
+update public.listings set publish_notified_at = now() where publish_start <= now();

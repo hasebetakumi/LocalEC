@@ -32,6 +32,21 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
+      ],
+      "@react-native-community/datetimepicker",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "掲載する写真を選ぶために写真へのアクセスを許可してください"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#B3471A",
+          "defaultChannel": "default"
+        }
       ]
     ],
     "experiments": {
