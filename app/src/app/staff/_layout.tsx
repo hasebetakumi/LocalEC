@@ -65,7 +65,7 @@ function NoAccess() {
         </Text>
         <Text style={styles.body}>スタッフ用のアカウントでログインしてください。</Text>
         <PrimaryButton
-          label="利用者画面へ"
+          label="利用者画面へ戻る"
           onPress={() => router.replace('/')}
           height={52}
           labelSize={16}

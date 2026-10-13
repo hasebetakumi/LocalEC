@@ -7,6 +7,7 @@ import {
   formatDateJa,
   formatMonthDay,
   formatMonthDayTime,
+  formatPickup,
   formatTime,
   formatYen,
   isSameJstDay,
@@ -127,29 +128,26 @@ export function quantityText(row: StaffBookingRow): string {
   return `${row.quantity}${row.kind === 'event' ? '名' : row.kind === 'job' ? '名' : row.listingUnit}`;
 }
 
-/** 金額。求人は報酬の文字列、無料イベントは「無料」 */
+/** 金額。求人は報酬の文字列、0 円は種類を問わず「無料」（利用者側と同じ） */
 export function amountText(row: StaffBookingRow): string {
   if (row.kind === 'job') return row.listingPayText ?? '—';
-  if (!row.amount) return row.kind === 'event' ? '無料' : '0円';
+  if (!row.amount) return '無料';
   return `${formatYen(row.amount)}円`;
 }
 
-/** A-20 の行の右端：「11:30〜13:30」「〜10/12」「週2日〜 10:00〜15:00」 */
+/** A-20 の行の右端：「11:30〜13:30」「〜10/12(月)」「週2日〜 10:00〜15:00」（利用者側 U-22 の行と同じ） */
 export function rowTimeText(row: StaffBookingRow): string {
   if (row.kind === 'job' && row.listingWorkText) return row.listingWorkText;
   if (isSameJstDay(row.scheduleStart, row.scheduleEnd)) {
     return `${formatTime(row.scheduleStart)}〜${formatTime(row.scheduleEnd)}`;
   }
-  return `〜${formatMonthDay(row.scheduleEnd)}`;
+  return `〜${formatDateJa(row.scheduleEnd)}`;
 }
 
 /** A-21 の「受け取り」「日時」の値 */
 export function scheduleFullText(row: StaffBookingRow): string {
   if (row.kind === 'job' && row.listingWorkText) return row.listingWorkText;
-  if (isSameJstDay(row.scheduleStart, row.scheduleEnd)) {
-    return `${formatDateJa(row.scheduleStart)} ${formatTime(row.scheduleStart)}〜${formatTime(row.scheduleEnd)}`;
-  }
-  return `${formatMonthDay(row.scheduleStart)}〜${formatMonthDay(row.scheduleEnd)}`;
+  return formatPickup(row.scheduleStart, row.scheduleEnd);
 }
 
 /**
@@ -237,9 +235,7 @@ export function listingScheduleHeading(l: StaffListing): string {
     return `掲載 ${formatMonthDay(l.publishStart)}〜${formatMonthDay(l.publishEnd)}`;
   }
   if (!l.start || !l.end) return '日時未設定';
-  const range = isSameJstDay(l.start, l.end)
-    ? `${formatDateJa(l.start)} ${formatTime(l.start)}〜${formatTime(l.end)}`
-    : `${formatMonthDay(l.start)}〜${formatMonthDay(l.end)}`;
+  const range = formatPickup(l.start, l.end);
   const label = l.kind === 'product' ? '受け取り' : l.kind === 'event' ? '日時' : '勤務';
   return `${label} ${l.kind === 'job' && l.workText ? l.workText : range}`;
 }

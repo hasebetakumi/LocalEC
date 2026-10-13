@@ -107,9 +107,12 @@ function Detail({ booking: b }: { booking: MyBooking }) {
     }
   };
 
+  // 求人で報酬の記載がなければ（古いデータ）行ごと出さない
   const payment =
     b.kind === 'job'
-      ? { label: '報酬', value: <Text style={styles.value}>{b.listing.payText ?? ''}</Text> }
+      ? b.listing.payText
+        ? { label: '報酬', value: <Text style={styles.value}>{b.listing.payText}</Text> }
+        : null
       : {
           label: 'お支払い',
           value: (
@@ -147,8 +150,12 @@ function Detail({ booking: b }: { booking: MyBooking }) {
             <Text style={[styles.value, styles.strong]}>{titleWithQuantity(b)}</Text>
           </Row>
           <Divider />
-          <Row label={payment.label}>{payment.value}</Row>
-          <Divider />
+          {payment ? (
+            <>
+              <Row label={payment.label}>{payment.value}</Row>
+              <Divider />
+            </>
+          ) : null}
           <Row label={b.kind === 'product' ? '受け取り' : '日時'}>
             <Text style={[styles.value, styles.strong]}>{scheduleText(b)}</Text>
           </Row>

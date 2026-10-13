@@ -108,6 +108,7 @@ export function BookForm({ listing, onRefetch }: Props) {
                 source={{ uri: listing.photoUrl }}
                 style={StyleSheet.absoluteFill}
                 contentFit="cover"
+                transition={150}
               />
             ) : null}
           </View>

@@ -99,7 +99,12 @@ function EventJobCard({ listing: l, now }: { listing: EventOrJob; now: Date }) {
         ]}
       >
         {l.photoUrl ? (
-          <Image source={{ uri: l.photoUrl }} style={StyleSheet.absoluteFill} contentFit="cover" />
+          <Image
+            source={{ uri: l.photoUrl }}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            transition={150}
+          />
         ) : null}
         {full ? (
           <>

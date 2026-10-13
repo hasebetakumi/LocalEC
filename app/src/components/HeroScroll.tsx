@@ -117,6 +117,7 @@ export function HeroScroll({
               source={{ uri: photoUri }}
               style={StyleSheet.absoluteFill}
               contentFit="cover"
+              transition={150}
               blurRadius={12}
             />
             <View style={[StyleSheet.absoluteFill, styles.scrim]} />
