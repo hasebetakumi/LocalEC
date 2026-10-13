@@ -1,6 +1,15 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import {
+  Platform,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from 'react-native';
 
 import { MessageBand } from '@/components/Bands';
 import { PrimaryButton, TextButton } from '@/components/Buttons';
@@ -22,6 +31,19 @@ export default function MyPageScreen() {
   // スイッチは押した瞬間に切り替え、失敗したら戻す
   const [optimistic, setOptimistic] = useState<boolean | null>(null);
   const notificationsOn = optimistic ?? profile?.notifications_enabled ?? true;
+  // 引っ張って更新：登録情報を読み直す（未ログインでは何もしない）
+  const [refreshing, setRefreshing] = useState(false);
+  const refresh = async () => {
+    if (!session) return;
+    setRefreshing(true);
+    try {
+      await refreshProfile();
+    } catch {
+      // 読み直しの失敗は表示を変えない（今の内容を残す）
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const toggleNotifications = async (next: boolean) => {
     if (!session) return;
@@ -43,7 +65,12 @@ export default function MyPageScreen() {
 
   return (
     <Screen>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.accent} />
+        }
+      >
         <Text style={styles.title} accessibilityRole="header">
           マイページ
         </Text>
