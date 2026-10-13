@@ -1,12 +1,12 @@
 import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { EmptyState } from '@/components/EmptyState';
 import { LoadError, Loading } from '@/components/LoadState';
+import { ActionMenu } from '@/components/admin/ActionMenu';
 import { GroupList } from '@/components/admin/GroupList';
 import { KindLabel, ListingStatusPill } from '@/components/admin/Labels';
-import { PopMenu } from '@/components/admin/PopMenu';
 import { AdminFilterChip, SelectSheet } from '@/components/admin/SelectSheet';
 import { StaffScreen } from '@/components/admin/StaffScreen';
 import { StoreHeader } from '@/components/admin/StoreHeader';
@@ -56,7 +56,6 @@ export default function ListingsScreen() {
   const [status, setStatus] = useState<StatusValue>(DEFAULT_STATUS);
   const [sheet, setSheet] = useState<'kind' | 'status' | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const addRef = useRef<View>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -75,16 +74,14 @@ export default function ListingsScreen() {
   const hasAny = (listings.data ?? []).length > 0;
 
   const addButton = (
-    <View ref={addRef} collapsable={false}>
-      <Pressable
-        testID="add-listing"
-        accessibilityRole="button"
-        onPress={() => setMenuOpen(true)}
-        style={({ pressed }) => [styles.add, pressed && { opacity: 0.85 }]}
-      >
-        <Text style={styles.addText}>＋ 掲載</Text>
-      </Pressable>
-    </View>
+    <Pressable
+      testID="add-listing"
+      accessibilityRole="button"
+      onPress={() => setMenuOpen(true)}
+      style={({ pressed }) => [styles.add, pressed && { opacity: 0.85 }]}
+    >
+      <Text style={styles.addText}>＋ 掲載</Text>
+    </Pressable>
   );
 
   return (
@@ -171,9 +168,9 @@ export default function ListingsScreen() {
         onSelect={setStatus}
         onClose={() => setSheet(null)}
       />
-      <PopMenu
+      <ActionMenu
         visible={menuOpen}
-        anchorRef={addRef}
+        title="掲載する種類"
         onClose={() => setMenuOpen(false)}
         testID="add-menu"
         items={ADD_MENU.map((m) => ({

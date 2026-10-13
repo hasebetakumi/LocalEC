@@ -1,15 +1,15 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { EmptyState } from '@/components/EmptyState';
 import { Icon } from '@/components/Icon';
 import { LoadError, Loading } from '@/components/LoadState';
 import { ConfirmSheet } from '@/components/admin/ConfirmSheet';
+import { ActionMenu, type ActionMenuItem } from '@/components/admin/ActionMenu';
 import { GroupList } from '@/components/admin/GroupList';
 import { KindLabel, ListingStatusPill } from '@/components/admin/Labels';
 import { NumberSearchField } from '@/components/admin/NumberSearchField';
-import { PopMenu, type PopMenuItem } from '@/components/admin/PopMenu';
 import { AdminFilterChip, SelectSheet } from '@/components/admin/SelectSheet';
 import { StaffNavBar, StaffScreen } from '@/components/admin/StaffScreen';
 import { deleteListing, endListing } from '@/features/staff/api';
@@ -86,7 +86,6 @@ function Detail({
   onRefresh: () => void;
 }) {
   const now = useNow();
-  const moreRef = useRef<View>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirm, setConfirm] = useState<Confirm>(null);
   const [error, setError] = useState<string | null>(null);
@@ -108,7 +107,7 @@ function Detail({
   const metric = listingMetric(l);
   const totalLine = listingBookingTotalLine(bookings.data ?? [], now);
 
-  const menuItems: PopMenuItem[] = [
+  const menuItems: ActionMenuItem[] = [
     {
       key: 'edit',
       label: '編集',
@@ -167,18 +166,16 @@ function Detail({
   };
 
   const more = (
-    <View ref={moreRef} collapsable={false}>
-      <Pressable
-        testID="listing-more"
-        accessibilityRole="button"
-        accessibilityLabel="その他の操作"
-        onPress={() => setMenuOpen(true)}
-        style={styles.more}
-        hitSlop={6}
-      >
-        <Icon name="more" size={24} color={adminColors.text} />
-      </Pressable>
-    </View>
+    <Pressable
+      testID="listing-more"
+      accessibilityRole="button"
+      accessibilityLabel="その他の操作"
+      onPress={() => setMenuOpen(true)}
+      style={styles.more}
+      hitSlop={6}
+    >
+      <Icon name="more" size={24} color={adminColors.text} />
+    </Pressable>
   );
 
   return (
@@ -261,11 +258,12 @@ function Detail({
         )}
       </ScrollView>
 
-      <PopMenu
+      <ActionMenu
         visible={menuOpen}
-        anchorRef={moreRef}
+        title={l.title}
         items={menuItems}
         onClose={() => setMenuOpen(false)}
+        testID="listing-menu"
       />
       <SelectSheet
         visible={statusSheet}
