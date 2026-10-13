@@ -14,6 +14,8 @@ insert into public.stores (id, name, address, phone, hours_text, payment_methods
   ('00000000-0000-4000-8000-000000000003', 'コインランドリー あけぼの', '埼玉県久喜市栗橋東2-5-1', '0480000003', '24時間', '{cash,transit_ic,other}');
 
 -- 商品 --------------------------------------------------------
+-- 予約締切は受け取り終了より前にする（A-10 の入力規則と同じ）。締切を過ぎた商品は「締切後」になるので、
+-- 午後に予約を試すときは「日替わり弁当（明日）」「新米コシヒカリ」など受け取りが先の商品を使う
 insert into public.listings (
   id, store_id, kind, title, body, status, publish_start, publish_end,
   category, price, original_price, quantity_total, unit,
@@ -28,19 +30,19 @@ from seed_base b, lateral (values
    b.today - interval '1 day', b.today + interval '1 day',
    'bento', 600, 800, 20, '食',
    b.today + interval '11 hours 30 minutes', b.today + interval '13 hours 30 minutes',
-   b.today + interval '23 hours', b.today + interval '23 hours'),
+   b.today + interval '10 hours', b.today + interval '10 hours'),
   ('00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000001', '季節のシフォンケーキ',
    'ふんわり焼き上げた本日限定のシフォンケーキ。',
    b.today - interval '1 day', b.today + interval '1 day',
    'sweets', 900, 1800, 2, '個',
    b.today + interval '13 hours', b.today + interval '17 hours',
-   b.today + interval '23 hours 30 minutes', null),
+   b.today + interval '12 hours', null),
   ('00000000-0000-4000-8000-000000000103', '00000000-0000-4000-8000-000000000001', '本日のパン詰め合わせ',
    '閉店前のパンをお得に。',
    b.today - interval '1 day', b.today + interval '1 day',
    'bread', 400, 800, 5, '袋',
    b.today + interval '17 hours', b.today + interval '19 hours',
-   b.today + interval '23 hours 30 minutes', b.today + interval '16 hours'),
+   b.today + interval '16 hours', b.today + interval '16 hours'),
   ('00000000-0000-4000-8000-000000000104', '00000000-0000-4000-8000-000000000002', '新米コシヒカリ 5kg',
    'あけぼの農園で今年収穫した新米です。直売所でお受け取りください。',
    now() - interval '1 hour', b.today + interval '4 days',
