@@ -1,11 +1,11 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { InfoNote, MessageBand } from '@/components/Bands';
 import { BottomBar } from '@/components/BottomBar';
 import { PrimaryButton } from '@/components/Buttons';
+import { HeroScroll } from '@/components/HeroScroll';
 import { KindPill } from '@/components/KindPills';
-import { BackButton, Screen } from '@/components/Screen';
+import { Screen } from '@/components/Screen';
 import { useStartBooking } from '@/features/auth/useBookingGate';
 import { useNow } from '@/hooks/useNow';
 import { formatDateJa, formatDateTimeJa } from '@/lib/format';
@@ -37,7 +37,6 @@ export const APPLY_NOTE =
 /** U-12 イベント詳細・求人詳細 */
 export function EventJobDetail({ listing }: { listing: EventOrJob }) {
   const now = useNow();
-  const insets = useSafeAreaInsets();
   const startBooking = useStartBooking();
   const l = listing;
 
@@ -45,27 +44,31 @@ export function EventJobDetail({ listing }: { listing: EventOrJob }) {
 
   return (
     <Screen padTop={false}>
-      <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
-        <ProductPhoto
-          uri={l.photoUrl}
-          height={250}
-          tone={l.kind === 'event' ? 'fresh' : 'job'}
-          overlayLabel={view.overlay}
-          overlaySize="lg"
-        >
-          <View style={[styles.back, { top: Math.max(insets.top, 12) + 8 }]}>
-            <BackButton onPhoto />
+      <HeroScroll
+        title={l.title}
+        photoHeight={250}
+        photoUri={l.photoUrl}
+        photo={
+          <ProductPhoto
+            uri={l.photoUrl}
+            height={250}
+            tone={l.kind === 'event' ? 'fresh' : 'job'}
+            overlayLabel={view.overlay}
+            overlaySize="lg"
+          >
+            <View style={styles.kind}>
+              <KindPill kind={l.kind} />
+            </View>
+          </ProductPhoto>
+        }
+        band={
+          <View style={[styles.band, { backgroundColor: view.band.bg }]}>
+            <Text style={[styles.bandLeft, { color: view.band.fg }]}>{view.band.left}</Text>
+            <Text style={[styles.bandRight, { color: view.band.fg }]}>{view.band.right}</Text>
           </View>
-          <View style={styles.kind}>
-            <KindPill kind={l.kind} />
-          </View>
-        </ProductPhoto>
-
-        <View style={[styles.band, { backgroundColor: view.band.bg }]}>
-          <Text style={[styles.bandLeft, { color: view.band.fg }]}>{view.band.left}</Text>
-          <Text style={[styles.bandRight, { color: view.band.fg }]}>{view.band.right}</Text>
-        </View>
-
+        }
+        contentContainerStyle={{ paddingBottom: 20 }}
+      >
         <View style={styles.main}>
           <View style={{ gap: 6 }}>
             <Text style={styles.store}>{l.store.name}</Text>
@@ -108,7 +111,7 @@ export function EventJobDetail({ listing }: { listing: EventOrJob }) {
             />
           ) : null}
         </View>
-      </ScrollView>
+      </HeroScroll>
 
       <BottomBar>
         {l.kind === 'event' ? (
@@ -208,7 +211,6 @@ function jobView(j: JobListing, now: Date): View_ {
 }
 
 const styles = StyleSheet.create({
-  back: { position: 'absolute', left: 16 },
   kind: { position: 'absolute', left: 16, bottom: 16 },
   band: {
     paddingVertical: 11,

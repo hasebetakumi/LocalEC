@@ -1,12 +1,12 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { InfoBand, MessageBand } from '@/components/Bands';
 import { BottomBar } from '@/components/BottomBar';
 import { PrimaryButton } from '@/components/Buttons';
+import { HeroScroll } from '@/components/HeroScroll';
 import { Badge, Tag } from '@/components/Pills';
 import { Price } from '@/components/Price';
-import { BackButton, Screen } from '@/components/Screen';
+import { Screen } from '@/components/Screen';
 import { useStartBooking } from '@/features/auth/useBookingGate';
 import { useNow } from '@/hooks/useNow';
 import { formatDateTimeJa, formatDeadline, formatPickup } from '@/lib/format';
@@ -40,7 +40,6 @@ function blockedMessage(state: Availability, p: Product): string | null {
 /** U-12 商品詳細 */
 export function ProductDetail({ product }: { product: Product }) {
   const now = useNow();
-  const insets = useSafeAreaInsets();
   const startBooking = useStartBooking();
 
   const p = product;
@@ -52,34 +51,38 @@ export function ProductDetail({ product }: { product: Product }) {
 
   return (
     <Screen padTop={false}>
-      <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
-        <ProductPhoto
-          uri={p.photoUrl}
-          height={300}
-          overlayLabel={state === 'sold_out' ? '売り切れ' : null}
-          overlaySize="lg"
-        >
-          <View style={[styles.back, { top: Math.max(insets.top, 12) + 8 }]}>
-            <BackButton onPhoto />
-          </View>
-          {photoBadge ? (
-            <View style={styles.photoBadge}>
-              <Badge badge={photoBadge} size="md" />
-            </View>
-          ) : null}
-        </ProductPhoto>
-
-        <InfoBand
-          left={remainLabel(p)}
-          right={
-            // 売り切れは締切をそのまま、締切後・公開終了は「終了しました」（design 05）
-            isOpen || state === 'sold_out'
-              ? `予約締切 ${formatDeadline(p.bookingDeadline, now)}`
-              : '予約受付は終了しました'
-          }
-          closed={!isOpen}
-        />
-
+      <HeroScroll
+        title={p.title}
+        photoHeight={300}
+        photoUri={p.photoUrl}
+        photo={
+          <ProductPhoto
+            uri={p.photoUrl}
+            height={300}
+            overlayLabel={state === 'sold_out' ? '売り切れ' : null}
+            overlaySize="lg"
+          >
+            {photoBadge ? (
+              <View style={styles.photoBadge}>
+                <Badge badge={photoBadge} size="md" />
+              </View>
+            ) : null}
+          </ProductPhoto>
+        }
+        band={
+          <InfoBand
+            left={remainLabel(p)}
+            right={
+              // 売り切れは締切をそのまま、締切後・公開終了は「終了しました」（design 05）
+              isOpen || state === 'sold_out'
+                ? `予約締切 ${formatDeadline(p.bookingDeadline, now)}`
+                : '予約受付は終了しました'
+            }
+            closed={!isOpen}
+          />
+        }
+        contentContainerStyle={{ paddingBottom: 20 }}
+      >
         <View style={styles.main}>
           <View style={{ gap: 6 }}>
             <Text style={styles.store}>{p.store.name}</Text>
@@ -126,7 +129,7 @@ export function ProductDetail({ product }: { product: Product }) {
           </TermsCard>
           {message ? <MessageBand message={message} testID="blocked-message" /> : null}
         </View>
-      </ScrollView>
+      </HeroScroll>
 
       <BottomBar>
         <Price
@@ -150,7 +153,6 @@ export function ProductDetail({ product }: { product: Product }) {
 }
 
 const styles = StyleSheet.create({
-  back: { position: 'absolute', left: 16 },
   photoBadge: { position: 'absolute', left: 16, bottom: 16 },
   main: { paddingTop: 18, paddingHorizontal: 20, gap: 14 },
   store: { fontSize: 13.5, fontWeight: '700', color: colors.textWeak },
