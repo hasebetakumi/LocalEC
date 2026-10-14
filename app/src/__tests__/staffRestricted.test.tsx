@@ -24,7 +24,7 @@ describe('A-12 予約後の編集', () => {
   it('固定の項目は入力欄にならず、数量は予約済みより減らせない', async () => {
     jest.mocked(fetchListingBookings).mockResolvedValue([]);
     await renderStaff(<RestrictedEditView listing={makeStaffListing()} storeName="駅前店" />);
-    expect(screen.getByText('予約が8件入っています')).toBeTruthy();
+    expect(screen.getByText('予約済みが 8食 あります')).toBeTruthy();
     expect(screen.getByTestId('locked-fields')).toBeTruthy();
     expect(screen.queryByLabelText('タイトル')).toBeNull();
     expect(screen.getByText('8〜20食の範囲で減らせます')).toBeTruthy();

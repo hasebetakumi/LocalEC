@@ -31,6 +31,20 @@ describe('A-10 掲載入力', () => {
     expect(insertListing).not.toHaveBeenCalled();
   });
 
+  it('エラーになった後は入力のたびに検証し直し、直した欄のエラーだけ消える', async () => {
+    await renderStaff(<NewListingScreen />);
+    // 押すまでは検証しない
+    expect(screen.queryByText('タイトルを入力してください')).toBeNull();
+    await fireEvent.press(screen.getByTestId('publish'));
+    expect(await screen.findByTestId('form-error')).toBeTruthy();
+
+    await fireEvent.changeText(screen.getByLabelText('タイトル'), '試作の弁当');
+    expect(screen.queryByText('タイトルを入力してください')).toBeNull();
+    // 他の欄のエラーと赤帯はまだ残る
+    expect(screen.getByText('カテゴリを選んでください')).toBeTruthy();
+    expect(screen.getByTestId('form-error')).toBeTruthy();
+  });
+
   it('下書き保存はタイトルだけで保存できる', async () => {
     jest.mocked(insertListing).mockResolvedValue('new-id');
     await renderStaff(<NewListingScreen />);

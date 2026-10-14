@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -24,7 +24,12 @@ import { adminSpace } from '@/theme/adminTokens';
 export default function NewStoreScreen() {
   const insets = useSafeAreaInsets();
   const [value, setValue] = useState(EMPTY_STORE);
-  const [errors, setErrors] = useState<StoreFormErrors>({});
+  // 「追加する」を押すまでは検証しない。一度押した後は入力のたびに検証し直す（A-10 と同じ）
+  const [checked, setChecked] = useState(false);
+  const errors = useMemo<StoreFormErrors>(
+    () => (checked ? validateStoreForm(value) : {}),
+    [checked, value],
+  );
   const [failed, setFailed] = useState(false);
   const create = useStaffMutation(createStore);
   const scrollRef = useRef<ScrollView>(null);
@@ -32,7 +37,7 @@ export default function NewStoreScreen() {
 
   const submit = async () => {
     const e = validateStoreForm(value);
-    setErrors(e);
+    setChecked(true);
     if (Object.keys(e).length > 0) {
       scrollRef.current?.scrollTo({ y: 0, animated: true });
       return;

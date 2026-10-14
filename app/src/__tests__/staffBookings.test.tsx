@@ -84,6 +84,35 @@ describe('A-20 予約・申し込み', () => {
     expect(await screen.findByText('0421')).toBeTruthy();
     expect(screen.getByText('受け取り済み')).toBeTruthy();
   });
+
+  it('期間を「今後」にすると日付の見出しで束ねる。本日は見出しなし', async () => {
+    const DAY = 24 * HOUR;
+    jest.mocked(fetchStoreBookings).mockResolvedValue([live({ id: 'a', number: '0427' })]);
+    await renderStaff(<StaffBookingsScreen />);
+    expect(await screen.findByText('0427')).toBeTruthy();
+    expect(screen.queryByTestId(/booking-group-/)).toBeNull();
+
+    jest.mocked(fetchStoreBookings).mockResolvedValue([
+      live({
+        id: 'b',
+        number: '0032',
+        scheduleStart: new Date(Date.now() + DAY),
+        scheduleEnd: new Date(Date.now() + DAY + HOUR),
+      }),
+      live({
+        id: 'c',
+        number: '3657',
+        kind: 'event',
+        scheduleStart: new Date(Date.now() + 10 * DAY),
+        scheduleEnd: new Date(Date.now() + 10 * DAY + HOUR),
+      }),
+    ]);
+    await fireEvent.press(screen.getByTestId('filter-period'));
+    await fireEvent.press(await screen.findByTestId('option-future'));
+    expect(await screen.findByText('0032')).toBeTruthy();
+    expect(screen.getAllByTestId(/booking-group-/)).toHaveLength(2);
+    expect(jest.mocked(fetchStoreBookings).mock.calls.at(-1)?.[1]).toBe('future');
+  });
 });
 
 describe('A-21 受け取り処理', () => {
