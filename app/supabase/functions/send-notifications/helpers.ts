@@ -6,11 +6,12 @@ export type NotificationLike = {
   listing_id: string | null;
 };
 
-/** 取引通知（プッシュ＋メール）。新着はプッシュだけ */
+/** メールを送る種類：取引通知（プッシュ＋メール）と利用者キャンセル（メールだけ）。新着はプッシュだけ */
 export const EMAIL_KINDS: ReadonlySet<string> = new Set([
   'booking_confirmed',
   'reminder',
   'cancelled_by_staff',
+  'cancelled_by_user',
   'listing_changed',
 ]);
 

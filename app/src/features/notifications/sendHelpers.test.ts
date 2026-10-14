@@ -47,6 +47,10 @@ describe('送る処理の補助', () => {
     expect(EMAIL_KINDS.has('listing_published')).toBe(false);
     expect(EMAIL_KINDS.has('notice_published')).toBe(false);
   });
+  it('利用者が自分でキャンセルしたときもメールを送る（プッシュは DB 側で送らないと確定済み）', () => {
+    expect(EMAIL_KINDS.has('cancelled_by_user')).toBe(true);
+    expect(EMAIL_KINDS.has('cancelled_by_staff')).toBe(true);
+  });
   it('再送は 5 分 × 回数', () => {
     const now = new Date('2026-10-10T00:00:00Z');
     expect(retryAt(1, now)).toBe('2026-10-10T00:05:00.000Z');
