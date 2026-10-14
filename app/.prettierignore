@@ -5,3 +5,4 @@ coverage/
 package-lock.json
 docs/*.html
 docs/*.pdf
+supabase/.temp

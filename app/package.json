@@ -62,8 +62,8 @@
     "gen:types": "supabase gen types typescript --local > src/lib/database.types.ts && prettier --write src/lib/database.types.ts",
     "db:reset": "supabase db reset",
     "functions": "supabase functions serve --env-file supabase/.env",
-    "deploy:web": "expo export --platform web && eas deploy",
-    "deploy:app": "eas update --channel preview"
+    "deploy:web": "expo export --platform web && eas deploy --alias preview",
+    "deploy:app": "env $(grep -v '^#' .env.production | xargs) eas update --channel preview --environment preview"
   },
   "private": true,
   "engines": {
