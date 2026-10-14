@@ -12,6 +12,7 @@ import { StoreHeader } from '@/components/admin/StoreHeader';
 import { BookingRow } from '@/features/staff/components/BookingRow';
 import {
   bookingSummaryLine,
+  groupStaffBookings,
   matchesKind,
   matchesStatus,
   sortBookings,
@@ -21,6 +22,7 @@ import { useStaffStore } from '@/features/staff/StaffStoreContext';
 import type { KindFilter, Period, StaffBookingRow, StatusFilter } from '@/features/staff/types';
 import { useNow } from '@/hooks/useNow';
 import { useRefetchOnFocus } from '@/hooks/useRefetchOnFocus';
+import { formatDateJa } from '@/lib/format';
 import { adminColors, adminSpace } from '@/theme/adminTokens';
 
 const PERIOD_OPTIONS = [
@@ -74,6 +76,28 @@ export default function StaffBookingsScreen() {
   }, [source.data, searching, kind, status, period, now]);
 
   const isDefault = period === 'today' && status === 'open' && kind === 'all';
+  // 本日は 1 枚（件数行に日付がある）。それ以外と番号検索中は U-22 と同じ日付の見出しで束ねる
+  const grouped = searching || period !== 'today';
+  const groups = useMemo(
+    () => (grouped ? groupStaffBookings(rows, searching ? 'all' : period, now) : []),
+    [grouped, rows, searching, period, now],
+  );
+
+  const renderRow = (r: StaffBookingRow) => (
+    <BookingRow
+      key={r.id}
+      row={r}
+      now={now}
+      right="time"
+      second="item"
+      onPress={() =>
+        router.push({
+          pathname: '/staff/[storeId]/bookings/[bookingId]',
+          params: { storeId: store.id, bookingId: r.id },
+        })
+      }
+    />
+  );
 
   return (
     <StaffScreen>
@@ -130,23 +154,21 @@ export default function StaffBookingsScreen() {
                 {bookingSummaryLine(rows, searching ? 'all' : period, now)}
               </Text>
             </View>
-            <GroupList>
-              {rows.map((r: StaffBookingRow) => (
-                <BookingRow
-                  key={r.id}
-                  row={r}
-                  now={now}
-                  right="time"
-                  second="item"
-                  onPress={() =>
-                    router.push({
-                      pathname: '/staff/[storeId]/bookings/[bookingId]',
-                      params: { storeId: store.id, bookingId: r.id },
-                    })
-                  }
-                />
-              ))}
-            </GroupList>
+            {grouped ? (
+              groups.map((g) => (
+                <View key={g.key} style={styles.group} testID={`booking-group-${g.key}`}>
+                  <View style={styles.groupHead}>
+                    <Text style={[styles.groupTitle, g.isToday && { color: adminColors.accent }]}>
+                      {g.isToday ? '今日' : formatDateJa(g.date)}
+                    </Text>
+                    {g.isToday ? <Text style={styles.groupSub}>{formatDateJa(g.date)}</Text> : null}
+                  </View>
+                  <GroupList>{g.rows.map(renderRow)}</GroupList>
+                </View>
+              ))
+            ) : (
+              <GroupList>{rows.map(renderRow)}</GroupList>
+            )}
           </>
         )}
       </ScrollView>
@@ -185,4 +207,8 @@ const styles = StyleSheet.create({
   count: { flexDirection: 'row', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' },
   countNum: { fontSize: 14, fontWeight: '800', color: adminColors.text },
   countSub: { fontSize: 12.5, fontWeight: '700', color: adminColors.textWeak, flexShrink: 1 },
+  group: { gap: 8 },
+  groupHead: { flexDirection: 'row', alignItems: 'baseline', gap: 8, paddingLeft: 4 },
+  groupTitle: { fontSize: 17, fontWeight: '900', color: adminColors.text },
+  groupSub: { fontSize: 12.5, fontWeight: '700', color: adminColors.textWeak },
 });

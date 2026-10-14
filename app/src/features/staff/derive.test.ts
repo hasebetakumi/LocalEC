@@ -10,11 +10,13 @@ import {
   customerLabel,
   doneActionLabel,
   expiredNotice,
+  groupStaffBookings,
   initialOf,
   listingMetric,
   listingScheduleLine,
   matchesPeriod,
   matchesStatus,
+  restrictedNoticeTitle,
   revertActionLabel,
   rowTimeText,
   sortBookings,
@@ -153,7 +155,63 @@ describe('行の表示', () => {
   });
 });
 
+describe('A-20 日付の束ね', () => {
+  const now = jstDate('2026-10-14 15:00');
+  it('別の日は別のグループ。受け取り期間中の複数日商品は今日に入る', () => {
+    const inProgress = makeRow({
+      id: 'p',
+      scheduleStart: jstDate('2026-10-12 09:00'),
+      scheduleEnd: jstDate('2026-10-17 17:00'),
+    });
+    const tomorrow = makeRow({
+      id: 't',
+      scheduleStart: jstDate('2026-10-15 11:00'),
+      scheduleEnd: jstDate('2026-10-15 13:00'),
+    });
+    const event = makeRow({
+      id: 'e',
+      kind: 'event',
+      scheduleStart: jstDate('2026-10-24 10:00'),
+      scheduleEnd: jstDate('2026-10-24 12:00'),
+    });
+    const groups = groupStaffBookings([inProgress, tomorrow, event], 'all', now);
+    expect(groups.map((g) => [g.key, g.isToday, g.rows.map((r) => r.id)])).toEqual([
+      ['2026-10-14', true, ['p']],
+      ['2026-10-15', false, ['t']],
+      ['2026-10-24', false, ['e']],
+    ]);
+  });
+  it('過去は新しい日が先。終わった商品は開始日に入る', () => {
+    const a = makeRow({
+      id: 'a',
+      scheduleStart: jstDate('2026-10-10 09:00'),
+      scheduleEnd: jstDate('2026-10-12 17:00'),
+    });
+    const b = makeRow({
+      id: 'b',
+      scheduleStart: jstDate('2026-10-13 11:00'),
+      scheduleEnd: jstDate('2026-10-13 13:00'),
+    });
+    expect(groupStaffBookings([b, a], 'past', now).map((g) => g.key)).toEqual([
+      '2026-10-13',
+      '2026-10-10',
+    ]);
+  });
+});
+
 describe('掲載の表示', () => {
+  it('A-12 の注意の見出しは単位付きの数量', () => {
+    expect(restrictedNoticeTitle(makeStaffListing())).toBe('予約済みが 8食 あります');
+    expect(
+      restrictedNoticeTitle(makeStaffListing({ kind: 'product', unit: '袋', reservedQuantity: 2 })),
+    ).toBe('予約済みが 2袋 あります');
+    expect(restrictedNoticeTitle(makeStaffListing({ kind: 'event', reservedQuantity: 3 }))).toBe(
+      '申し込み済みが 3名 います',
+    );
+    expect(restrictedNoticeTitle(makeStaffListing({ kind: 'job', reservedQuantity: 1 }))).toBe(
+      '応募が 1件 あります',
+    );
+  });
   it('予約数／上限', () => {
     expect(listingMetric(makeStaffListing())).toBe('8 / 20食');
     expect(

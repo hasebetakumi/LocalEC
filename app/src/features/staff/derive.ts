@@ -11,6 +11,7 @@ import {
   formatTime,
   formatYen,
   isSameJstDay,
+  jstDayKey,
   startOfJstDay,
   startOfNextJstDay,
 } from '@/lib/format';
@@ -216,6 +217,16 @@ export function listingMetric(l: StaffListing): string | null {
   return `${l.reservedQuantity} / ${l.quantity ?? '—'}${unit}`;
 }
 
+/**
+ * A-12 の注意の見出し。件数ではなく数量を単位付きで言う（設計_運営画面 §12 判断 7）。
+ * 「予約が 2 件」だと 1 件 2 袋の予約と矛盾して見えるため（2026-10-14）
+ */
+export function restrictedNoticeTitle(l: StaffListing): string {
+  if (l.kind === 'job') return `応募が ${l.reservedQuantity}件 あります`;
+  if (l.kind === 'event') return `申し込み済みが ${l.reservedQuantity}名 います`;
+  return `予約済みが ${l.reservedQuantity}${l.unit} あります`;
+}
+
 /** A-11 一覧の 2 行目：「受け取り 10/5 11:30〜13:30」「10/5 14:00〜15:30」「10/3〜10/31 掲載」 */
 export function listingScheduleLine(l: StaffListing): string {
   if (l.kind === 'notice') {
@@ -254,4 +265,36 @@ export function sortBookings(rows: StaffBookingRow[], period: Period): StaffBook
       dir * (a.scheduleStart.getTime() - b.scheduleStart.getTime()) ||
       a.number.localeCompare(b.number),
   );
+}
+
+export type StaffBookingGroup = {
+  key: string;
+  date: Date;
+  isToday: boolean;
+  rows: StaffBookingRow[];
+};
+
+/**
+ * A-20 本日以外（今後・過去・すべて・番号検索）を日付で束ねる（U-22 と同じ規則）。
+ * 受け取り期間中の商品は今日、それ以外は開始日。グループは日付順（過去は新しい順）、中の並びは入力順
+ */
+export function groupStaffBookings(
+  rows: readonly StaffBookingRow[],
+  period: Period,
+  now: Date,
+): StaffBookingGroup[] {
+  const groups = new Map<string, StaffBookingGroup>();
+  for (const r of rows) {
+    const inProgress =
+      r.kind === 'product' &&
+      r.scheduleStart.getTime() <= now.getTime() &&
+      now.getTime() <= r.scheduleEnd.getTime();
+    const date = inProgress ? now : r.scheduleStart;
+    const key = jstDayKey(date);
+    const g = groups.get(key) ?? { key, date, isToday: isSameJstDay(date, now), rows: [] };
+    g.rows.push(r);
+    groups.set(key, g);
+  }
+  const dir = period === 'past' ? -1 : 1;
+  return [...groups.values()].sort((a, b) => dir * a.key.localeCompare(b.key));
 }

@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -46,6 +46,7 @@ type Props = {
   editing?: { id: string; status: ListingStatus; photoUrl: string | null };
 };
 
+const CHECK_INPUT = '入力内容を確認してください。';
 const CATEGORY_OPTIONS = CATEGORIES.map((c) => ({ value: c.key, label: c.label }));
 const UNIT_OPTIONS = UNIT_CHOICES.map((u) => ({ value: u, label: u }));
 const PAY_UNIT_OPTIONS = [
@@ -71,7 +72,13 @@ export function ListingFormView({ kind, store, initial, editing }: Props) {
   const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
   const [form, setForm] = useState<ListingForm>(initial);
-  const [errors, setErrors] = useState<FormErrors>({});
+  /** 最後に押したボタンの検証条件。押すまでは null（＝検証しない）。押した後は入力のたびに検証し直す */
+  const [checked, setChecked] = useState<{ publish: boolean } | null>(null);
+  const errors = useMemo<FormErrors>(
+    () => (checked ? validateListingForm(form, kind, checked) : {}),
+    [form, kind, checked],
+  );
+  const hasErrors = Object.keys(errors).length > 0;
   const [saveError, setSaveError] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
   const guard = useDiscardGuard(dirty);
@@ -100,10 +107,10 @@ export function ListingFormView({ kind, store, initial, editing }: Props) {
   const isDraft = !editing || editing.status === 'draft';
   const submit = async (publish: boolean) => {
     const e = validateListingForm(form, kind, { publish });
-    setErrors(e);
+    setChecked({ publish });
     setSaveError(null);
     if (Object.keys(e).length > 0) {
-      setSaveError('入力内容を確認してください。');
+      setSaveError(CHECK_INPUT);
       scrollRef.current?.scrollTo({ y: 0, animated: true });
       return;
     }
@@ -152,7 +159,10 @@ export function ListingFormView({ kind, store, initial, editing }: Props) {
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
         >
-          {saveError ? <Band text={saveError} tone="danger" testID="form-error" /> : null}
+          {/* 「入力内容を確認してください。」は直し終えたら消す。保存失敗の赤帯はそのまま */}
+          {saveError && (saveError !== CHECK_INPUT || hasErrors) ? (
+            <Band text={saveError} tone="danger" testID="form-error" />
+          ) : null}
 
           {kind === 'notice' ? (
             <FormSection title="内容">

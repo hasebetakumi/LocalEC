@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Band } from '@/components/Bands';
@@ -48,7 +48,12 @@ function StoreInfoForm({ store }: { store: StoreInfo }) {
   const queryClient = useQueryClient();
   const original = storeToForm(store);
   const [value, setValue] = useState<StoreFormValue>(original);
-  const [errors, setErrors] = useState<StoreFormErrors>({});
+  // 「保存する」を押すまでは検証しない。一度押した後は入力のたびに検証し直す（A-10 と同じ）
+  const [checked, setChecked] = useState(false);
+  const errors = useMemo<StoreFormErrors>(
+    () => (checked ? validateStoreForm(value) : {}),
+    [checked, value],
+  );
   const [notice, setNotice] = useState<{ tone: 'info' | 'danger'; text: string } | null>(null);
   const [confirm, setConfirm] = useState<number | null>(null);
   const save = useStaffMutation((v: StoreFormValue) =>
@@ -74,7 +79,7 @@ function StoreInfoForm({ store }: { store: StoreInfo }) {
 
   const submit = async () => {
     const e = validateStoreForm(value);
-    setErrors(e);
+    setChecked(true);
     setNotice(null);
     if (Object.keys(e).length > 0) {
       // 入力欄が 1 画面に収まらないので、赤枠の欄が見えるよう先頭へ戻す

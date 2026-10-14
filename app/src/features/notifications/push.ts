@@ -3,9 +3,10 @@
  * 設計：docs/設計_通知の配信.md 4 章
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { isRunningInExpoGo } from 'expo';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
+import type * as NotificationsModule from 'expo-notifications';
 import { Platform } from 'react-native';
 
 import { supabase } from '@/lib/supabase';
@@ -16,8 +17,20 @@ export type RegisterResult = 'registered' | 'denied' | 'unavailable';
 /** 端末（OS）側の通知の許可。unavailable＝シミュレータや Web など、そもそも使えない */
 export type PushPermission = 'granted' | 'denied' | 'undetermined' | 'unavailable';
 
+/**
+ * expo-notifications を読み込む。Android の Expo Go（SDK 53 以降）では import しただけで
+ * 例外になりアプリ全体が開けなくなるので、読み込まずに null を返す（使えない扱い）
+ */
+function loadNotifications(): typeof NotificationsModule | null {
+  if (Platform.OS === 'android' && isRunningInExpoGo()) return null;
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require('expo-notifications');
+}
+
 /** 前面で受けた通知もバナーとリストに出す */
 export function configureNotificationHandler() {
+  const Notifications = loadNotifications();
+  if (!Notifications) return;
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldPlaySound: false,
@@ -33,7 +46,8 @@ export function configureNotificationHandler() {
  * 拒否されていたらアプリからは変えられないので、画面で「設定を開く」を案内する
  */
 export async function getPushPermission(): Promise<PushPermission> {
-  if (!Device.isDevice) return 'unavailable';
+  const Notifications = loadNotifications();
+  if (!Device.isDevice || !Notifications) return 'unavailable';
   try {
     const { status } = await Notifications.getPermissionsAsync();
     if (status === 'granted') return 'granted';
@@ -49,7 +63,8 @@ export async function getPushPermission(): Promise<PushPermission> {
  * シミュレータ、Android の Expo Go（SDK 53 以降はプッシュ不可）などでは unavailable
  */
 export async function registerForPush(): Promise<RegisterResult> {
-  if (!Device.isDevice) return 'unavailable';
+  const Notifications = loadNotifications();
+  if (!Device.isDevice || !Notifications) return 'unavailable';
   try {
     if (Platform.OS === 'android') {
       // Android 13 以降は、チャンネルを作ってから許可を求めないとダイアログが出ない
@@ -91,6 +106,8 @@ export async function unregisterPush(): Promise<void> {
 
 /** 通知をタップしたとき（起動中・起動直後の両方）に呼ぶ */
 export function subscribeNotificationTaps(onTap: (data: unknown, id: string) => void): () => void {
+  const Notifications = loadNotifications();
+  if (!Notifications) return () => {};
   const sub = Notifications.addNotificationResponseReceivedListener((response) => {
     onTap(response.notification.request.content.data, response.notification.request.identifier);
   });

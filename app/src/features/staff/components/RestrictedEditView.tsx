@@ -14,6 +14,7 @@ import { WarningBox } from '@/components/admin/WarningBox';
 import { adminColors, adminSpace } from '@/theme/adminTokens';
 
 import { endListing, StaffError, updateListing } from '../api';
+import { restrictedNoticeTitle } from '../derive';
 import {
   isPeriodChanged,
   KIND_TEXT,
@@ -117,7 +118,7 @@ export function RestrictedEditView({
       >
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <WarningBox
-            title={`予約が${l.reservedQuantity}件入っています`}
+            title={restrictedNoticeTitle(l)}
             body={`変更できるのは${ALLOWED[l.kind]}だけです。予約者へは変更の通知が届きます。`}
           />
           {saveError ? <Band text={saveError} tone="danger" testID="restricted-error" /> : null}
