@@ -12,6 +12,7 @@ import {
 import { makeRow } from '@/test/staffFixtures';
 import { mockAuthValue, renderStaff } from '@/test/staffRender';
 
+let mockParams: Record<string, string> = {};
 jest.mock('expo-router', () => ({
   router: {
     push: jest.fn(),
@@ -21,7 +22,7 @@ jest.mock('expo-router', () => ({
     navigate: jest.fn(),
   },
   useFocusEffect: jest.fn(),
-  useLocalSearchParams: () => ({ storeId: 'store-1', bookingId: 'b-1' }),
+  useLocalSearchParams: () => ({ storeId: 'store-1', bookingId: 'b-1', ...mockParams }),
   usePathname: () => '/staff/store-1/bookings',
 }));
 jest.mock('@/lib/supabase', () => ({ supabase: {} }));
@@ -50,7 +51,10 @@ const live = (o: Parameters<typeof makeRow>[0] = {}) => {
   });
 };
 
-beforeEach(() => jest.clearAllMocks());
+beforeEach(() => {
+  jest.clearAllMocks();
+  mockParams = {};
+});
 
 describe('A-20 予約・申し込み', () => {
   it('初期値は本日×未完了。完了は出さず、未完了のピルも出さない', async () => {
@@ -92,6 +96,18 @@ describe('A-21 受け取り処理', () => {
     await fireEvent.press(screen.getByTestId('complete-booking'));
     await waitFor(() => expect(jest.mocked(completeBooking).mock.calls[0]?.[0]).toBe('b-1'));
     expect(router.back).toHaveBeenCalled();
+  });
+
+  it.each([
+    [{}, '予約・申し込み'],
+    [{ from: 'search' }, '店舗を選ぶ'],
+    [{ listingId: 'listing-1' }, '掲載'],
+  ])('戻るのラベルは開いた画面に合わせる（%o → %s）', async (params, label) => {
+    mockParams = params;
+    jest.mocked(fetchStaffBooking).mockResolvedValue(live());
+    await renderStaff(<StaffBookingScreen />);
+    expect(await screen.findByText('栗橋 花子 様')).toBeTruthy();
+    expect(screen.getByRole('header', { name: label })).toBeTruthy();
   });
 
   it('受け取り済みなら「未受け取りに戻す」', async () => {

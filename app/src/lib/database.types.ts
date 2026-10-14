@@ -963,7 +963,8 @@ export type Database = {
         | 'cancelled_by_staff'
         | 'listing_changed'
         | 'notice_published'
-        | 'listing_published';
+        | 'listing_published'
+        | 'cancelled_by_user';
       pay_unit: 'daily' | 'hourly';
       payment_method: 'cash' | 'paypay' | 'credit' | 'transit_ic' | 'other';
       product_category:
@@ -1093,6 +1094,7 @@ export const Constants = {
         'listing_changed',
         'notice_published',
         'listing_published',
+        'cancelled_by_user',
       ],
       pay_unit: ['daily', 'hourly'],
       payment_method: ['cash', 'paypay', 'credit', 'transit_ic', 'other'],

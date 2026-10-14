@@ -34,15 +34,33 @@ import { adminColors, adminShadow } from '@/theme/adminTokens';
 const ITEM_LABEL = { product: '商品', event: 'イベント', job: '求人' } as const;
 const CANCEL_TARGET = { product: '予約', event: '申し込み', job: '応募' } as const;
 
+type BackTo = { label: string; href: string };
+
+/**
+ * 戻り先（ナビの「‹ 戻り先名」と、履歴がないときの行き先）。開いた画面ごとに変える。
+ * A-01 の番号検索は from=search、掲載詳細は listingId を付けて開く
+ */
+function backTo(storeId: string, from?: string, listingId?: string): BackTo {
+  if (from === 'search') return { label: '店舗を選ぶ', href: '/staff' };
+  if (listingId) return { label: '掲載', href: `/staff/${storeId}/listings/${listingId}` };
+  return { label: '予約・申し込み', href: `/staff/${storeId}/bookings` };
+}
+
 /** A-21 受け取り処理 */
 export default function StaffBookingScreen() {
-  const { storeId, bookingId } = useLocalSearchParams<{ storeId: string; bookingId: string }>();
+  const { storeId, bookingId, from, listingId } = useLocalSearchParams<{
+    storeId: string;
+    bookingId: string;
+    from?: string;
+    listingId?: string;
+  }>();
   const booking = useStaffBooking(bookingId);
+  const back = backTo(storeId, from, listingId);
 
   if (booking.isPending || booking.isError || !booking.data) {
     return (
       <StaffScreen>
-        <StaffNavBar title="予約・申し込み" fallback={`/staff/${storeId}/bookings`} />
+        <StaffNavBar title={back.label} fallback={back.href} />
         {booking.isPending ? (
           <Loading />
         ) : booking.isError ? (
@@ -53,15 +71,23 @@ export default function StaffBookingScreen() {
       </StaffScreen>
     );
   }
-  return <Process row={booking.data} onRefetch={() => void booking.refetch()} />;
+  return <Process row={booking.data} back={back} onRefetch={() => void booking.refetch()} />;
 }
 
-function goBack(storeId: string) {
+function goBack(href: string) {
   if (router.canGoBack()) router.back();
-  else router.replace({ pathname: '/staff/[storeId]/bookings', params: { storeId } });
+  else router.replace(href as Parameters<typeof router.replace>[0]);
 }
 
-function Process({ row: r, onRefetch }: { row: StaffBookingRow; onRefetch: () => void }) {
+function Process({
+  row: r,
+  back,
+  onRefetch,
+}: {
+  row: StaffBookingRow;
+  back: BackTo;
+  onRefetch: () => void;
+}) {
   const now = useNow();
   const insets = useSafeAreaInsets();
   const [confirmCancel, setConfirmCancel] = useState(false);
@@ -81,7 +107,7 @@ function Process({ row: r, onRefetch }: { row: StaffBookingRow; onRefetch: () =>
     setError(null);
     try {
       await fn();
-      if (after === 'back') goBack(r.storeId);
+      if (after === 'back') goBack(back.href);
       else onRefetch();
     } catch {
       setError('状態が変わっています。画面を更新してください。');
@@ -103,7 +129,7 @@ function Process({ row: r, onRefetch }: { row: StaffBookingRow; onRefetch: () =>
 
   return (
     <StaffScreen>
-      <StaffNavBar title="予約・申し込み" fallback={`/staff/${r.storeId}/bookings`} />
+      <StaffNavBar title={back.label} fallback={back.href} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.numberCard}>
           <Text style={styles.number} testID="staff-booking-number">

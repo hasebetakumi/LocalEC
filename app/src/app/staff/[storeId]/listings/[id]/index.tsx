@@ -248,7 +248,7 @@ function Detail({
                     onPress={() =>
                       router.push({
                         pathname: '/staff/[storeId]/bookings/[bookingId]',
-                        params: { storeId: r.storeId, bookingId: r.id },
+                        params: { storeId: r.storeId, bookingId: r.id, listingId: l.id },
                       })
                     }
                   />
