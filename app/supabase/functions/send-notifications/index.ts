@@ -9,6 +9,7 @@ import {
   deepLink,
   EMAIL_KINDS,
   emailContent,
+  emailLink,
   type PushReceipt,
   RECEIPT_DELAY_MS,
   retryAt,
@@ -189,6 +190,13 @@ async function sendEmails(items: Notification[]) {
     .select('id, email, deleted_at')
     .in('id', [...new Set(items.map((n) => n.user_id))]);
   const emailOf = new Map((profiles ?? []).map((p) => [p.id, p.deleted_at ? '' : p.email]));
+  // 番号の箱に出す番号と種類（引けなくても送信は止めない。箱が出ないだけ）
+  const bookingIds = [...new Set(items.map((n) => n.booking_id).filter((id) => id !== null))];
+  const { data: bookings } = bookingIds.length
+    ? await supabase.from('bookings').select('id, number, kind').in('id', bookingIds)
+    : { data: [] };
+  const bookingOf = new Map((bookings ?? []).map((b) => [b.id, b]));
+  const webUrl = Deno.env.get('APP_WEB_URL');
   for (const n of items) {
     const to = emailOf.get(n.user_id);
     if (!to) {
@@ -202,7 +210,14 @@ async function sendEmails(items: Notification[]) {
       await transport.sendMail({
         from: Deno.env.get('MAIL_FROM') ?? 'LocalEC <no-reply@example.com>',
         to,
-        ...emailContent(n),
+        ...emailContent({
+          kind: n.kind,
+          title: n.title,
+          body: n.body,
+          to,
+          booking: n.booking_id ? bookingOf.get(n.booking_id) : null,
+          url: emailLink(webUrl, n),
+        }),
       });
       await supabase
         .from('notifications')

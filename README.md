@@ -50,6 +50,7 @@ Docker を起動しておく。他案件と重ならないよう、ポートは 
 ログインのメールも通知のメールも、ローカルから Resend で本物の受信箱に送る。設定は `app/supabase/.env` の 1 か所（`app/supabase/.env.example` をコピー）で、`SMTP_PASS` に Resend の API キーを入れる。
 
 - 送信元のドメインを認証するまでは、`onboarding@resend.dev` から Resend に登録したアドレス（`t-hasebe@meincoltd.com`）にしか送れない。ほかのアドレスでログインしようとするとメールの送信に失敗する
+- 通知メールの「予約・申込を見る」ボタンの先は `APP_WEB_URL`（ローカルは `http://localhost:8081`）。空ならボタンを出さない。変えたら `npm run functions` を起動し直す
 - 無料プランは 1 日 100 通・月 3,000 通。ログインを何度も試すとすぐ使い切るので注意スマホの Expo Go から接続するときは URL を `localhost` ではなく PC の IP アドレスにする。
 
 ### 品質チェック
