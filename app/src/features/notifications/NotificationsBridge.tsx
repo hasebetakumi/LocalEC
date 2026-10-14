@@ -24,11 +24,18 @@ export function NotificationsBridge() {
   const [tapCount, setTapCount] = useState(0);
 
   useEffect(() => {
-    if (loading || !profile || !profile.notifications_enabled) return;
+    if (loading) return;
+    // ログアウトすると端末トークンを DB から消すので、同じ人がログインし直したら登録し直す
+    // （消さないと、アプリを起動したままログアウト → 同じ人で再ログインしたときに登録を飛ばしてしまう）
+    if (!session) {
+      registeredFor.current = null;
+      return;
+    }
+    if (!profile || !profile.notifications_enabled) return;
     if (registeredFor.current === profile.id) return;
     registeredFor.current = profile.id;
     void registerForPush();
-  }, [loading, profile]);
+  }, [loading, session, profile]);
 
   useEffect(
     () =>
