@@ -440,3 +440,12 @@ enabled = true
 # formatted with uppercase keywords, indent 2, max width 180, trailing commas,
 # and column/key alignment. Set to "null" to emit raw, unformatted SQL.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
+
+# デモ環境（Supabase ホスト版 LocalEC-Dev）だけに効く上書き。`supabase config push` が link 先の project_id と一致する節を使う
+# ローカルは上の [auth] の値（localhost）のまま。Web 版の公開 URL は `npm run deploy:web` の Alias URL
+[remotes.demo]
+project_id = "zohlpipywlxkafmmhiks"
+
+[remotes.demo.auth]
+site_url = "https://localec--preview.expo.app"
+additional_redirect_urls = ["https://localec--preview.expo.app/**", "localec://**", "exp://**"]

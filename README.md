@@ -73,105 +73,18 @@ Windows のファイアウォールで 8081 番ポートを許可するか、`np
 ローカルで利用者画面・運営画面・通知の配信を一通り確かめる手順。コマンドはすべて `app/` の中で実行する。
 画面ごとの確認項目を上から順に実行するチェックリストは [docs/動作確認手順_フェーズ1.md](docs/動作確認手順_フェーズ1.md)。
 
-### 初回だけ
+### 初回だけ（2026-10-14 実施済み。やり直すときの記録）
 
-```bash
-cd app
-npm install
-cp .env.example .env                                     # アプリの接続先
-cp supabase/.env.example supabase/.env                   # メール（Resend）と通知を送る関数の設定。SMTP_PASS に API キーを入れる
-npx supabase start                                       # 初回はイメージ取得で数分かかる
-npm run supabase:status                                  # 表示された publishable key を .env に入れる
-npm run db:reset                                         # テーブルとシード（店舗・掲載・確認用アカウント）を入れる
-```
-
-シードの掲載には写真が付く。写真は `app/supabase/seed-photos/` にあり、`db:reset` のたびにストレージへ入る。実在の店舗の写真ではないイメージ画像で、出典は `app/supabase/seed-photos-credits.md`。
-
-### 毎回の起動
-
-Docker を先に起動しておく。
-
-```bash
-npx supabase start     # DB・認証・Studio。バックグラウンドで動き続ける（起動済みなら不要）
-npm run functions      # 端末 A：通知を送る Edge Function（動かしたままにする）
-npm run web            # 端末 B：アプリ（http://localhost:8081）。スマホで見るなら npm run start:app
-```
-
-`npm run functions` を止めていると通知は送られず、次に起動したときにまとめて送られる。
-
-長時間動かして開発サーバーが落ちるときは、端末 B を `NODE_OPTIONS=--max-old-space-size=4096 npm run web` で起動する。
-
-### ログイン
-
-パスワードはない。ログイン画面でメールアドレスを入れ、受信箱に届いたメールのリンクを押す。リンクは 15 分有効。リンクは Supabase の確認用 URL で、押すと Supabase が検証してからアプリ（Web なら http://localhost:8081/auth/confirm）に戻る。メールを送った端末・ブラウザと同じところで開くこと。
-メールが届くのは Resend に登録したアドレスだけなので、シードの運営アカウントをそのアドレスにしてある。
-
-| アカウント               | 用途                                                                                                                                                         |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `t-hasebe@meincoltd.com` | 運営（3 店舗すべてに所属）。ログイン後、マイページの「スタッフメニュー」または http://localhost:8081/staff。利用者として予約を試すときもこのアカウントを使う |
-| `seed-user@example.com`  | 利用者（売り切れの表示確認用に予約を 1 件持つ）。アドレスが実在しないのでログインはできない                                                                  |
-
-### 確認の流れ（例）
-
-1. **利用者**：ホーム → 詳細 → 予約。数秒で受信箱に「【LocalEC】予約が完了しました」が届く
-2. **運営**：`t-hasebe@meincoltd.com` でログイン → 店舗を選ぶ → 予約タブに今の予約が出る → 受け取り済みにする／キャンセルにする（キャンセルは予約した人にメールが届く）
-3. **掲載**：運営の掲載タブ → 右上の「＋ 掲載」で掲載を作って公開 → 利用者のホームに出る
-4. **PC 幅の運営画面**：ブラウザの幅を 960px 以上にすると、黒いヘッダーと左メニューの表示になる
-
-Web とシミュレータではプッシュ通知は届かない。メールで届くことを確認する。
-
-### 通知の配信を直接確かめる
-
-Studio（http://localhost:58323 ）の SQL Editor で実行する。
-
-```sql
-select public.emit_reminders('same_day');          -- 今日の受け取りのリマインドを作る（メールが届く）
-select public.emit_publish_notifications();        -- 公開になった掲載の新着通知を作る（プッシュのみ）
-select public.invoke_send_notifications();         -- 定期実行（毎分）を待たずに送る
-select kind, title, push_error, email_sent_at, attempts
-  from public.notifications order by created_at desc limit 10;   -- 送った結果
-select * from net._http_response order by id desc limit 5;      -- 関数の応答
-```
-
-`push_error` が `done` なのは「プッシュは送らないで確定」（通知オフ・端末なし。利用者が自分でキャンセルした `cancelled_by_user` はメールだけなので最初から `done`）。ローカルには本物の端末がないので、プッシュは常にこうなる。
-
-### スマホ（Expo Go）で確かめる
-
-- PC とスマホを同じ Wi-Fi につなぎ、`app/.env` の `EXPO_PUBLIC_SUPABASE_URL` を PC の IP アドレス（`http://192.168.x.x:58321`）にしてアプリ（端末 B）を起動し直す
-- Windows（WSL2）では、ファイアウォールで 8081（Expo）と 58321（Supabase）を許可する。Wi-Fi が「パブリック」扱いだと許可ルールが効かないことがある
-- ログインを試すときは次の 2 つが必要
-  - `supabase/.env` に `SUPABASE_AUTH_EXTERNAL_URL=http://<PC の IP>:58321/auth/v1` を書き、`npx supabase stop && npx supabase start`。メールのリンクの先頭（Supabase の確認用 URL）がスマホから届く IP になる
-  - 端末 B を `npm run start:tunnel` で起動して QR コードを読む。`npm run start:app`（LAN 接続）だとアプリの戻り先が `exp://192.168.x.x:8081/...` になり、Supabase Auth が IP のホストを拒否して `site_url`（localhost）に差し替えてしまう。トンネル（`*.exp.direct`）なら `exp://**` で許可される。`@expo/ngrok` が未導入なら `npm i -g @expo/ngrok`
-- ログインのメールはスマホのメールアプリで開いてリンクを押す。ブラウザが一瞬開いてから Expo Go に戻る（「Expo Go で開きますか」の確認が出たら許可する）。メールを送った端末と同じ端末で開くこと（PC の Web で送ってスマホで開く、はできない）
-- プッシュ通知は iOS の Expo Go なら受信まで確かめられる（予約の確定で数秒後に届く）。Android の Expo Go ではプッシュが使えない（SDK 53 以降）。Android の受信は開発ビルド（`eas build --profile development`）で確かめる
-
-### 止める・やり直す
-
-```bash
-npm stop             # Supabase を止める（データは残る）
-npm run db:reset     # データを初期状態に戻す（予約・通知・追加した掲載は消える）
-```
-
-- `supabase/config.toml` を変えたら `npx supabase stop && npx supabase start` で反映する
-- メールが届かないときは、`supabase/.env` の `SMTP_PASS` が入っているか、宛先が Resend に登録したアドレスか、`npm run functions` が動いているか（通知のメール）を確かめる。`select email_error from public.notifications order by created_at desc limit 5;` に送信の失敗理由が残る
-- `supabase/.env` を変えたら `npx supabase stop && npx supabase start` と `npm run functions` の起動し直しで反映する
-
-## デモ環境（お客さんに見せる）
-
-方針と分担は `docs/設計_デプロイ.md`。Supabase のホスト版（Free）に、Web 版（EAS Hosting）と Expo Go 版（EAS Update）をつなぐ。公開したあとは PC を動かしておく必要はない。
-
-### 初回だけ
-
-1. Resend でドメイン `dev.localec.meincoltd.com` を認証し、Supabase でプロジェクトを作る（ダッシュボード。手順は設計書 6.1）
+1. Resend でドメイン `dev.localec.meincoltd.com` を認証し、Supabase でプロジェクトを作る（ダッシュボード。手順は設計書 6.1）。`supabase/.env` の `MAIL_FROM*` を認証済みドメインのアドレスにする
 2. `app/.env.production.example` を `app/.env.production` にコピーし、ホスト版の URL と publishable key を入れる
 3. ホスト版にスキーマ・データ・関数・設定を入れる
 
    ```bash
    npx supabase link --project-ref <ref>
-   npx supabase db reset --linked                       # マイグレーション＋シード（データが消えるので初回とやり直しのときだけ）
-   npx supabase seed buckets --project-ref <ref>        # 掲載の写真
+   npx supabase db push --linked --include-seed         # マイグレーション＋シード（新規プロジェクトのとき。初期化し直すなら db reset --linked）
+   npx supabase seed buckets --linked                   # 掲載の写真
    npx supabase functions deploy send-notifications
-   npx supabase secrets set --env-file supabase/.env    # CRON_SECRET・SMTP_*・MAIL_FROM*
+   npx supabase secrets set --env-file <CRON_SECRET・SMTP_*・MAIL_FROM* だけを抜き出したファイル>   # SUPABASE_* や APP_WEB_URL は入れない
    npx supabase config push                             # 認証の設定・メールのテンプレート・SMTP
    ```
 
@@ -183,20 +96,22 @@ npm run db:reset     # データを初期状態に戻す（予約・通知・追
    select vault.update_secret(id, '<supabase/.env の CRON_SECRET>') from vault.secrets where name = 'cron_secret';
    ```
 
-5. Web 版を出し、出た URL を `supabase/config.toml` の `site_url` と `additional_redirect_urls` に入れて `npx supabase config push` し直す
+5. Web 版を出す（`npm run deploy:web`）。固定 URL は別名 `preview` の `https://localec--preview.expo.app`。この URL を `supabase/config.toml` の `[remotes.demo.auth]`（ホスト版だけに効く上書き。ローカルの `[auth]` は localhost のまま）に入れて `npx supabase config push` し直し、`npx supabase secrets set APP_WEB_URL=<URL>` で通知メールのリンク先にも入れる
 
 ### 公開・更新
 
 ```bash
-npm run deploy:web   # Web 版：expo export → eas deploy。URL が表示される
+npm run deploy:web   # Web 版：expo export → eas deploy --alias preview。URL は https://localec--preview.expo.app で固定
 npm run deploy:app   # Expo Go 版：eas update --channel preview
 ```
 
-`develop` に取り込んだら両方をやり直す。どちらも `app/.env.production` を読む。
+`develop` に取り込んだら両方をやり直す。どちらも `app/.env.production` を読む（`eas update` は `--environment` を付けると `.env.production` を読まなくなるので、スクリプトで値を渡している）。
 
 ### Expo Go で開く
 
 - 自分の端末の Expo Go（meincoltd でログイン済み）で、`eas update` の出力にある URL か、EAS ダッシュボードの Updates の QR を開く
+- **Android の Expo Go 57.0.9 では開けない**（Expo Go 側のバグ。設計書 2.1 の 7）。Android は Web 版 https://localec--preview.expo.app で見せる
+- ストア版の Expo Go は最新 SDK しか動かせないので、両端末で Expo Go の自動更新を止めておく。Android に SDK 57 対応の Expo Go を入れるなら https://expo.dev/go の APK
 - `runtimeVersion` は `sdkVersion` ポリシーにしてある。Expo Go は SDK ごとのランタイム（`exposdk:57.0.0`）しか読まないため。開発ビルドに移るときに `appVersion` か `fingerprint` に替える
 - Android の Expo Go と Web ではプッシュは届かない。iOS の Expo Go では届く
 
