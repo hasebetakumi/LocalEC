@@ -1,9 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
 
 import { supabase } from '@/lib/supabase';
 
-import { getPushPermission, registerForPush, unregisterPush } from './push';
+import {
+  configureNotificationHandler,
+  getPushPermission,
+  registerForPush,
+  subscribeNotificationTaps,
+  unregisterPush,
+} from './push';
 
 const mockIsDevice = jest.fn(() => true);
 jest.mock('expo-device', () => ({
@@ -11,6 +18,8 @@ jest.mock('expo-device', () => ({
     return mockIsDevice();
   },
 }));
+const mockIsExpoGo = jest.fn(() => false);
+jest.mock('expo', () => ({ isRunningInExpoGo: () => mockIsExpoGo() }));
 jest.mock('expo-constants', () => ({ expoConfig: { extra: { eas: { projectId: 'project-1' } } } }));
 jest.mock('expo-notifications', () => ({
   setNotificationHandler: jest.fn(),
@@ -18,6 +27,8 @@ jest.mock('expo-notifications', () => ({
   getPermissionsAsync: jest.fn(),
   requestPermissionsAsync: jest.fn(),
   getExpoPushTokenAsync: jest.fn(),
+  addNotificationResponseReceivedListener: jest.fn(),
+  getLastNotificationResponseAsync: jest.fn(),
   AndroidImportance: { DEFAULT: 3 },
 }));
 const mockDelete = jest.fn();
@@ -34,6 +45,7 @@ beforeEach(async () => {
   jest.clearAllMocks();
   await AsyncStorage.clear();
   mockIsDevice.mockReturnValue(true);
+  mockIsExpoGo.mockReturnValue(false);
 });
 
 describe('getPushPermission', () => {
@@ -87,6 +99,44 @@ describe('registerForPush', () => {
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
     await expect(registerForPush()).resolves.toBe('unavailable');
     warn.mockRestore();
+  });
+});
+
+describe('Android の Expo Go', () => {
+  // expo-notifications は import しただけで例外になるので、どの関数からも触らない
+  beforeEach(() => {
+    jest.replaceProperty(Platform, 'OS', 'android');
+    mockIsExpoGo.mockReturnValue(true);
+  });
+  afterEach(() => jest.restoreAllMocks());
+
+  it('許可も登録も unavailable で、expo-notifications を呼ばない', async () => {
+    await expect(getPushPermission()).resolves.toBe('unavailable');
+    await expect(registerForPush()).resolves.toBe('unavailable');
+    expect(N.setNotificationChannelAsync).not.toHaveBeenCalled();
+    expect(N.getPermissionsAsync).not.toHaveBeenCalled();
+    expect(supabase.rpc).not.toHaveBeenCalled();
+  });
+
+  it('通知の表示設定とタップの購読は何もしない', () => {
+    configureNotificationHandler();
+    const unsubscribe = subscribeNotificationTaps(jest.fn());
+    unsubscribe();
+    expect(N.setNotificationHandler).not.toHaveBeenCalled();
+    expect(N.addNotificationResponseReceivedListener).not.toHaveBeenCalled();
+  });
+
+  it('開発ビルドの Android ではチャンネルを作ってから登録する', async () => {
+    mockIsExpoGo.mockReturnValue(false);
+    N.getPermissionsAsync.mockResolvedValue({ status: 'granted' } as never);
+    N.getExpoPushTokenAsync.mockResolvedValue({ data: 'ExponentPushToken[abc]', type: 'expo' });
+    jest.mocked(supabase.rpc).mockResolvedValue({ error: null } as never);
+    await expect(registerForPush()).resolves.toBe('registered');
+    expect(N.setNotificationChannelAsync).toHaveBeenCalled();
+    expect(supabase.rpc).toHaveBeenCalledWith('register_push_token', {
+      p_token: 'ExponentPushToken[abc]',
+      p_platform: 'android',
+    });
   });
 });
 
