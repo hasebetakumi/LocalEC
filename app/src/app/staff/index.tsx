@@ -100,7 +100,7 @@ export default function StoreSelectScreen() {
                       onPress={() =>
                         router.push({
                           pathname: '/staff/[storeId]/bookings/[bookingId]',
-                          params: { storeId: r.storeId, bookingId: r.id },
+                          params: { storeId: r.storeId, bookingId: r.id, from: 'search' },
                         })
                       }
                     />
